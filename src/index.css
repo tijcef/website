@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* TIJCEF Design System — premium nonprofit aesthetic.
+   Deep forest green + royal blue + soft gold. All colors HSL. */
+
+@layer base {
+  :root {
+    --background: 40 30% 98%;
+    --foreground: 155 35% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 155 35% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 155 35% 10%;
+
+    /* Deep forest green — health, growth, sustainability */
+    --primary: 158 65% 18%;
+    --primary-foreground: 40 30% 98%;
+    --primary-glow: 158 55% 32%;
+
+    /* Royal blue — trust, intelligence */
+    --secondary: 218 70% 28%;
+    --secondary-foreground: 40 30% 98%;
+
+    --muted: 40 20% 94%;
+    --muted-foreground: 155 15% 35%;
+
+    /* Soft gold — premium credibility */
+    --accent: 40 75% 55%;
+    --accent-foreground: 155 50% 12%;
+    --accent-soft: 40 70% 92%;
+
+    --destructive: 0 75% 45%;
+    --destructive-foreground: 40 30% 98%;
+
+    --border: 40 20% 88%;
+    --input: 40 20% 90%;
+    --ring: 158 65% 18%;
+
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(158 65% 12% / 0.92) 0%, hsl(218 70% 22% / 0.85) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(158 65% 18%) 0%, hsl(218 70% 28%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(40 80% 60%) 0%, hsl(35 75% 50%) 100%);
+    --gradient-soft: linear-gradient(180deg, hsl(40 30% 98%) 0%, hsl(40 25% 95%) 100%);
+    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(155 50% 8% / 0.7) 100%);
+
+    /* Shadows */
+    --shadow-elegant: 0 20px 60px -20px hsl(158 65% 18% / 0.25);
+    --shadow-card: 0 4px 24px -8px hsl(155 30% 15% / 0.12);
+    --shadow-gold: 0 10px 40px -10px hsl(40 75% 55% / 0.4);
+    --shadow-deep: 0 30px 80px -30px hsl(155 50% 10% / 0.4);
+
+    /* Typography */
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+
+    --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dark {
+    --background: 155 40% 6%;
+    --foreground: 40 30% 96%;
+    --card: 155 35% 9%;
+    --card-foreground: 40 30% 96%;
+    --primary: 158 55% 45%;
+    --primary-foreground: 155 50% 8%;
+    --secondary: 218 60% 50%;
+    --secondary-foreground: 40 30% 98%;
+    --muted: 155 25% 14%;
+    --muted-foreground: 40 15% 70%;
+    --accent: 40 75% 60%;
+    --accent-foreground: 155 50% 8%;
+    --border: 155 25% 18%;
+    --input: 155 25% 16%;
+    --ring: 158 55% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .font-display { font-family: var(--font-display); }
+  .gradient-hero { background: var(--gradient-hero); }
+  .gradient-primary { background: var(--gradient-primary); }
+  .gradient-gold { background: var(--gradient-gold); }
+  .gradient-soft { background: var(--gradient-soft); }
+  .gradient-overlay { background: var(--gradient-overlay); }
+  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .shadow-card { box-shadow: var(--shadow-card); }
+  .shadow-gold { box-shadow: var(--shadow-gold); }
+  .shadow-deep { box-shadow: var(--shadow-deep); }
+
+  .glass {
+    background: hsl(0 0% 100% / 0.08);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid hsl(0 0% 100% / 0.15);
+  }
+  .glass-card {
+    background: hsl(0 0% 100% / 0.7);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid hsl(40 30% 88% / 0.6);
+  }
+
+  .text-balance { text-wrap: balance; }
+
+  .animate-fade-up {
+    animation: fadeUp 0.9s var(--transition-smooth) both;
+  }
+  .animate-fade-in {
+    animation: fadeIn 1.2s ease-out both;
+  }
+  .animate-slow-zoom {
+    animation: slowZoom 18s ease-out both;
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slowZoom {
+  from { transform: scale(1.05); }
+  to { transform: scale(1.15); }
+}
