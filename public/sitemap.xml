@@ -4,5 +4,17 @@
   <url>
     <loc>https://tijcef.org/</loc>
   </url>
-
+  <url><loc>https://tijcef.org/about</loc></url>
+  <url><loc>https://tijcef.org/pillars</loc></url>
+  <url><loc>https://tijcef.org/programs</loc></url>
+  <url><loc>https://tijcef.org/get-involved</loc></url>
+  <url><loc>https://tijcef.org/resources</loc></url>
+  <url><loc>https://tijcef.org/contact</loc></url>
+  <url><loc>https://tijcef.org/tgis</loc></url>
+  <url><loc>https://tijcef.org/tgis/map</loc></url>
+  <url><loc>https://tijcef.org/tgis/insights</loc></url>
+  <url><loc>https://tijcef.org/grants</loc></url>
+  <url><loc>https://tijcef.org/grants/opportunities</loc></url>
+  <url><loc>https://tijcef.org/privacy</loc></url>
+  <url><loc>https://tijcef.org/transparency</loc></url>
 </urlset>

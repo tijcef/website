@@ -10,6 +10,8 @@ const links = [
   { to: "/about", label: "About" },
   { to: "/pillars", label: "Our Pillars" },
   { to: "/programs", label: "Programs" },
+  { to: "/tgis", label: "TGIS" },
+  { to: "/grants", label: "Grant Hub" },
   { to: "/get-involved", label: "Get Involved" },
   { to: "/resources", label: "Resources" },
   { to: "/contact", label: "Contact" },

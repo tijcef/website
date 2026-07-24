@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { lazy, Suspense } from "react";
 import Index from "./pages/Index.tsx";
 import About from "./pages/About.tsx";
 import Pillars from "./pages/Pillars.tsx";
@@ -17,6 +18,10 @@ import PadAGirlToolkit from "./pages/PadAGirlToolkit.tsx";
 import CommunityCircles from "./pages/CommunityCircles.tsx";
 import MenstrualHealthResearch from "./pages/MenstrualHealthResearch.tsx";
 import FacesOfEmpowerment from "./pages/FacesOfEmpowerment.tsx";
+const TGIS = lazy(() => import("./pages/TGIS.tsx"));
+const GrantHub = lazy(() => import("./pages/GrantHub.tsx"));
+import Privacy from "./pages/Privacy.tsx";
+import Transparency from "./pages/Transparency.tsx";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +45,10 @@ const App = () => (
           <Route path="/resources/community-circles" element={<CommunityCircles />} />
           <Route path="/resources/menstrual-health-taraba-adamawa" element={<MenstrualHealthResearch />} />
           <Route path="/resources/faces-of-empowerment-2025" element={<FacesOfEmpowerment />} />
+          <Route path="/tgis/*" element={<Suspense fallback={<div className="min-h-screen grid place-items-center">Loading TGIS…</div>}><TGIS /></Suspense>} />
+          <Route path="/grants/*" element={<Suspense fallback={<div className="min-h-screen grid place-items-center">Loading Grant Hub…</div>}><GrantHub /></Suspense>} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/transparency" element={<Transparency />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

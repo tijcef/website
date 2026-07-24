@@ -91,7 +91,8 @@ const Footer = () => {
               <li><Link to="/programs" className="hover:text-accent transition-colors">Programs</Link></li>
               <li><Link to="/resources" className="hover:text-accent transition-colors">Resources</Link></li>
               <li><a href="https://journal.tijcef.org" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">TIJCEF Journal</a></li>
-              <li><a href="https://tgis.tijcef.org" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">TGIS</a></li>
+              <li><Link to="/tgis" className="hover:text-accent transition-colors">TGIS</Link></li>
+              <li><Link to="/grants" className="hover:text-accent transition-colors">Grant Hub</Link></li>
             </ul>
           </div>
 
@@ -140,8 +141,8 @@ const Footer = () => {
           <div>© {new Date().getFullYear()} Tijwun Care and Empowerment Foundation. All rights reserved.</div>
           <div className="flex gap-5">
             <span>Registered Nonprofit · Nigeria</span>
-            <Link to="#" className="hover:text-accent">Privacy</Link>
-            <Link to="#" className="hover:text-accent">Transparency</Link>
+            <Link to="/privacy" className="hover:text-accent">Privacy</Link>
+            <Link to="/transparency" className="hover:text-accent">Transparency</Link>
           </div>
         </div>
       </div>
