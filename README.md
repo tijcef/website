@@ -3,8 +3,8 @@
 The complete Vite frontend for [tijcef.org](https://tijcef.org), including:
 
 - Main TIJCEF nonprofit website
-- TGIS at `/tgis`
-- TIJCEF Grant Hub at `/grants`
+- TIJCEF Grant Hub at `/grants`, with grants, scholarships, fellowships, jobs and internships
+- Backend-managed primary navigation with category and subcategory support
 - Headless WordPress integration
 
 ## Local development
@@ -15,11 +15,33 @@ npm install
 npm run dev
 ```
 
-Set `VITE_WORDPRESS_URL` to the dedicated TIJCEF WordPress backend URL. The recommended backend is `https://wp.tijcef.org`; do not reuse the ClearFact CMS.
+Set `VITE_WORDPRESS_URL=https://studio.tijcef.org`. This dedicated WordPress installation must not be confused with the ClearFact CMS.
 
 ## WordPress
 
-Install and activate the plugin in `wordpress-plugin/tijcef-core`. It adds Grant Opportunity and TGIS Report content types, public REST output, a moderated report intake endpoint, rate limiting and restricted CORS.
+Install and activate `wordpress-plugin/tijcef-core.zip`. It adds Grant Opportunities, a backend-managed navigation endpoint, public form handling, payment verification, rate limiting and restricted CORS.
+
+Create a WordPress menu named **TIJCEF Primary**. Add pages, categories and
+subcategories in the order they should appear on the website. The frontend
+loads this hierarchy automatically and uses its built-in menu if WordPress is
+temporarily unavailable.
+
+If the new REST routes return a 404 response after activation, open
+**Settings → Permalinks** in WordPress and click **Save Changes** once.
+
+For Paystack donations, add the public key to the frontend deployment:
+
+```text
+VITE_PAYSTACK_PUBLIC_KEY=pk_live_your_public_key
+```
+
+Add the secret key only to `wp-config.php` on `studio.tijcef.org`:
+
+```php
+define('TIJCEF_PAYSTACK_SECRET_KEY', 'sk_live_your_secret_key');
+```
+
+Never put the Paystack secret key in Vite, Git or a public environment variable.
 
 ## Production
 
@@ -33,7 +55,6 @@ Deploy `dist`. The included `_redirects` keeps client-side routes working on com
 
 ## Safety and publishing
 
-- TGIS public reports enter WordPress as pending.
 - Review safeguarding and sensitive locations before publishing.
 - Grant listings must link directly to a funder's official page and be rechecked before publication.
 - Never promise funding or charge an application fee through the directory.

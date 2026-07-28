@@ -5,7 +5,8 @@ import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Linkedin, ArrowRight
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import logo from "@/assets/tijcef-logo.png";
+import { submitPublicForm } from "@/lib/wordpress";
+import logo from "@/assets/tijcef-logo.webp";
 
 const emailSchema = z.string().trim().email({ message: "Please enter a valid email" }).max(255);
 
@@ -14,7 +15,7 @@ const Footer = () => {
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
     const result = emailSchema.safeParse(email);
@@ -23,11 +24,14 @@ const Footer = () => {
       return;
     }
     setSubmitting(true);
-    const subject = encodeURIComponent("Newsletter subscription");
-    const body = encodeURIComponent(`Please add this email to the TIJCEF newsletter list:\n\n${result.data}`);
-    window.open(`mailto:partner@tijcef.org?subject=${subject}&body=${body}`, "_blank");
-    setEmail("");
-    navigate("/thank-you?type=newsletter");
+    try {
+      await submitPublicForm("newsletter", { email: result.data });
+      setEmail("");
+      navigate("/thank-you?type=newsletter");
+    } catch (error) {
+      toast({ title: "Subscription failed", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -66,7 +70,7 @@ const Footer = () => {
 
         {/* Main grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-12 gap-10 pt-16">
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-3">
             <div className="flex items-center gap-2.5 mb-5">
               <div className="w-12 h-12 rounded-lg bg-white flex items-center justify-center overflow-hidden">
                 <img src={logo} alt="TIJCEF logo" className="w-full h-full object-contain p-0.5" />
@@ -90,9 +94,18 @@ const Footer = () => {
               <li><Link to="/pillars" className="hover:text-accent transition-colors">Our Pillars</Link></li>
               <li><Link to="/programs" className="hover:text-accent transition-colors">Programs</Link></li>
               <li><Link to="/resources" className="hover:text-accent transition-colors">Resources</Link></li>
-              <li><a href="https://journal.tijcef.org" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">TIJCEF Journal</a></li>
-              <li><Link to="/tgis" className="hover:text-accent transition-colors">TGIS</Link></li>
-              <li><Link to="/grants" className="hover:text-accent transition-colors">Grant Hub</Link></li>
+            </ul>
+          </div>
+
+          <div className="lg:col-span-2">
+            <div className="text-xs uppercase tracking-[0.18em] text-accent mb-4">Grant Hub</div>
+            <ul className="space-y-2.5 text-sm text-primary-foreground/80">
+              <li><Link to="/grants" className="hover:text-accent transition-colors">Overview</Link></li>
+              <li><Link to="/grants/grants" className="hover:text-accent transition-colors">Grants</Link></li>
+              <li><Link to="/grants/scholarships" className="hover:text-accent transition-colors">Scholarships</Link></li>
+              <li><Link to="/grants/fellowships" className="hover:text-accent transition-colors">Fellowships</Link></li>
+              <li><Link to="/grants/jobs" className="hover:text-accent transition-colors">Jobs</Link></li>
+              <li><Link to="/grants/internships" className="hover:text-accent transition-colors">Internships</Link></li>
             </ul>
           </div>
 
@@ -106,12 +119,12 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="lg:col-span-4">
+          <div className="lg:col-span-3">
             <div className="text-xs uppercase tracking-[0.18em] text-accent mb-4">Reach Us</div>
             <ul className="space-y-3 text-sm text-primary-foreground/80">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 mt-0.5 text-accent shrink-0" />
-                <span>No 1. Opp Coca-Cola Junction,  Jalingo, Nigeria</span>
+                <span>No. 1, Opposite Coca-Cola Junction, Jalingo, Nigeria</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-accent shrink-0" />
@@ -139,10 +152,13 @@ const Footer = () => {
 
         <div className="pt-10 mt-10 border-t border-primary-foreground/15 flex flex-col md:flex-row justify-between gap-4 text-xs text-primary-foreground/60">
           <div>© {new Date().getFullYear()} Tijwun Care and Empowerment Foundation. All rights reserved.</div>
-          <div className="flex gap-5">
+          <div className="flex flex-wrap gap-5">
             <span>Registered Nonprofit · Nigeria</span>
             <Link to="/privacy" className="hover:text-accent">Privacy</Link>
             <Link to="/transparency" className="hover:text-accent">Transparency</Link>
+            <Link to="/safeguarding" className="hover:text-accent">Safeguarding</Link>
+            <Link to="/complaints" className="hover:text-accent">Complaints</Link>
+            <Link to="/terms" className="hover:text-accent">Terms</Link>
           </div>
         </div>
       </div>

@@ -2,17 +2,17 @@ import SimplePage from "@/components/site/SimplePage";
 import Reveal from "@/components/site/Reveal";
 import { Target, Eye, Heart, Shield, Quote } from "lucide-react";
 import researchImg from "@/assets/research.jpg";
-import heroWoman from "@/assets/founder.jpg";
+import heroWoman from "@/assets/founder.webp";
 import team1 from "@/assets/team-1.jpg";
 import team2 from "@/assets/team-2.jpg";
 import team3 from "@/assets/team-3.jpg";
-import team4 from "@/assets/team-4.png";
+import team4 from "@/assets/team-4.webp";
 
 const team = [
-  { name: "Arc. Akipo Praise Mbutakto", role: "Ass. Director of Operation / PSEA", img: team1 },
-  { name: "Eng. Nuhu Danladi Mamtso", role: "General Secretary / Operation Officer", img: team2 },
-  { name: "Johnson Bege Edan", role: "Director of Finance", img: team3 },
-  { name: "Emmanuel Sunday Tijwun", role: "Founder / Executive Director", img: team4 },
+  { name: "Arch. Praise Akipo", role: "PSEA and AAP Focal Person", img: team1 },
+  { name: "Engr. Nuhu D. Mamtso", role: "Operations Officer", img: team2 },
+  { name: "Mrs. Bege J. Edan", role: "Finance Officer", img: team3 },
+  { name: "Emmanuel Sunday Tijwun", role: "Founder and Executive Director", img: team4 },
 ];
 
 const About = () => (
@@ -74,14 +74,14 @@ const About = () => (
               Word from the Founder
             </div>
             <h2 className="font-display text-3xl md:text-4xl leading-tight mb-6">
-              "We did not wait for permission to begin. We began where the need was loudest."
+              Dignity, evidence and community leadership guide our work.
             </h2>
             <div className="space-y-4 text-primary-foreground/85 leading-relaxed">
               <p>
-                When I saw adolescent girls missing school because they could not afford menstrual pads, I understood that dignity is not a luxury, it is the starting line. TijCEF was born from that conviction, and from a refusal to accept that any girl in Nigeria should be left behind by silence, stigma, or circumstance.
+                TIJCEF exists to expand practical opportunities for women and young people, particularly adolescent girls facing barriers to health information, dignity and participation.
               </p>
               <p>
-                Today, our work spans health education, menstrual dignity, climate resilience, and applied research  but the heart remains the same. We listen first. We measure honestly. We build with the communities we serve, not for them. Every naira entrusted to us is a promise, and we honor that promise with transparency and tireless work.
+                Our work spans health education, menstrual dignity, climate action and applied research. We listen first, document our activities and work to strengthen accountability as the organisation grows.
               </p>
               <p>
                 If you believe, as we do, that women and youth are the architects of Nigeria's future, I invite you to walk with us.
@@ -129,8 +129,8 @@ const About = () => (
       <div className="grid md:grid-cols-4 gap-6">
         {[
           { icon: Heart, title: "Dignity", desc: "Every person served is met with respect and agency." },
-          { icon: Shield, title: "Integrity", desc: "Transparent reporting; published evidence; honest evaluation." },
-          { icon: Target, title: "Impact", desc: "We measure what matters and only do what works." },
+          { icon: Shield, title: "Integrity", desc: "Honest reporting, responsible stewardship and clear accountability." },
+          { icon: Target, title: "Impact", desc: "We monitor activities and improve programmes using available evidence." },
           { icon: Eye, title: "Inclusion", desc: "Programs designed with the communities we serve." },
         ].map((v, i) => (
           <Reveal key={v.title} delay={i * 80}>

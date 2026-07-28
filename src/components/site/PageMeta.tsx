@@ -1,14 +1,31 @@
 import { useEffect } from "react";
 
-export default function PageMeta({ title, description }: { title: string; description: string }) {
+type PageMetaProps = {
+  title: string;
+  description: string;
+  image?: string;
+  noIndex?: boolean;
+};
+
+export default function PageMeta({
+  title,
+  description,
+  image = "https://tijcef.org/og-logo.webp",
+  noIndex = false,
+}: PageMetaProps) {
   useEffect(() => {
     document.title = `${title} | TIJCEF`;
     const canonicalUrl = `https://tijcef.org${window.location.pathname}`;
     const values: Record<string, string> = {
       description,
+      robots: noIndex ? "noindex,follow" : "index,follow,max-image-preview:large",
       "og:title": `${title} | TIJCEF`,
       "og:description": description,
       "og:url": canonicalUrl,
+      "og:image": image,
+      "twitter:title": `${title} | TIJCEF`,
+      "twitter:description": description,
+      "twitter:image": image,
       "twitter:card": "summary_large_image",
     };
     Object.entries(values).forEach(([name, content]) => {
@@ -28,6 +45,6 @@ export default function PageMeta({ title, description }: { title: string; descri
       document.head.appendChild(canonical);
     }
     canonical.href = canonicalUrl;
-  }, [title, description]);
+  }, [title, description, image, noIndex]);
   return null;
 }

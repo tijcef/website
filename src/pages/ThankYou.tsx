@@ -7,12 +7,17 @@ const COPY: Record<string, { eyebrow: string; title: string; body: string }> = {
   partnership: {
     eyebrow: "Partnership inquiry received",
     title: "Thank you — we've got your details.",
-    body: "Our partnerships team will review your message and reply from partner@tijcef.org within 3 business days. If your email client opened, please send the prefilled message to make sure we receive every detail.",
+    body: "Our team will review your message and respond using the contact details you provided.",
   },
   newsletter: {
-    eyebrow: "You're almost subscribed",
+    eyebrow: "Subscription received",
     title: "Thanks for joining the TIJCEF circle.",
-    body: "If your email app opened, please send the prefilled message so we can add you to our monthly stories from the field. We'll never share your email.",
+    body: "Your address has been added to our newsletter list. You may request removal at any time.",
+  },
+  volunteer: {
+    eyebrow: "Volunteer application received",
+    title: "Thank you for offering your time and skills.",
+    body: "Our volunteer team will review your application and contact you if a suitable opportunity is available.",
   },
   default: {
     eyebrow: "Submission received",
@@ -41,7 +46,7 @@ const ThankYou = () => {
               <Link to="/">Back to home <ArrowRight className="w-4 h-4" /></Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <a href="mailto:partner@tijcef.org"><Mail className="w-4 h-4" /> Email us directly</a>
+              <a href="mailto:info@tijcef.org"><Mail className="w-4 h-4" /> Email us directly</a>
             </Button>
           </div>
         </div>

@@ -7,28 +7,28 @@ import Reveal from "@/components/site/Reveal";
 import heroImg from "@/assets/hero-woman.jpg";
 import girlsImg from "@/assets/girls-education.jpg";
 import climateImg from "@/assets/climate-action.jpg";
-import aminaImg from "@/assets/amina-sale.jpg";
+import aminaImg from "@/assets/amina-sale.webp";
 import healthImg from "@/assets/health-dignity.jpg";
 import researchImg from "@/assets/research.jpg";
 
 const pillars = [
-  { icon: HeartPulse, title: "Health & Wellbeing", desc: "Community health education and outreach that meets women and youth where they are.", img: healthImg, color: "from-primary to-primary-glow" },
-  { icon: Sparkles, title: "Gender Equality & Menstrual Dignity", desc: "Ending period poverty and championing every girl's right to learn with dignity.", img: girlsImg, color: "from-secondary to-primary" },
-  { icon: Sprout, title: "Climate Action & Sustainability", desc: "Equipping youth with climate knowledge and tools to build resilient communities.", img: climateImg, color: "from-primary-glow to-accent" },
-  { icon: Microscope, title: "Research, Monitoring & Evaluation", desc: "Evidence-driven programs that turn local insight into measurable change.", img: researchImg, color: "from-secondary to-primary-glow" },
+  { icon: HeartPulse, title: "Dignity", desc: "Advancing menstrual health, adolescent wellbeing, and access to essential support.", img: healthImg, color: "from-primary to-primary-glow" },
+  { icon: Sparkles, title: "Agency", desc: "Equipping girls and young people with education, confidence, and leadership skills.", img: girlsImg, color: "from-secondary to-primary" },
+  { icon: Sprout, title: "Resilience", desc: "Enabling youth and communities to lead climate action and withstand environmental challenges.", img: climateImg, color: "from-primary-glow to-accent" },
+  { icon: Microscope, title: "Evidence", desc: "Generating research, measuring impact, and advancing evidence-based advocacy.", img: researchImg, color: "from-secondary to-primary-glow" },
 ];
 
 const stats = [
-  { end: 8500, suffix: "+", label: "Girls & women reached" },
-  { end: 14, suffix: "", label: "Communities impacted" },
-  { end: 8, suffix: "", label: "Climate campaigns" },
-  { end: 6, suffix: "", label: "Research projects" },
+  { end: 8500, suffix: "+", label: "Cumulative people reached" },
+  { end: 1200, suffix: "+", label: "People reached in 2026" },
+  { end: 4, suffix: "", label: "Programme pillars" },
+  { end: 3, suffix: "", label: "Operational states" },
 ];
 
 const stories = [
-  { quote: "Through TijCEF’s Pad the Girl initiative, we educated girls on menstrual health and provided hygiene kits; restoring confidence, dignity, and school attendance.", name: "Miss. Lovely ", role: "Community Nurse Partner", img: girlsImg },
-  { quote: "Our ​girls who once missed school during their periods now attend with confidence. Through TijCEF’s support, silence turned into knowledge, and stigma into dignity.", name: "Amina Saleh", role: "Adamawa State", img: aminaImg },
-  { quote: "TIJCEF’s menstrual health and climate action programs equipped us with practical tools to promote dignity, wellbeing, and environmental responsibility in our community.", name: "Miss Nde", role: "Taraba State", img: healthImg },
+  { quote: "Menstrual health education and dignity support were delivered at Government Girls College, Yola, engaging approximately 400 girls.", name: "Menstrual Health Outreach", role: "Yola · February 2026", img: girlsImg },
+  { quote: "Entrepreneurial skills and self-reliance training were delivered to 50 young people at Zion Centre in Girei LGA.", name: "Youth Empowerment Seminar", role: "Adamawa · 2026", img: aminaImg },
+  { quote: "TIJCEF's programme records report more than 1,200 people reached during 2026 across its community activities.", name: "2026 Programme Update", role: "Subject to annual reporting review", img: healthImg },
 ];
 
 const Index = () => {
@@ -118,17 +118,17 @@ const Index = () => {
           </Reveal>
           <Reveal delay={150} className="lg:col-span-7">
             <p className="text-lg md:text-xl text-foreground/80 leading-relaxed mb-6">
-              Tijwun Care and Empowerment Foundation works at the intersection of <strong className="text-primary font-semibold">health, dignity, climate, and evidence</strong> designing community-based programs that put adolescent girls, women, and youth at the center of their own futures.
+              Tijwun Care and Empowerment Foundation advances <strong className="text-primary font-semibold">dignity, agency, resilience, and evidence</strong> through community-based programs that put adolescent girls, women, and youth at the center of their own futures.
             </p>
             <p className="text-base text-muted-foreground leading-relaxed mb-8">
-              From rural Plateau classrooms to research tables in Abuja, we measure success not in events held, but in lives transformed and communities made stronger.
+              Working from Jalingo with activities in Taraba, Adamawa and Lagos, we combine community delivery with careful monitoring and learning.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button asChild variant="default" size="lg">
                 <Link to="/about">Our Story <ArrowRight className="w-4 h-4" /></Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <Link to="/about">Annual Report</Link>
+                <a href="/TIJCEF_ANNUAL_REPORT_2025.pdf">Annual Report</a>
               </Button>
             </div>
           </Reveal>
@@ -143,8 +143,11 @@ const Index = () => {
             <div className="max-w-3xl mb-20">
               <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-5">Our Four Pillars</div>
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-balance">
-                Where we work  and why it matters.
+                Four pillars. One purpose.
               </h2>
+              <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-2xl">
+                We advance dignity, strengthen agency, build resilience, and generate evidence that transforms communities.
+              </p>
             </div>
           </Reveal>
 
@@ -181,7 +184,7 @@ const Index = () => {
                 Trusted. Transparent. Transformational.
               </h2>
               <p className="text-lg text-foreground/75 leading-relaxed">
-                Every naira and every hour is accounted for. We publish what we do, what it costs, and what changes because trust is the foundation of every partnership we build.
+                We are strengthening programme, financial and safeguarding controls because trust is the foundation of every partnership we build.
               </p>
             </Reveal>
             <div className="grid sm:grid-cols-2 gap-5">
@@ -189,7 +192,7 @@ const Index = () => {
                 { icon: ShieldCheck, title: "CAC Registered", desc: "Fully governed Nigerian nonprofit, accountable to community and law." },
                 { icon: Globe2, title: "SDG Aligned", desc: "Programs mapped to Sustainable Development Goals 3, 5, 13 & 17." },
                 { icon: Users, title: "Community-Led", desc: "Designed with not for the women and youth we serve." },
-                { icon: Award, title: "Evidence-Driven", desc: "Independent monitoring and published evaluation on every program." },
+                { icon: Award, title: "Evidence-Driven", desc: "Programme decisions are informed by monitoring, research and documented learning." },
               ].map((b, i) => (
                 <Reveal key={b.title} delay={i * 80}>
                   <div className="p-7 rounded-2xl bg-card border border-border shadow-card h-full hover:shadow-elegant hover:-translate-y-1 transition-all duration-500">
@@ -213,9 +216,9 @@ const Index = () => {
         <div className="container relative">
           <Reveal>
             <div className="max-w-3xl mb-20">
-              <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-5">Voices From The Field</div>
+              <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-5">Programme Snapshots</div>
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-balance">
-                Change, in their own words.
+                Recent work, reported carefully.
               </h2>
             </div>
           </Reveal>
@@ -224,7 +227,7 @@ const Index = () => {
               <Reveal key={i} delay={i * 120}>
                 <div className="glass rounded-2xl p-8 h-full flex flex-col">
                   <Quote className="w-8 h-8 text-accent mb-5" />
-                  <p className="font-display text-lg lg:text-xl leading-snug mb-7 flex-1">"{s.quote}"</p>
+                  <p className="font-display text-lg lg:text-xl leading-snug mb-7 flex-1">{s.quote}</p>
                   <div className="flex items-center gap-3 pt-5 border-t border-primary-foreground/15">
                     <img src={s.img} alt={s.name} loading="lazy" width={80} height={80} className="w-12 h-12 rounded-full object-cover" />
                     <div>
@@ -271,7 +274,7 @@ const Index = () => {
                 Your gift writes her next chapter.
               </h2>
               <p className="text-lg md:text-xl text-primary-foreground/85 leading-relaxed mb-10 max-w-2xl">
-                ₦10,000 provides menstrual hygiene supplies for one girl for an entire school year. ₦50,000 funds a community climate workshop. 100% of donations are deployed to programs.
+                Support TIJCEF's approved health, gender, climate and research programmes. Donations are recorded, acknowledged and applied under organisational financial controls.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button asChild variant="donate" size="xl">

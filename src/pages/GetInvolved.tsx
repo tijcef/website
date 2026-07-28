@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
+import { submitPublicForm } from "@/lib/wordpress";
 import healthImg from "@/assets/health-dignity.jpg";
 
 const partnerSchema = z.object({
@@ -20,15 +21,16 @@ const partnerSchema = z.object({
 });
 
 const ways = [
-  { icon: Heart, title: "Donate", desc: "Fuel programs that change lives — one-time or monthly.", cta: "Give now", to: "/donate", variant: "donate" as const },
+  { icon: Heart, title: "Donate", desc: "Support approved programmes through a one-time gift.", cta: "Give now", to: "/donate", variant: "donate" as const },
   { icon: Handshake, title: "Partner", desc: "Foundations, CSR teams, and institutions building lasting impact.", cta: "Partner with us", to: "#partner", variant: "default" as const },
   { icon: UserPlus, title: "Volunteer", desc: "Lend your skills&nbsp; in the field, online, or behind the scenes.", cta: "Apply to volunteer", to: "#volunteer", variant: "secondary" as const },
-  { icon: Users, title: "Become a Member", desc: "Join a community of advocates supporting our long-term mission.", cta: "Join TIJCEF", to: "#member", variant: "outline" as const },
+  { icon: Users, title: "Join Our Network", desc: "Connect with TIJCEF as a community advocate or institutional collaborator.", cta: "Contact TIJCEF", to: "/contact", variant: "outline" as const },
 ];
 
 const GetInvolved = () => {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const [volunteerSubmitting, setVolunteerSubmitting] = useState(false);
   const [partner, setPartner] = useState({
     organization: "",
     contactName: "",
@@ -38,7 +40,7 @@ const GetInvolved = () => {
     message: "",
   });
 
-  const handlePartnerSubmit = (e: React.FormEvent) => {
+  const handlePartnerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
     const result = partnerSchema.safeParse(partner);
@@ -48,14 +50,29 @@ const GetInvolved = () => {
       return;
     }
     setSubmitting(true);
-    const d = result.data;
-    const subject = encodeURIComponent(`Partnership inquiry — ${d.organization}`);
-    const body = encodeURIComponent(
-      `Organization: ${d.organization}\nContact: ${d.contactName}\nEmail: ${d.email}\nPhone: ${d.phone || "—"}\nPartnership type: ${d.partnershipType || "—"}\n\nMessage:\n${d.message}`,
-    );
-    window.open(`mailto:partner@tijcef.org?subject=${subject}&body=${body}`, "_blank");
-    setPartner({ organization: "", contactName: "", email: "", phone: "", partnershipType: "", message: "" });
-    navigate("/thank-you?type=partnership");
+    try {
+      await submitPublicForm("inquiries", { kind: "partnership", ...result.data });
+      setPartner({ organization: "", contactName: "", email: "", phone: "", partnershipType: "", message: "" });
+      navigate("/thank-you?type=partnership");
+    } catch (error) {
+      toast({ title: "Submission failed", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
+      setSubmitting(false);
+    }
+  };
+
+  const handleVolunteerSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (volunteerSubmitting) return;
+    const form = e.currentTarget;
+    setVolunteerSubmitting(true);
+    try {
+      await submitPublicForm("inquiries", { kind: "volunteer", ...Object.fromEntries(new FormData(form)) });
+      form.reset();
+      navigate("/thank-you?type=volunteer");
+    } catch (error) {
+      toast({ title: "Submission failed", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
+      setVolunteerSubmitting(false);
+    }
   };
 
   return (
@@ -96,16 +113,17 @@ const GetInvolved = () => {
           </ul>
         </Reveal>
         <Reveal delay={150}>
-          <form onSubmit={(e) => e.preventDefault()} className="p-8 md:p-10 rounded-2xl bg-muted/50 border border-border space-y-4">
+          <form onSubmit={handleVolunteerSubmit} className="p-8 md:p-10 rounded-2xl bg-muted/50 border border-border space-y-4">
+            <input name="website" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             <div className="grid sm:grid-cols-2 gap-4">
-              <Input placeholder="First name" required maxLength={100} />
-              <Input placeholder="Last name" required maxLength={100} />
+              <Input name="firstName" aria-label="First name" placeholder="First name" required maxLength={100} />
+              <Input name="lastName" aria-label="Last name" placeholder="Last name" required maxLength={100} />
             </div>
-            <Input type="email" placeholder="Email address" required maxLength={255} />
-            <Input placeholder="Location (City, State)" maxLength={150} />
-            <Input placeholder="Area of expertise" maxLength={150} />
-            <Textarea placeholder="Why do you want to volunteer with TIJCEF?" rows={4} maxLength={2000} />
-            <Button type="submit" variant="default" size="lg" className="w-full">Submit Application <ArrowRight className="w-4 h-4" /></Button>
+            <Input name="email" aria-label="Email address" type="email" placeholder="Email address" required maxLength={255} />
+            <Input name="location" aria-label="Location" placeholder="Location (City, State)" maxLength={150} />
+            <Input name="expertise" aria-label="Area of expertise" placeholder="Area of expertise" maxLength={150} />
+            <Textarea name="message" aria-label="Reason for volunteering" placeholder="Why do you want to volunteer with TIJCEF?" rows={4} required maxLength={2000} />
+            <Button type="submit" variant="default" size="lg" className="w-full" disabled={volunteerSubmitting}>{volunteerSubmitting ? "Submitting…" : "Submit Application"} <ArrowRight className="w-4 h-4" /></Button>
           </form>
         </Reveal>
       </div>
@@ -186,7 +204,7 @@ const GetInvolved = () => {
             )}
           </Button>
           <p className="text-xs text-muted-foreground text-center">
-            Inquiries are sent to <a href="mailto:partner@tijcef.org" className="underline hover:text-accent">partner@tijcef.org</a>.
+            You may also contact <a href="mailto:info@tijcef.org" className="underline hover:text-accent">info@tijcef.org</a>.
           </p>
         </form>
       </Reveal>

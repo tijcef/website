@@ -1,10 +1,10 @@
 import SimplePage from "@/components/site/SimplePage";
 import Reveal from "@/components/site/Reveal";
-import f1 from "@/assets/faces/faces-1.png";
-import f2 from "@/assets/faces/faces-2.png";
-import f3 from "@/assets/faces/faces-3.png";
-import f4 from "@/assets/faces/faces-4.png";
-import f5 from "@/assets/faces/faces-5.png";
+import f1 from "@/assets/faces/faces-1.webp";
+import f2 from "@/assets/faces/faces-2.webp";
+import f3 from "@/assets/faces/faces-3.webp";
+import f4 from "@/assets/faces/faces-4.webp";
+import f5 from "@/assets/faces/faces-5.webp";
 
 const photos = [
   { src: f1, caption: "Pad-A-Girl distribution  girls celebrating menstrual dignity kits." },

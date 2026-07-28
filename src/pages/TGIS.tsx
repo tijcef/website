@@ -12,11 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { TGISMap, type MapReport } from "@/features/tgis/tgis-map";
 import { getReports, submitPublicForm, type TgisReport } from "@/lib/wordpress";
 
-const sampleReports: MapReport[] = [
-  { id: "preview-1", title: "Community water access assessment", description: "Illustrative location awaiting field verification.", category: "health", severity: "medium", state: "Taraba", latitude: 7.87, longitude: 9.78, created_at: "2026-06-01", organization: "TIJCEF" },
-  { id: "preview-2", title: "Climate resilience observation", description: "Illustrative location awaiting field verification.", category: "climate", severity: "low", state: "Adamawa", latitude: 9.33, longitude: 12.4, created_at: "2026-06-01", organization: "TIJCEF" },
-];
-
 const nav = [
   ["/tgis", "Overview"],
   ["/tgis/map", "Live map"],
@@ -81,10 +76,10 @@ function MapPage() {
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
   useEffect(() => {
-    getReports().then(setReports).catch(() => setNotice("Preview data is shown because the WordPress data service is not connected yet.")).finally(() => setLoading(false));
+    getReports().then(setReports).catch(() => setNotice("The verified map data service is temporarily unavailable. No demonstration locations are being shown.")).finally(() => setLoading(false));
   }, []);
-  const mapped = reports.length ? reports.map((r) => ({ ...r, id: String(r.id), description: r.description || null })) : sampleReports;
-  return <section className="container py-12"><PageMeta title="TGIS Map" description="Explore verified community and programme observations through the TIJCEF geospatial map." /><div className="mb-7 flex flex-wrap items-end justify-between gap-4"><div><div className="text-xs font-bold uppercase tracking-widest text-primary">Geospatial explorer</div><h1 className="mt-2 text-4xl">Community evidence map</h1><p className="mt-2 text-muted-foreground">{loading ? "Loading verified observations…" : `${mapped.length} mapped observations`}</p></div><Button asChild><Link to="/tgis/submit-report"><Send className="mr-2 h-4 w-4" />Submit report</Link></Button></div>{notice && <div className="mb-4 rounded-lg border border-accent bg-accent-soft p-3 text-sm">{notice}</div>}<div className="h-[65vh] min-h-[480px] overflow-hidden rounded-2xl border bg-muted shadow-card"><TGISMap reports={mapped} className="h-full w-full" /></div><p className="mt-3 text-xs text-muted-foreground">Public locations may be generalized to protect vulnerable people and sensitive sites.</p></section>;
+  const mapped: MapReport[] = reports.map((r) => ({ ...r, id: String(r.id), description: r.description || null }));
+  return <section className="container py-12"><PageMeta title="TGIS Map" description="Explore verified community and programme observations through the TIJCEF geospatial map." /><div className="mb-7 flex flex-wrap items-end justify-between gap-4"><div><div className="text-xs font-bold uppercase tracking-widest text-primary">Geospatial explorer</div><h1 className="mt-2 text-4xl">Community evidence map</h1><p className="mt-2 text-muted-foreground">{loading ? "Loading verified observations…" : `${mapped.length} verified mapped observations`}</p></div><Button asChild><Link to="/tgis/submit-report"><Send className="mr-2 h-4 w-4" />Submit report</Link></Button></div>{notice && <div className="mb-4 rounded-lg border border-accent bg-accent-soft p-3 text-sm">{notice}</div>}{!loading && !notice && mapped.length === 0 ? <div className="grid min-h-[420px] place-items-center rounded-2xl border border-dashed bg-muted/30 p-8 text-center"><div><MapPinned className="mx-auto h-9 w-9 text-primary" /><h2 className="mt-4 text-2xl">No public observations yet</h2><p className="mt-2 max-w-md text-muted-foreground">Verified observations will appear after safeguarding and data-quality review.</p></div></div> : <div className="h-[65vh] min-h-[480px] overflow-hidden rounded-2xl border bg-muted shadow-card"><TGISMap reports={mapped} className="h-full w-full" /></div>}<p className="mt-3 text-xs text-muted-foreground">Public locations may be generalized to protect vulnerable people and sensitive sites.</p></section>;
 }
 
 function Insights() {
@@ -92,7 +87,7 @@ function Insights() {
 }
 
 function Organizations() {
-  return <section className="container py-16"><PageMeta title="TGIS Partners" description="Partner with TIJCEF to strengthen responsible community geospatial intelligence." /><Building2 className="h-9 w-9 text-primary" /><h1 className="mt-5 max-w-3xl text-5xl">Build better evidence with TIJCEF</h1><p className="mt-5 max-w-2xl text-lg text-muted-foreground">We welcome responsible collaboration with communities, universities, civil-society organisations, government institutions and development partners.</p><Button asChild className="mt-8"><a href="mailto:partner@tijcef.org?subject=TGIS partnership enquiry">Discuss a partnership</a></Button></section>;
+  return <section className="container py-16"><PageMeta title="TGIS Partners" description="Partner with TIJCEF to strengthen responsible community geospatial intelligence." /><Building2 className="h-9 w-9 text-primary" /><h1 className="mt-5 max-w-3xl text-5xl">Build better evidence with TIJCEF</h1><p className="mt-5 max-w-2xl text-lg text-muted-foreground">We welcome responsible collaboration with communities, universities, civil-society organisations, government institutions and development partners.</p><Button asChild className="mt-8"><Link to="/contact">Discuss a partnership</Link></Button></section>;
 }
 
 function SubmitReport() {

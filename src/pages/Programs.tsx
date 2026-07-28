@@ -9,19 +9,19 @@ import climateImg from "@/assets/climate-action.jpg";
 import researchImg from "@/assets/research.jpg";
 
 const programs = [
-  { tag: "Active · 2026", title: "Pad-A-Girl Initiative", img: girlsImg, desc: "Distributing menstrual hygiene kits and dignity education to 5,000 girls across 30 schools.", metric: "3,200 girls reached" },
-  { tag: "Active · 2026", title: "Green Futures Fellowship", img: climateImg, desc: "A 6-month youth climate leadership program training 120 young Nigerians in adaptation and advocacy.", metric: "120 fellows · 4 states" },
-  { tag: "Active", title: "Community Wellbeing Circles", img: healthImg, desc: "Trusted spaces where women learn maternal health, nutrition, and mental wellbeing from local nurses.", metric: "1,000 trees planted" },
-  { tag: "Research", title: "State of the Nigerian Girl 2025", img: researchImg, desc: "A landmark mixed-methods study on adolescent girls' health, education, and aspirations across 6 states.", metric: "1,800 respondents" },
-  { tag: "Past", title: "Traba Tree Nursery Project", img: climateImg, desc: "Established three community-led nurseries producing 12,000 indigenous saplings annually.", metric: "12,000 trees planted" },
-  { tag: "Past", title: "Teen Health Talks", img: girlsImg, desc: "Year-long after-school program covering puberty, consent, and life skills in 18 schools.", metric: "4,500 teens served" },
+  { tag: "Delivered · 2026", title: "Menstrual Health Outreach", img: girlsImg, desc: "Menstrual health education and dignity support delivered at Government Girls College, Yola.", metric: "Approximately 400 girls engaged" },
+  { tag: "Delivered · 2026", title: "Youth Empowerment Seminar", img: healthImg, desc: "Entrepreneurial skills and self-reliance training delivered at Zion Centre in Girei LGA, Adamawa State.", metric: "50 young people trained" },
+  { tag: "Ongoing", title: "Pad-A-Girl Initiative", img: girlsImg, desc: "School and community-based menstrual dignity education with hygiene support for adolescent girls.", metric: "Delivery figures reported after verification" },
+  { tag: "Ongoing", title: "STEM and Education Outreach", img: researchImg, desc: "Practical learning and encouragement designed to improve young people's participation in science and technology.", metric: "Programme records guide reporting" },
+  { tag: "Ongoing", title: "Climate Action and Awareness", img: climateImg, desc: "Community education and youth engagement focused on environmental responsibility and resilience.", metric: "Activities reported through MEL review" },
+  { tag: "Ongoing", title: "Research and Learning", img: researchImg, desc: "Applied research, monitoring and learning that strengthen programme design and public knowledge.", metric: "Evidence published when reviewed" },
 ];
 
 const Programs = () => (
   <SimplePage
     eyebrow="Programs & Projects"
     title="Programs designed with communities. Measured against outcomes."
-    subtitle="Every initiative begins with listening and ends with published evidence."
+    subtitle="Every initiative begins with listening and is reported against available programme records."
     image={climateImg}
   >
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20">

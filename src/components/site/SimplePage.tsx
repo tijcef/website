@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import SiteLayout from "@/components/site/SiteLayout";
 import Reveal from "@/components/site/Reveal";
+import PageMeta from "@/components/site/PageMeta";
 
 interface Props {
   eyebrow: string;
@@ -28,6 +29,7 @@ const PageHero = ({ eyebrow, title, subtitle, image }: Omit<Props, "children">) 
 
 const SimplePage = ({ eyebrow, title, subtitle, image, children }: Props) => (
   <SiteLayout>
+    <PageMeta title={title} description={subtitle || `${title} — Tijwun Care and Empowerment Foundation.`} />
     <PageHero eyebrow={eyebrow} title={title} subtitle={subtitle} image={image} />
     <section className="py-20 md:py-28">
       <div className="container">{children}</div>

@@ -9,38 +9,38 @@ import researchImg from "@/assets/research.jpg";
 const pillars = [
   {
     icon: HeartPulse,
-    title: "Health & Wellbeing",
+    title: "Dignity",
     img: healthImg,
-    problem: "Millions of women and youth in underserved Nigerian communities lack access to basic health information and preventive care.",
-    solution: "Community-based health education, partnerships with local clinics, and outreach delivered in culturally relevant language.",
-    programs: ["School health workshops", "Maternal wellbeing circles", "Adolescent health screenings", "Clean water awareness"],
-    sdg: "SDG 3 — Good Health & Wellbeing",
+    problem: "Too many adolescent girls and women still face barriers to menstrual health information, essential products, and respectful support.",
+    solution: "We advance menstrual health, adolescent wellbeing, and access to essential support through practical, community-based care.",
+    programs: ["Menstrual health education", "Dignity kit distribution", "Adolescent wellbeing sessions", "School health outreach"],
+    sdg: "SDG 3 & 5 — Health and Gender Equality",
   },
   {
     icon: Sparkles,
-    title: "Gender Equality & Menstrual Dignity",
+    title: "Agency",
     img: girlsImg,
-    problem: "Rural Nigerian communities face the sharpest edges of climate change, with the least resources to adapt.",
-    solution: "Free menstrual products, dignity education, and advocacy for safe, stigma-free school environments.",
-    programs: ["Pad distribution drives", "Girl ambassador program", "Teacher training", "Boys-as-allies workshops"],
-    sdg: "SDG 5 — Gender Equality",
+    problem: "Girls and young people are often excluded from the education, confidence, skills, and decisions that shape their futures.",
+    solution: "We equip girls and young people to learn, lead, make informed choices, and participate meaningfully in their communities.",
+    programs: ["Girls' leadership circles", "Life-skills education", "Mentoring and learning support", "Youth leadership development"],
+    sdg: "SDG 4 & 5 — Education and Gender Equality",
   },
   {
     icon: Sprout,
-    title: "Climate Action & Environmental Sustainability",
+    title: "Resilience",
     img: climateImg,
     problem: "Rural Nigerian communities face the sharpest edges of climate change — with the least resources to adapt.",
-    solution: "Youth-led climate education, tree planting, and locally-led adaptation projects.",
-    programs: ["Youth climate fellowships", "Community tree nurseries", "Clean cooking advocacy", "Climate literacy curriculum"],
+    solution: "We enable youth and communities to lead climate action, strengthen local preparedness, and withstand environmental challenges.",
+    programs: ["Youth climate education", "Community environmental action", "Tree planting initiatives", "Climate resilience campaigns"],
     sdg: "SDG 13 — Climate Action",
   },
   {
     icon: Microscope,
-    title: "Research, Monitoring & Evaluation",
+    title: "Evidence",
     img: researchImg,
     problem: "Decisions about women and youth are too often made without their data, voices, or evidence.",
-    solution: "Independent field research, published evaluations, and open data partnerships with academic institutions.",
-    programs: ["Annual community health surveys", "Program impact studies", "Policy briefs", "Open data publications"],
+    solution: "We generate research, measure impact, document learning, and advance evidence-based advocacy.",
+    programs: ["Community research", "Programme monitoring and evaluation", "Impact studies", "Policy briefs and publications"],
     sdg: "SDG 17 — Partnerships",
   },
 ];
@@ -48,8 +48,8 @@ const pillars = [
 const Pillars = () => (
   <SimplePage
     eyebrow="Our Four Pillars"
-    title="Where focus meets impact."
-    subtitle="Four interconnected pillars guide every program, woven together to create durable change for women, girls, and youth."
+    title="Dignity. Agency. Resilience. Evidence."
+    subtitle="Four pillars. One purpose: advancing dignity, strengthening agency, building resilience, and generating evidence that transforms communities."
     image={girlsImg}
   >
     <div className="space-y-24">
