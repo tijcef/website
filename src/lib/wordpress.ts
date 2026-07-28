@@ -6,6 +6,9 @@ export type Grant = {
   slug: string;
   title: string;
   description: string;
+  excerpt: string;
+  content: string;
+  date: string;
   funder: string;
   sector: string;
   country: string;
@@ -14,6 +17,8 @@ export type Grant = {
   applicationUrl: string;
   verified: boolean;
   opportunityType: string;
+  featuredImage: string;
+  featuredImageAlt: string;
 };
 
 export type NavigationItem = {
@@ -146,28 +151,68 @@ export async function getNavigation(): Promise<NavigationItem[]> {
   return enforceNavigationContract(items.map(normalizeNavigationItem));
 }
 
-export async function getGrants(): Promise<Grant[]> {
-  const response = await apiFetch("/wp-json/wp/v2/tijcef_grant?per_page=100&_fields=id,slug,title,content,meta");
-  if (!response.ok) throw new Error("Grant service is temporarily unavailable.");
-  const rows = await response.json();
-  return rows.map((row: any) => ({
-    id: row.id,
-    slug: row.slug,
+const getFeaturedMedia = (row: any) => {
+  const media = row?._embedded?.["wp:featuredmedia"]?.[0];
+  const sizes = media?.media_details?.sizes;
+  return {
+    url: String(
+      sizes?.large?.source_url ||
+        sizes?.medium_large?.source_url ||
+        media?.source_url ||
+        ""
+    ),
+    alt: String(media?.alt_text || text(row.title)),
+  };
+};
+
+const mapGrant = (row: any): Grant => {
+  const featuredMedia = getFeaturedMedia(row);
+  const content = String(row.content?.rendered || "");
+  const excerpt = stripHtml(String(row.excerpt?.rendered || ""));
+  return {
+    id: Number(row.id),
+    slug: String(row.slug || ""),
     title: text(row.title),
-    description: text(row.content),
-    funder: row.meta?.funder || "",
-    sector: row.meta?.sector || "General",
-    country: row.meta?.country || "Nigeria",
-    deadline: row.meta?.deadline || "",
-    amount: row.meta?.amount || "See opportunity",
-    applicationUrl: row.meta?.application_url || "",
+    description: excerpt || stripHtml(content),
+    excerpt,
+    content,
+    date: String(row.date || ""),
+    funder: String(row.meta?.funder || ""),
+    sector: String(row.meta?.sector || "General"),
+    country: String(row.meta?.country || "Nigeria"),
+    deadline: String(row.meta?.deadline || ""),
+    amount: String(row.meta?.amount || "See opportunity"),
+    applicationUrl: String(row.meta?.application_url || ""),
     verified: Boolean(row.meta?.verified),
     opportunityType: String(row.meta?.opportunity_type || "grant").toLowerCase(),
-  }));
+    featuredImage: featuredMedia.url,
+    featuredImageAlt: featuredMedia.alt,
+  };
+};
+
+const grantQueryFields =
+  "id,slug,title,excerpt,content,date,meta,_links,_embedded";
+
+export async function getGrants(): Promise<Grant[]> {
+  const response = await apiFetch(
+    `/wp-json/wp/v2/tijcef_grant?per_page=100&orderby=date&order=desc&_embed=wp:featuredmedia&_fields=${grantQueryFields}`
+  );
+  if (!response.ok) throw new Error("Grant service is temporarily unavailable.");
+  const rows = await response.json();
+  return rows.map(mapGrant);
+}
+
+export async function getGrantBySlug(slug: string): Promise<Grant | null> {
+  const response = await apiFetch(
+    `/wp-json/wp/v2/tijcef_grant?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia&_fields=${grantQueryFields}`
+  );
+  if (!response.ok) throw new Error("This opportunity is temporarily unavailable.");
+  const rows = await response.json();
+  return rows[0] ? mapGrant(rows[0]) : null;
 }
 
 const mapPost = (row: any): WordPressPost => {
-  const media = row?._embedded?.["wp:featuredmedia"]?.[0];
+  const featuredMedia = getFeaturedMedia(row);
   return {
     id: Number(row.id),
     slug: String(row.slug || ""),
@@ -175,8 +220,8 @@ const mapPost = (row: any): WordPressPost => {
     excerpt: stripHtml(String(row.excerpt?.rendered || "")),
     content: String(row.content?.rendered || ""),
     date: String(row.date || ""),
-    featuredImage: String(media?.source_url || ""),
-    featuredImageAlt: String(media?.alt_text || text(row.title)),
+    featuredImage: featuredMedia.url,
+    featuredImageAlt: featuredMedia.alt,
   };
 };
 
