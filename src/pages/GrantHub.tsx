@@ -339,7 +339,7 @@ function Detail() {
 
       {grant.content ? (
         <div
-          className="prose prose-lg mx-auto mt-12 max-w-3xl px-6 prose-headings:font-display prose-a:text-primary prose-img:rounded-xl"
+          className="wp-content prose prose-lg mx-auto mt-12 max-w-3xl px-6 prose-headings:font-display prose-a:text-primary prose-img:rounded-xl"
           dangerouslySetInnerHTML={{ __html: grant.content }}
         />
       ) : (
