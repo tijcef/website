@@ -106,7 +106,10 @@ export default function Donate() {
 
   return (
     <>
-      <PageMeta title="Donate" description="Support TIJCEF's health, gender, climate and research programmes through a secure one-time donation." />
+      <PageMeta
+  title="Donate to TIJCEF"
+  description="Support TIJCEF’s dignity, agency, resilience and evidence programmes through a secure one-time donation."
+/>
       <SimplePage
         eyebrow="Donate to TIJCEF"
         title="Support community-led change."
@@ -126,15 +129,21 @@ export default function Donate() {
               </div>
               <Input type="number" min={100} placeholder="Or enter a custom amount (₦)" value={custom} onChange={(event) => setCustom(event.target.value)} className="mb-7 h-12" />
 
-              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-accent">Donation preference</div>
-              <select value={designation} onChange={(event) => setDesignation(event.target.value)} className="mb-7 h-12 w-full rounded-md border bg-background px-3">
-                <option value="where-needed">Where most needed</option>
-                <option value="health">Health</option>
-                <option value="gender">Gender and menstrual dignity</option>
-                <option value="climate">Climate</option>
-                <option value="research">Research</option>
-              </select>
+             <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-accent">
+  Donation preference
+</div>
 
+<select
+  value={designation}
+  onChange={(event) => setDesignation(event.target.value)}
+  className="mb-7 h-12 w-full rounded-md border bg-background px-3"
+>
+  <option value="where-needed">Where most needed</option>
+  <option value="dignity">Dignity</option>
+  <option value="agency">Agency</option>
+  <option value="resilience">Resilience</option>
+  <option value="evidence">Evidence</option>
+</select>
               <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-accent">Payment method</div>
               <div className="mb-5 grid grid-cols-2 gap-3">
                 <button type="button" onClick={() => setMethod("paystack")} className={cn("rounded-xl border-2 p-4 text-left", method === "paystack" ? "border-primary bg-primary/5" : "border-border")}><CreditCard className="mb-2 h-5 w-5" /><strong>Paystack</strong><div className="text-xs text-muted-foreground">Card, transfer or USSD</div></button>
