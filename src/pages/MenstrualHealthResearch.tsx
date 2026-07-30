@@ -144,7 +144,7 @@ const MenstrualHealthResearch = () => (
 
       <Reveal>
         <section>
-          <h2 className="font-display text-3xl mb-6">Link to TIJCEF's Four Pillars</h2>
+          <h2 className="font-display text-3xl mb-6">How This Research Connects to TIJCEF’s Four Pillars</h2>
           <div className="grid sm:grid-cols-2 gap-6">
             {pillars.map((p) => (
               <div key={p.title} className="p-6 rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-elegant">

@@ -84,12 +84,12 @@ const About = () => (
         {
           icon: Eye,
           title: "Vision",
-          body: "A resilient Nigeria where women and young people—especially adolescent girls—live with dignity, exercise agency, build resilience and use evidence to thrive and lead sustainable communities.",
+          body: "A resilient Nigeria where women and young people especially adolescent girls—live with dignity, exercise agency, build resilience and use evidence to thrive and lead sustainable communities.",
         },
         {
           icon: Target,
           title: "Mission",
-          body: "To work with women and young people—especially adolescent girls—to advance dignity through health and menstrual support, strengthen agency through education and leadership, build resilience through climate action and sustainable opportunities, and generate evidence through research, monitoring and learning.",
+          body: "To work with women and young people especially adolescent girls to advance dignity through health and menstrual support, strengthen agency through education and leadership, build resilience through climate action and sustainable opportunities, and generate evidence through research, monitoring and learning.",
         },
       ].map((item, index) => (
         <Reveal key={item.title} delay={index * 120}>
@@ -277,3 +277,4 @@ const About = () => (
     </div>
   </SimplePage>
 );
+export default About;
