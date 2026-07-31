@@ -47,19 +47,19 @@ const Index = () => {
             <Reveal>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs uppercase tracking-[0.18em] mb-7">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                Dignity · Agency · Resilience · Evidence
+                A Resilient Nigeria · Led by Women & Youth
               </div>
             </Reveal>
             <Reveal delay={120}>
               <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl leading-[0.95] tracking-tight mb-7 text-balance">
-                Advancing dignity.<br />
-                Strengthening agency.<br />
+                Empowering women.<br />
+                Uplifting youth.<br />
                 <span className="italic text-accent font-light">Building resilient communities.</span>
               </h1>
             </Reveal>
             <Reveal delay={240}>
               <p className="text-lg md:text-xl text-primary-foreground/85 max-w-2xl leading-relaxed mb-10">
-                TIJCEF works with adolescent girls, women, young people and vulnerable communities across Nigeria to advance dignity, strengthen agency, build resilience and generate evidence for lasting change.
+                TIJCEF stands with adolescent girls, women, and young leaders across Nigeria  delivering health education, menstrual dignity, climate action, and research that transforms lives.
               </p>
             </Reveal>
             <Reveal delay={360}>
@@ -154,7 +154,7 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {pillars.map((p, i) => (
               <Reveal key={p.title} delay={i * 100}>
-                <Link to={`/pillars/${p.title.toLowerCase()}`} className="group block relative h-[420px] rounded-2xl overflow-hidden shadow-card hover:shadow-deep transition-all duration-700">
+                <Link to="/pillars" className="group block relative h-[420px] rounded-2xl overflow-hidden shadow-card hover:shadow-deep transition-all duration-700">
                   <img src={p.img} alt={p.title} loading="lazy" width={1200} height={900} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent" />
                   <div className="absolute inset-0 p-8 flex flex-col justify-end text-primary-foreground">
@@ -189,50 +189,19 @@ const Index = () => {
             </Reveal>
             <div className="grid sm:grid-cols-2 gap-5">
               {[
-                {
-                  icon: ShieldCheck,
-                  title: "CAC Registered",
-                  desc: "Registered with Nigeria's Corporate Affairs Commission as an Incorporated Trustee and committed to accountability under Nigerian law.",
-                  href: "/transparency",
-                  action: "View transparency information",
-                },
-                {
-                  icon: Globe2,
-                  title: "SDG Aligned",
-                  desc: "Our programmes contribute to Sustainable Development Goals 3, 5, 13 and 17.",
-                  href: "/TIJCEF_ANNUAL_REPORT_2025.pdf",
-                  action: "Read the annual report",
-                },
-                {
-                  icon: Users,
-                  title: "Community-Led",
-                  desc: "Our programmes are designed with communities, not merely for them.",
-                  href: "/safeguarding",
-                  action: "Read our safeguarding commitments",
-                },
-                {
-                  icon: Award,
-                  title: "Evidence-Driven",
-                  desc: "Our programme decisions are informed by monitoring, research and documented learning.",
-                  href: "/category/reports-publications",
-                  action: "View reports and publications",
-                },
+                { icon: ShieldCheck, title: "CAC Registered", desc: "Fully governed Nigerian nonprofit, accountable to community and law." },
+                { icon: Globe2, title: "SDG Aligned", desc: "Programs mapped to Sustainable Development Goals 3, 5, 13 & 17." },
+                { icon: Users, title: "Community-Led", desc: "Designed with not for the women and youth we serve." },
+                { icon: Award, title: "Evidence-Driven", desc: "Programme decisions are informed by monitoring, research and documented learning." },
               ].map((b, i) => (
                 <Reveal key={b.title} delay={i * 80}>
-                  <a
-                    href={b.href}
-                    className="group block p-7 rounded-2xl bg-card border border-border shadow-card h-full hover:shadow-elegant hover:-translate-y-1 transition-all duration-500"
-                  >
+                  <div className="p-7 rounded-2xl bg-card border border-border shadow-card h-full hover:shadow-elegant hover:-translate-y-1 transition-all duration-500">
                     <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
                       <b.icon className="w-5 h-5" />
                     </div>
                     <h3 className="font-display text-xl mb-2">{b.title}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
-                    <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                      {b.action}
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </a>
+                  </div>
                 </Reveal>
               ))}
             </div>
@@ -305,7 +274,7 @@ const Index = () => {
                 Your gift writes her next chapter.
               </h2>
               <p className="text-lg md:text-xl text-primary-foreground/85 leading-relaxed mb-10 max-w-2xl">
-                Support TIJCEF's work across Dignity, Agency, Resilience and Evidence. Donations are recorded, acknowledged and applied under organisational financial controls.
+                Support TIJCEF's approved health, gender, climate and research programmes. Donations are recorded, acknowledged and applied under organisational financial controls.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button asChild variant="donate" size="xl">
