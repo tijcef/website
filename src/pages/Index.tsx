@@ -189,19 +189,50 @@ const Index = () => {
             </Reveal>
             <div className="grid sm:grid-cols-2 gap-5">
               {[
-                { icon: ShieldCheck, title: "CAC Registered", desc: "Fully governed Nigerian nonprofit, accountable to community and law." },
-                { icon: Globe2, title: "SDG Aligned", desc: "Programs mapped to Sustainable Development Goals 3, 5, 13 & 17." },
-                { icon: Users, title: "Community-Led", desc: "Designed with not for the women and youth we serve." },
-                { icon: Award, title: "Evidence-Driven", desc: "Programme decisions are informed by monitoring, research and documented learning." },
+                {
+                  icon: ShieldCheck,
+                  title: "CAC Registered",
+                  desc: "Registered with Nigeria's Corporate Affairs Commission as an Incorporated Trustee and committed to accountability under Nigerian law.",
+                  href: "/transparency",
+                  action: "View transparency information",
+                },
+                {
+                  icon: Globe2,
+                  title: "SDG Aligned",
+                  desc: "Our programmes contribute to Sustainable Development Goals 3, 5, 13 and 17.",
+                  href: "/TIJCEF_ANNUAL_REPORT_2025.pdf",
+                  action: "Read the annual report",
+                },
+                {
+                  icon: Users,
+                  title: "Community-Led",
+                  desc: "Our programmes are designed with communities, not merely for them.",
+                  href: "/safeguarding",
+                  action: "Read our safeguarding commitments",
+                },
+                {
+                  icon: Award,
+                  title: "Evidence-Driven",
+                  desc: "Our programme decisions are informed by monitoring, research and documented learning.",
+                  href: "/category/reports-publications",
+                  action: "View reports and publications",
+                },
               ].map((b, i) => (
                 <Reveal key={b.title} delay={i * 80}>
-                  <div className="p-7 rounded-2xl bg-card border border-border shadow-card h-full hover:shadow-elegant hover:-translate-y-1 transition-all duration-500">
+                  <a
+                    href={b.href}
+                    className="group block p-7 rounded-2xl bg-card border border-border shadow-card h-full hover:shadow-elegant hover:-translate-y-1 transition-all duration-500"
+                  >
                     <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
                       <b.icon className="w-5 h-5" />
                     </div>
                     <h3 className="font-display text-xl mb-2">{b.title}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
-                  </div>
+                    <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                      {b.action}
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </a>
                 </Reveal>
               ))}
             </div>
