@@ -83,7 +83,7 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-primary-foreground/75 leading-relaxed text-sm max-w-sm">
-              Empowering women and youth across Nigeria through health education, menstrual dignity, climate action, and research-driven programs.
+              Advancing women’s dignity, strengthening girls’ agency, building resilient communities and generating evidence for lasting change across Nigeria.
             </p>
           </div>
 
@@ -92,7 +92,7 @@ const Footer = () => {
             <ul className="space-y-2.5 text-sm text-primary-foreground/80">
               <li><Link to="/about" className="hover:text-accent transition-colors">About Us</Link></li>
               <li><Link to="/pillars" className="hover:text-accent transition-colors">Our Pillars</Link></li>
-              <li><Link to="/programs" className="hover:text-accent transition-colors">Programs</Link></li>
+              <li><Link to="/programs" className="hover:text-accent transition-colors">Programmes</Link></li>
               <li><Link to="/resources" className="hover:text-accent transition-colors">Resources</Link></li>
             </ul>
           </div>
@@ -153,7 +153,7 @@ const Footer = () => {
         <div className="pt-10 mt-10 border-t border-primary-foreground/15 flex flex-col md:flex-row justify-between gap-4 text-xs text-primary-foreground/60">
           <div>© {new Date().getFullYear()} Tijwun Care and Empowerment Foundation. All rights reserved.</div>
           <div className="flex flex-wrap gap-5">
-            <span>Registered Nonprofit · Nigeria</span>
+            <span>CAC-Registered Nonprofit · Nigeria</span>
             <Link to="/privacy" className="hover:text-accent">Privacy</Link>
             <Link to="/transparency" className="hover:text-accent">Transparency</Link>
             <Link to="/safeguarding" className="hover:text-accent">Safeguarding</Link>
