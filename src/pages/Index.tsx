@@ -12,10 +12,10 @@ import healthImg from "@/assets/health-dignity.jpg";
 import researchImg from "@/assets/research.jpg";
 
 const pillars = [
-  { icon: HeartPulse, title: "Dignity", desc: "Advancing menstrual health, adolescent wellbeing, and access to essential support.", img: healthImg, color: "from-primary to-primary-glow" },
-  { icon: Sparkles, title: "Agency", desc: "Equipping girls and young people with education, confidence, and leadership skills.", img: girlsImg, color: "from-secondary to-primary" },
-  { icon: Sprout, title: "Resilience", desc: "Enabling youth and communities to lead climate action and withstand environmental challenges.", img: climateImg, color: "from-primary-glow to-accent" },
-  { icon: Microscope, title: "Evidence", desc: "Generating research, measuring impact, and advancing evidence-based advocacy.", img: researchImg, color: "from-secondary to-primary-glow" },
+  { icon: HeartPulse, title: "Dignity", desc: "Protecting the health, wellbeing, and inherent dignity of women and girls.", img: healthImg, color: "from-primary to-primary-glow" },
+  { icon: Sparkles, title: "Agency", desc: "Equipping women and girls to make informed choices, build livelihoods, and lead.", img: girlsImg, color: "from-secondary to-primary" },
+  { icon: Sprout, title: "Resilience", desc: "Helping women and girls prepare, adapt, and recover from climate and economic shocks.", img: climateImg, color: "from-primary-glow to-accent" },
+  { icon: Microscope, title: "Evidence", desc: "Using the voices and data of women and girls to improve programmes and policy.", img: researchImg, color: "from-secondary to-primary-glow" },
 ];
 
 const stats = [
@@ -189,19 +189,29 @@ const Index = () => {
             </Reveal>
             <div className="grid sm:grid-cols-2 gap-5">
               {[
-                { icon: ShieldCheck, title: "CAC Registered", desc: "Fully governed Nigerian nonprofit, accountable to community and law." },
-                { icon: Globe2, title: "SDG Aligned", desc: "Programs mapped to Sustainable Development Goals 3, 5, 13 & 17." },
-                { icon: Users, title: "Community-Led", desc: "Designed with not for the women and youth we serve." },
-                { icon: Award, title: "Evidence-Driven", desc: "Programme decisions are informed by monitoring, research and documented learning." },
+                { icon: ShieldCheck, title: "CAC Registered", desc: "Fully governed Nigerian nonprofit, accountable to community and law.", to: "/transparency", action: "View registration and governance" },
+                { icon: Globe2, title: "SDG Aligned", desc: "Programmes mapped to Sustainable Development Goals 3, 5, 13 & 17.", to: "/TIJCEF_ANNUAL_REPORT_2025.pdf", action: "Read the annual report", newTab: true },
+                { icon: Users, title: "Community-Led", desc: "Designed with, not for, the women and girls we serve.", to: "/safeguarding", action: "Read our safeguarding commitment" },
+                { icon: Award, title: "Evidence-Driven", desc: "Programme decisions are informed by monitoring, research and documented learning.", to: "/category/reports-publications", action: "View reports and publications" },
               ].map((b, i) => (
                 <Reveal key={b.title} delay={i * 80}>
-                  <div className="p-7 rounded-2xl bg-card border border-border shadow-card h-full hover:shadow-elegant hover:-translate-y-1 transition-all duration-500">
+                  <Link
+                    to={b.to}
+                    target={b.newTab ? "_blank" : undefined}
+                    rel={b.newTab ? "noopener noreferrer" : undefined}
+                    aria-label={`${b.title}: ${b.action}`}
+                    className="group block p-7 rounded-2xl bg-card border border-border shadow-card h-full hover:shadow-elegant hover:-translate-y-1 transition-all duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  >
                     <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
                       <b.icon className="w-5 h-5" />
                     </div>
                     <h3 className="font-display text-xl mb-2">{b.title}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
-                  </div>
+                    <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                      {b.action}
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </Link>
                 </Reveal>
               ))}
             </div>
