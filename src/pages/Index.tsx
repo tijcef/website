@@ -1,13 +1,14 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, HeartPulse, Sprout, Microscope, Sparkles, Quote, ShieldCheck, Globe2, Users, Award } from "lucide-react";
+import { ArrowRight, HeartPulse, Sprout, Microscope, Sparkles, ShieldCheck, Globe2, Users, Award, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SiteLayout from "@/components/site/SiteLayout";
 import Counter from "@/components/site/Counter";
 import Reveal from "@/components/site/Reveal";
+import { getPostsByCategory, type WordPressPost } from "@/lib/wordpress";
 import heroImg from "@/assets/hero-woman.jpg";
 import girlsImg from "@/assets/girls-education.jpg";
 import climateImg from "@/assets/climate-action.jpg";
-import aminaImg from "@/assets/amina-sale.webp";
 import healthImg from "@/assets/health-dignity.jpg";
 import researchImg from "@/assets/research.jpg";
 
@@ -19,19 +20,72 @@ const pillars = [
 ];
 
 const stats = [
-  { end: 8500, suffix: "+", label: "Cumulative people reached" },
+  { end: 3500, suffix: "+", label: "Cumulative people reached" },
   { end: 1200, suffix: "+", label: "People reached in 2026" },
   { end: 4, suffix: "", label: "Programme pillars" },
-  { end: 3, suffix: "", label: "Operational states" },
+  { end: 3, suffix: "", label: "States" },
 ];
 
-const stories = [
-  { quote: "Menstrual health education and dignity support were delivered at Government Girls College, Yola, engaging approximately 400 girls.", name: "Menstrual Health Outreach", role: "Yola · February 2026", img: girlsImg },
-  { quote: "Entrepreneurial skills and self-reliance training were delivered to 50 young people at Zion Centre in Girei LGA.", name: "Youth Empowerment Seminar", role: "Adamawa · 2026", img: aminaImg },
-  { quote: "TIJCEF's programme records report more than 1,200 people reached during 2026 across its community activities.", name: "2026 Programme Update", role: "Subject to annual reporting review", img: healthImg },
-];
+const formatDate = (value: string) => {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? ""
+    : new Intl.DateTimeFormat("en-NG", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(date);
+};
+
+const loadLatestProgrammePosts = async () => {
+  const results = await Promise.allSettled([
+    getPostsByCategory("completed-projects"),
+    getPostsByCategory("impact-stories"),
+  ]);
+  const successful = results.filter(
+    (result): result is PromiseFulfilledResult<Awaited<ReturnType<typeof getPostsByCategory>>> =>
+      result.status === "fulfilled"
+  );
+
+  if (successful.length === 0) {
+    throw new Error("Latest programme updates are temporarily unavailable.");
+  }
+
+  const uniquePosts = new Map<number, WordPressPost>();
+  successful.forEach((result) => {
+    result.value.posts.forEach((post) => uniquePosts.set(post.id, post));
+  });
+
+  return Array.from(uniquePosts.values())
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 3);
+};
 
 const Index = () => {
+  const [latestPosts, setLatestPosts] = useState<WordPressPost[]>([]);
+  const [latestLoading, setLatestLoading] = useState(true);
+  const [latestError, setLatestError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    loadLatestProgrammePosts()
+      .then((posts) => {
+        if (active) setLatestPosts(posts);
+      })
+      .catch((reason) => {
+        if (active) {
+          setLatestError(reason instanceof Error ? reason.message : "Latest programme updates are temporarily unavailable.");
+        }
+      })
+      .finally(() => {
+        if (active) setLatestLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <SiteLayout>
       {/* HERO */}
@@ -47,19 +101,19 @@ const Index = () => {
             <Reveal>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs uppercase tracking-[0.18em] mb-7">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                A Resilient Nigeria · Led by Women & Youth
+                Women and Girls at the Centre
               </div>
             </Reveal>
             <Reveal delay={120}>
-              <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl leading-[0.95] tracking-tight mb-7 text-balance">
-                Empowering women.<br />
-                Uplifting youth.<br />
-                <span className="italic text-accent font-light">Building resilient communities.</span>
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl leading-[0.98] tracking-tight mb-7 text-balance">
+                Advancing women’s dignity.<br />
+                Strengthening girls’ agency.<br />
+                <span className="italic text-accent font-light">Building resilient communities through evidence.</span>
               </h1>
             </Reveal>
             <Reveal delay={240}>
               <p className="text-lg md:text-xl text-primary-foreground/85 max-w-2xl leading-relaxed mb-10">
-                TIJCEF stands with adolescent girls, women, and young leaders across Nigeria  delivering health education, menstrual dignity, climate action, and research that transforms lives.
+                TIJCEF works alongside adolescent girls, women and young female leaders across Nigeria—protecting dignity, expanding agency, strengthening resilience and generating evidence that improves programmes and transforms lives.
               </p>
             </Reveal>
             <Reveal delay={360}>
@@ -118,7 +172,7 @@ const Index = () => {
           </Reveal>
           <Reveal delay={150} className="lg:col-span-7">
             <p className="text-lg md:text-xl text-foreground/80 leading-relaxed mb-6">
-              Tijwun Care and Empowerment Foundation advances <strong className="text-primary font-semibold">dignity, agency, resilience, and evidence</strong> through community-based programs that put adolescent girls, women, and youth at the center of their own futures.
+              Tijwun Care and Empowerment Foundation advances <strong className="text-primary font-semibold">dignity, agency, resilience, and evidence</strong> through community-based programmes designed with women and girls, placing them at the centre of decisions that shape their futures.
             </p>
             <p className="text-base text-muted-foreground leading-relaxed mb-8">
               Working from Jalingo with activities in Taraba, Adamawa and Lagos, we combine community delivery with careful monitoring and learning.
@@ -146,7 +200,7 @@ const Index = () => {
                 Four pillars. One purpose.
               </h2>
               <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                We advance dignity, strengthen agency, build resilience, and generate evidence that transforms communities.
+                We advance dignity, strengthen agency, build resilience, and generate evidence that transforms the lives of women and girls.
               </p>
             </div>
           </Reveal>
@@ -232,23 +286,61 @@ const Index = () => {
               </h2>
             </div>
           </Reveal>
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            {stories.map((s, i) => (
-              <Reveal key={i} delay={i * 120}>
-                <div className="glass rounded-2xl p-8 h-full flex flex-col">
-                  <Quote className="w-8 h-8 text-accent mb-5" />
-                  <p className="font-display text-lg lg:text-xl leading-snug mb-7 flex-1">{s.quote}</p>
-                  <div className="flex items-center gap-3 pt-5 border-t border-primary-foreground/15">
-                    <img src={s.img} alt={s.name} loading="lazy" width={80} height={80} className="w-12 h-12 rounded-full object-cover" />
-                    <div>
-                      <div className="font-semibold text-sm">{s.name}</div>
-                      <div className="text-xs text-primary-foreground/65">{s.role}</div>
+          {latestLoading && (
+            <div className="grid gap-6 md:grid-cols-3" aria-label="Loading latest programme updates">
+              {[0, 1, 2].map((item) => (
+                <div key={item} className="h-80 animate-pulse rounded-2xl bg-primary-foreground/10" />
+              ))}
+            </div>
+          )}
+
+          {!latestLoading && latestError && (
+            <div className="rounded-2xl border border-primary-foreground/20 bg-primary-foreground/10 p-8">
+              <p className="text-primary-foreground/80">{latestError}</p>
+            </div>
+          )}
+
+          {!latestLoading && !latestError && latestPosts.length === 0 && (
+            <div className="rounded-2xl border border-primary-foreground/20 bg-primary-foreground/10 p-8">
+              <p className="text-primary-foreground/80">New programme and impact stories will appear here when they are published.</p>
+            </div>
+          )}
+
+          {!latestLoading && !latestError && latestPosts.length > 0 && (
+            <div className="grid gap-6 md:grid-cols-3 lg:gap-8">
+              {latestPosts.map((post, i) => (
+                <Reveal key={post.id} delay={i * 120}>
+                  <Link
+                    to={`/post/${post.slug}`}
+                    aria-label={`Read ${post.title}`}
+                    className="group glass flex h-full flex-col rounded-2xl p-8 transition-all duration-500 hover:-translate-y-1 hover:bg-primary-foreground/15 hover:shadow-deep"
+                  >
+                    <Quote className="mb-5 h-8 w-8 text-accent" />
+                    <p className="mb-7 line-clamp-5 flex-1 font-display text-lg leading-snug lg:text-xl">
+                      {post.excerpt || post.title}
+                    </p>
+                    <div className="flex items-center gap-3 border-t border-primary-foreground/15 pt-5">
+                      <img
+                        src={post.featuredImage || girlsImg}
+                        alt=""
+                        loading="lazy"
+                        width={80}
+                        height={80}
+                        className="h-12 w-12 rounded-full object-cover"
+                      />
+                      <div className="min-w-0">
+                        <div className="line-clamp-2 text-sm font-semibold">{post.title}</div>
+                        {post.date && (
+                          <div className="mt-1 text-xs text-primary-foreground/65">{formatDate(post.date)}</div>
+                        )}
+                      </div>
+                      <ArrowRight className="ml-auto h-4 w-4 shrink-0 text-accent transition-transform group-hover:translate-x-1" />
                     </div>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -284,7 +376,7 @@ const Index = () => {
                 Your gift writes her next chapter.
               </h2>
               <p className="text-lg md:text-xl text-primary-foreground/85 leading-relaxed mb-10 max-w-2xl">
-                Support TIJCEF's approved health, gender, climate and research programmes. Donations are recorded, acknowledged and applied under organisational financial controls.
+                Support TIJCEF's Dignity, Agency, Resilience and Evidence programmes for women and girls. Donations are recorded, acknowledged and applied under organisational financial controls.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button asChild variant="donate" size="xl">
