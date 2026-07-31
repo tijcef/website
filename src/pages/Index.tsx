@@ -154,7 +154,7 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {pillars.map((p, i) => (
               <Reveal key={p.title} delay={i * 100}>
-                <Link to={`/category/${p.title.toLowerCase()}`} className="group block relative h-[420px] rounded-2xl overflow-hidden shadow-card hover:shadow-deep transition-all duration-700">
+                <Link to={`/pillars/${p.title.toLowerCase()}`} className="group block relative h-[420px] rounded-2xl overflow-hidden shadow-card hover:shadow-deep transition-all duration-700">
                   <img src={p.img} alt={p.title} loading="lazy" width={1200} height={900} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent" />
                   <div className="absolute inset-0 p-8 flex flex-col justify-end text-primary-foreground">

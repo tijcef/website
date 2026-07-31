@@ -17,10 +17,10 @@ const fallbackLinks: NavigationItem[] = [
     url: "/pillars",
     label: "Our Pillars",
     children: [
-      { id: "dignity", url: "/category/dignity", label: "Dignity", children: [] },
-      { id: "agency", url: "/category/agency", label: "Agency", children: [] },
-      { id: "resilience", url: "/category/resilience", label: "Resilience", children: [] },
-      { id: "evidence", url: "/category/evidence", label: "Evidence", children: [] },
+      { id: "dignity", url: "/pillars/dignity", label: "Dignity", children: [] },
+      { id: "agency", url: "/pillars/agency", label: "Agency", children: [] },
+      { id: "resilience", url: "/pillars/resilience", label: "Resilience", children: [] },
+      { id: "evidence", url: "/pillars/evidence", label: "Evidence", children: [] },
     ],
   },
   {
@@ -60,7 +60,7 @@ const fallbackLinks: NavigationItem[] = [
   { id: "contact", url: "/contact", label: "Contact", children: [] },
 ];
 
-const NAVIGATION_CACHE_KEY = "tijcef-primary-navigation-v3";
+const NAVIGATION_CACHE_KEY = "tijcef-primary-navigation-v4";
 const NAVIGATION_CACHE_MS = 5 * 60 * 1000;
 
 const normalizeUrl = (url: string) => {
@@ -80,6 +80,23 @@ const normalizeUrl = (url: string) => {
     return "/";
   }
 };
+
+const pillarRouteMap: Record<string, string> = {
+  "/category/dignity": "/pillars/dignity",
+  "/category/agency": "/pillars/agency",
+  "/category/resilience": "/pillars/resilience",
+  "/category/evidence": "/pillars/evidence",
+};
+
+const applyPillarRoutes = (items: NavigationItem[]): NavigationItem[] =>
+  items.map((item) => {
+    const normalizedUrl = normalizeUrl(item.url).replace(/\/+$/, "") || "/";
+    return {
+      ...item,
+      url: pillarRouteMap[normalizedUrl] || item.url,
+      children: applyPillarRoutes(item.children || []),
+    };
+  });
 
 const isExternal = (url: string) => /^https?:\/\//i.test(normalizeUrl(url));
 
@@ -237,7 +254,7 @@ const Header = () => {
     try {
       const cached = JSON.parse(localStorage.getItem(NAVIGATION_CACHE_KEY) || "null");
       if (cached?.expiresAt > Date.now() && Array.isArray(cached.items)) {
-        setLinks(cached.items);
+        setLinks(applyPillarRoutes(cached.items));
       }
     } catch {
       localStorage.removeItem(NAVIGATION_CACHE_KEY);
@@ -245,10 +262,11 @@ const Header = () => {
 
     getNavigation()
       .then((items) => {
-        setLinks(items);
+        const updatedItems = applyPillarRoutes(items);
+        setLinks(updatedItems);
         localStorage.setItem(
           NAVIGATION_CACHE_KEY,
-          JSON.stringify({ items, expiresAt: Date.now() + NAVIGATION_CACHE_MS })
+          JSON.stringify({ items: updatedItems, expiresAt: Date.now() + NAVIGATION_CACHE_MS })
         );
       })
       .catch(() => {
