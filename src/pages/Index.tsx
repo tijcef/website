@@ -47,19 +47,19 @@ const Index = () => {
             <Reveal>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs uppercase tracking-[0.18em] mb-7">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                A Resilient Nigeria · Led by Women & Youth
+                Dignity · Agency · Resilience · Evidence
               </div>
             </Reveal>
             <Reveal delay={120}>
               <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl leading-[0.95] tracking-tight mb-7 text-balance">
-                Empowering women.<br />
-                Uplifting youth.<br />
+                Advancing dignity.<br />
+                Strengthening agency.<br />
                 <span className="italic text-accent font-light">Building resilient communities.</span>
               </h1>
             </Reveal>
             <Reveal delay={240}>
               <p className="text-lg md:text-xl text-primary-foreground/85 max-w-2xl leading-relaxed mb-10">
-                TIJCEF stands with adolescent girls, women, and young leaders across Nigeria  delivering health education, menstrual dignity, climate action, and research that transforms lives.
+                TIJCEF works with adolescent girls, women, young people and vulnerable communities across Nigeria to advance dignity, strengthen agency, build resilience and generate evidence for lasting change.
               </p>
             </Reveal>
             <Reveal delay={360}>
@@ -154,7 +154,7 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {pillars.map((p, i) => (
               <Reveal key={p.title} delay={i * 100}>
-                <Link to="/pillars" className="group block relative h-[420px] rounded-2xl overflow-hidden shadow-card hover:shadow-deep transition-all duration-700">
+                <Link to={`/category/${p.title.toLowerCase()}`} className="group block relative h-[420px] rounded-2xl overflow-hidden shadow-card hover:shadow-deep transition-all duration-700">
                   <img src={p.img} alt={p.title} loading="lazy" width={1200} height={900} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent" />
                   <div className="absolute inset-0 p-8 flex flex-col justify-end text-primary-foreground">
@@ -274,7 +274,7 @@ const Index = () => {
                 Your gift writes her next chapter.
               </h2>
               <p className="text-lg md:text-xl text-primary-foreground/85 leading-relaxed mb-10 max-w-2xl">
-                Support TIJCEF's approved health, gender, climate and research programmes. Donations are recorded, acknowledged and applied under organisational financial controls.
+                Support TIJCEF's work across Dignity, Agency, Resilience and Evidence. Donations are recorded, acknowledged and applied under organisational financial controls.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button asChild variant="donate" size="xl">
