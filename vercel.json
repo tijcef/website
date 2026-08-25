@@ -1,0 +1,66 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/index.html", "destination": "/", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/about", "destination": "/about/index.html" },
+    { "source": "/pillars", "destination": "/pillars/index.html" },
+    { "source": "/programs", "destination": "/programs/index.html" },
+    { "source": "/impact", "destination": "/impact/index.html" },
+    { "source": "/get-involved", "destination": "/get-involved/index.html" },
+    { "source": "/donate", "destination": "/donate/index.html" },
+    { "source": "/resources", "destination": "/resources/index.html" },
+    { "source": "/resources/pad-a-girl-toolkit", "destination": "/resources/pad-a-girl-toolkit/index.html" },
+    { "source": "/resources/community-circles", "destination": "/resources/community-circles/index.html" },
+    { "source": "/resources/menstrual-health-taraba-adamawa", "destination": "/resources/menstrual-health-taraba-adamawa/index.html" },
+    { "source": "/resources/faces-of-empowerment-2025", "destination": "/resources/faces-of-empowerment-2025/index.html" },
+    { "source": "/contact", "destination": "/contact/index.html" },
+    { "source": "/grants", "destination": "/grants/index.html" },
+    { "source": "/grants/opportunities", "destination": "/grants/opportunities/index.html" },
+    { "source": "/grants/grants", "destination": "/grants/grants/index.html" },
+    { "source": "/grants/scholarships", "destination": "/grants/scholarships/index.html" },
+    { "source": "/grants/fellowships", "destination": "/grants/fellowships/index.html" },
+    { "source": "/grants/jobs", "destination": "/grants/jobs/index.html" },
+    { "source": "/grants/internships", "destination": "/grants/internships/index.html" },
+    { "source": "/grants/membership", "destination": "/grants/membership/index.html" },
+    { "source": "/grants/about", "destination": "/grants/about/index.html" },
+    { "source": "/privacy", "destination": "/privacy/index.html" },
+    { "source": "/transparency", "destination": "/transparency/index.html" },
+    { "source": "/safeguarding", "destination": "/safeguarding/index.html" },
+    { "source": "/complaints", "destination": "/complaints/index.html" },
+    { "source": "/donation-policy", "destination": "/donation-policy/index.html" },
+    { "source": "/terms", "destination": "/terms/index.html" },
+    { "source": "/accessibility", "destination": "/accessibility/index.html" },
+    { "source": "/thank-you", "destination": "/thank-you/index.html" },
+    { "source": "/post/:slug", "destination": "/post/:slug/index.html" },
+    { "source": "/category/:slug", "destination": "/category/:slug/index.html" },
+    { "source": "/grants/opportunities/:slug", "destination": "/grants/opportunities/:slug/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    },
+    {
+      "source": "/thank-you",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, follow" },
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    },
+    {
+      "source": "/404.html",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, follow" },
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
+}

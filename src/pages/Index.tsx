@@ -113,7 +113,7 @@ const Index = () => {
             </Reveal>
             <Reveal delay={240}>
               <p className="text-lg md:text-xl text-primary-foreground/85 max-w-2xl leading-relaxed mb-10">
-                TIJCEF works alongside adolescent girls, women and young female leaders across Nigeria—protecting dignity, expanding agency, strengthening resilience and generating evidence that improves programmes and transforms lives.
+                TIJCEF works alongside adolescent girls, women and young female leaders across Nigeria protecting dignity, expanding agency, strengthening resilience and generating evidence that improves programmes and transforms lives.
               </p>
             </Reveal>
             <Reveal delay={360}>
@@ -393,5 +393,4 @@ const Index = () => {
     </SiteLayout>
   );
 };
-
 export default Index;

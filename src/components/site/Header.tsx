@@ -52,7 +52,7 @@ const fallbackLinks: NavigationItem[] = [
     url: "/resources",
     label: "Resources",
     children: [
-      { id: "reports", url: "/category/reports-publications", label: "Reports & Publications", children: [] },
+      { id: "reports", url: "/category/reports-publications", label: "Reports and Publications", children: [] },
       { id: "toolkits", url: "/category/toolkits", label: "Toolkits", children: [] },
       { id: "gallery", url: "/category/gallery", label: "Gallery", children: [] },
     ],

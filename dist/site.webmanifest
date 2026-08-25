@@ -1,0 +1,21 @@
+{
+  "name": "Tijwun Care and Empowerment Foundation",
+  "short_name": "TIJCEF",
+  "description": "Empowering women and youth across Nigeria.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbfaf7",
+  "theme_color": "#10543a",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

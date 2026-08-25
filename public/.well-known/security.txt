@@ -1,0 +1,5 @@
+Contact: mailto:info@tijcef.org
+Canonical: https://www.tijcef.org/.well-known/security.txt
+Preferred-Languages: en
+Policy: https://www.tijcef.org/terms
+Expires: 2027-08-25T23:59:59Z
