@@ -15,24 +15,25 @@ const fallbackLinks: NavigationItem[] = [
   {
     id: "pillars",
     url: "/pillars",
-    label: "Our Pillars",
+    label: "Our Work",
     children: [
-      { id: "dignity", url: "/pillars/dignity", label: "Dignity", children: [] },
-      { id: "agency", url: "/pillars/agency", label: "Agency", children: [] },
-      { id: "resilience", url: "/pillars/resilience", label: "Resilience", children: [] },
-      { id: "evidence", url: "/pillars/evidence", label: "Evidence", children: [] },
+      { id: "dignity", url: "/pillars#dignity", label: "Health, Dignity & WASH", children: [] },
+      { id: "agency", url: "/pillars#agency", label: "Education, Skills & Leadership", children: [] },
+      { id: "resilience", url: "/pillars#resilience", label: "Climate & Community Resilience", children: [] },
+      { id: "evidence", url: "/pillars#evidence", label: "Research, Learning & Advocacy", children: [] },
     ],
   },
   {
     id: "programs",
     url: "/programs",
-    label: "Programs",
+    label: "Programmes",
     children: [
-      { id: "current-programs", url: "/category/current-programs", label: "Current Programs", children: [] },
+      { id: "current-programs", url: "/category/current-programs", label: "Current Programmes", children: [] },
       { id: "completed-projects", url: "/category/completed-projects", label: "Completed Projects", children: [] },
       { id: "impact-stories", url: "/category/impact-stories", label: "Impact Stories", children: [] },
     ],
   },
+  { id: "impact", url: "/impact", label: "Impact", children: [] },
   {
     id: "grant-hub",
     url: "/grants",
@@ -52,7 +53,8 @@ const fallbackLinks: NavigationItem[] = [
     url: "/resources",
     label: "Resources",
     children: [
-      { id: "reports", url: "/category/reports-publications", label: "Reports and Publications", children: [] },
+      { id: "reports", url: "/category/reports-publications", label: "Reports & Publications", children: [] },
+      { id: "media-coverage", url: "/media-coverage", label: "Media & Mentions", children: [] },
       { id: "toolkits", url: "/category/toolkits", label: "Toolkits", children: [] },
       { id: "gallery", url: "/category/gallery", label: "Gallery", children: [] },
     ],
@@ -60,14 +62,14 @@ const fallbackLinks: NavigationItem[] = [
   { id: "contact", url: "/contact", label: "Contact", children: [] },
 ];
 
-const NAVIGATION_CACHE_KEY = "tijcef-primary-navigation-v4";
+const NAVIGATION_CACHE_KEY = "tijcef-primary-navigation-v3";
 const NAVIGATION_CACHE_MS = 5 * 60 * 1000;
 
 const normalizeUrl = (url: string) => {
   if (!url) return "/";
   if (url.startsWith("/") || url.startsWith("#")) return url;
   try {
-    const parsed = new URL(url, "https://tijcef.org");
+    const parsed = new URL(url, "https://www.tijcef.org");
     if (
       parsed.hostname === "tijcef.org" ||
       parsed.hostname === "www.tijcef.org" ||
@@ -80,23 +82,6 @@ const normalizeUrl = (url: string) => {
     return "/";
   }
 };
-
-const pillarRouteMap: Record<string, string> = {
-  "/category/dignity": "/pillars/dignity",
-  "/category/agency": "/pillars/agency",
-  "/category/resilience": "/pillars/resilience",
-  "/category/evidence": "/pillars/evidence",
-};
-
-const applyPillarRoutes = (items: NavigationItem[]): NavigationItem[] =>
-  items.map((item) => {
-    const normalizedUrl = normalizeUrl(item.url).replace(/\/+$/, "") || "/";
-    return {
-      ...item,
-      url: pillarRouteMap[normalizedUrl] || item.url,
-      children: applyPillarRoutes(item.children || []),
-    };
-  });
 
 const isExternal = (url: string) => /^https?:\/\//i.test(normalizeUrl(url));
 
@@ -251,10 +236,17 @@ const Header = () => {
   }, [pathname]);
 
   useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  useEffect(() => {
     try {
       const cached = JSON.parse(localStorage.getItem(NAVIGATION_CACHE_KEY) || "null");
       if (cached?.expiresAt > Date.now() && Array.isArray(cached.items)) {
-        setLinks(applyPillarRoutes(cached.items));
+        setLinks(cached.items);
       }
     } catch {
       localStorage.removeItem(NAVIGATION_CACHE_KEY);
@@ -262,11 +254,10 @@ const Header = () => {
 
     getNavigation()
       .then((items) => {
-        const updatedItems = applyPillarRoutes(items);
-        setLinks(updatedItems);
+        setLinks(items);
         localStorage.setItem(
           NAVIGATION_CACHE_KEY,
-          JSON.stringify({ items: updatedItems, expiresAt: Date.now() + NAVIGATION_CACHE_MS })
+          JSON.stringify({ items, expiresAt: Date.now() + NAVIGATION_CACHE_MS })
         );
       })
       .catch(() => {
@@ -329,7 +320,7 @@ const Header = () => {
         <button
           onClick={() => setOpen(!open)}
           className={cn("xl:hidden p-2 rounded-md", onHero ? "text-white" : "text-foreground")}
-          aria-label="Menu"
+          aria-label={open ? "Close main menu" : "Open main menu"}
           aria-expanded={open}
           aria-controls="mobile-navigation"
         >

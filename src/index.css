@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -95,10 +93,49 @@
     font-family: var(--font-body);
     font-feature-settings: "ss01", "cv11";
   }
+  :focus-visible {
+    outline: 3px solid hsl(var(--accent));
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: hsl(var(--accent) / 0.35);
+    color: hsl(var(--foreground));
+  }
   h1, h2, h3, h4, h5 {
     font-family: var(--font-display);
     font-weight: 500;
     letter-spacing: -0.02em;
+  }
+}
+
+.prose {
+  line-height: 1.8;
+}
+
+.prose > * + * {
+  margin-top: 1.25em;
+}
+
+.prose p,
+.prose li {
+  overflow-wrap: anywhere;
+}
+
+.ad-shell:has(.adsbygoogle[data-ad-status="unfilled"]) {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

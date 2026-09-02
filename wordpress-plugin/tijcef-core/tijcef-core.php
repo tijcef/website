@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: TIJCEF Core
- * Description: Headless content, navigation, Grant Hub and public form services for tijcef.org.
- * Version: 2.3.0
+ * Description: Headless content, navigation, Grant Hub, media monitoring and public form services for tijcef.org.
+ * Version: 3.0.0
  * Author: Tijwun Care and Empowerment Foundation
  */
 
@@ -13,6 +13,7 @@ if (!defined('ABSPATH')) {
 final class TIJCEF_Core {
     const REST_NAMESPACE = 'tijcef/v1';
     const PRIMARY_MENU = 'TIJCEF Primary';
+    const MEDIA_CRON_HOOK = 'tijcef_discover_media_mentions';
 
     private static $grant_fields = array(
         'funder' => 'text',
@@ -25,11 +26,22 @@ final class TIJCEF_Core {
         'opportunity_type' => 'text',
     );
 
+    private static $coverage_fields = array(
+        'publisher' => 'text',
+        'source_url' => 'url',
+        'published_on' => 'text',
+        'mention_type' => 'text',
+        'verified' => 'boolean',
+        'discovered_by' => 'text',
+    );
+
     public static function init() {
         add_action('init', array(__CLASS__, 'register_content_types'));
         add_action('admin_init', array(__CLASS__, 'maybe_upgrade_structure'));
         add_action('add_meta_boxes', array(__CLASS__, 'add_grant_meta_box'));
+        add_action('add_meta_boxes', array(__CLASS__, 'add_coverage_meta_box'));
         add_action('save_post_tijcef_grant', array(__CLASS__, 'save_grant_meta'));
+        add_action('save_post_tijcef_coverage', array(__CLASS__, 'save_coverage_meta'));
         add_action('rest_api_init', array(__CLASS__, 'register_routes'));
         add_filter('rest_pre_serve_request', array(__CLASS__, 'cors_headers'), 10, 4);
         add_filter('wp_robots', array(__CLASS__, 'backend_noindex'));
@@ -40,20 +52,24 @@ final class TIJCEF_Core {
         add_action('transition_post_status', array(__CLASS__, 'deploy_on_content_change'), 10, 3);
         add_action('wp_update_nav_menu', array(__CLASS__, 'trigger_frontend_deploy'));
         add_action('edited_category', array(__CLASS__, 'trigger_frontend_deploy'));
+        add_action(self::MEDIA_CRON_HOOK, array(__CLASS__, 'discover_media_mentions'));
     }
 
     public static function activate() {
         self::register_content_types();
         self::create_default_categories_and_menu();
+        self::schedule_media_scan();
         flush_rewrite_rules();
     }
 
     public static function deactivate() {
+        wp_clear_scheduled_hook(self::MEDIA_CRON_HOOK);
         flush_rewrite_rules();
     }
 
     public static function maybe_upgrade_structure() {
-        if (get_option('tijcef_core_version') === '2.3.0') {
+        if (get_option('tijcef_core_version') === '3.0.0') {
+            self::schedule_media_scan();
             return;
         }
 
@@ -86,7 +102,8 @@ final class TIJCEF_Core {
         }
 
         self::create_default_categories_and_menu(false);
-        update_option('tijcef_core_version', '2.3.0');
+        self::schedule_media_scan();
+        update_option('tijcef_core_version', '3.0.0');
     }
 
     public static function register_content_types() {
@@ -121,6 +138,41 @@ final class TIJCEF_Core {
             register_post_meta('tijcef_grant', $key, array(
                 'single' => true,
                 'show_in_rest' => true,
+                'type' => $kind === 'boolean' ? 'boolean' : 'string',
+                'sanitize_callback' => function($value) use ($kind) {
+                    if ($kind === 'boolean') {
+                        return (bool) $value;
+                    }
+                    if ($kind === 'url') {
+                        return esc_url_raw($value);
+                    }
+                    return sanitize_text_field($value);
+                },
+                'auth_callback' => function() {
+                    return current_user_can('edit_posts');
+                },
+            ));
+        }
+
+        register_post_type('tijcef_coverage', array(
+            'labels' => array(
+                'name' => 'Media Tracker',
+                'singular_name' => 'Media Mention',
+                'add_new_item' => 'Add Media Mention',
+                'edit_item' => 'Review Media Mention',
+            ),
+            'public' => false,
+            'show_ui' => true,
+            'show_in_menu' => true,
+            'show_in_rest' => false,
+            'menu_icon' => 'dashicons-megaphone',
+            'supports' => array('title', 'editor', 'excerpt', 'revisions'),
+        ));
+
+        foreach (self::$coverage_fields as $key => $kind) {
+            register_post_meta('tijcef_coverage', $key, array(
+                'single' => true,
+                'show_in_rest' => false,
                 'type' => $kind === 'boolean' ? 'boolean' : 'string',
                 'sanitize_callback' => function($value) use ($kind) {
                     if ($kind === 'boolean') {
@@ -214,6 +266,59 @@ final class TIJCEF_Core {
         update_post_meta($post_id, 'verified', isset($_POST['tijcef_verified']));
     }
 
+    public static function add_coverage_meta_box() {
+        add_meta_box(
+            'tijcef-coverage-details',
+            'Publication Details',
+            array(__CLASS__, 'render_coverage_meta_box'),
+            'tijcef_coverage',
+            'normal',
+            'high'
+        );
+    }
+
+    public static function render_coverage_meta_box($post) {
+        wp_nonce_field('tijcef_save_coverage', 'tijcef_coverage_nonce');
+        $labels = array(
+            'publisher' => 'Publisher / platform',
+            'source_url' => 'Canonical source URL',
+            'published_on' => 'Publication date (YYYY-MM-DD)',
+            'mention_type' => 'Type (news, feature, listing, interview)',
+            'discovered_by' => 'Discovery source',
+        );
+        ?>
+        <style>.tijcef-field{margin:0 0 14px}.tijcef-field label{display:block;font-weight:600;margin-bottom:5px}.tijcef-field input{width:100%;max-width:760px}</style>
+        <?php foreach ($labels as $key => $label) :
+            $value = get_post_meta($post->ID, $key, true);
+            $type = $key === 'source_url' ? 'url' : ($key === 'published_on' ? 'date' : 'text');
+            ?>
+            <div class="tijcef-field">
+                <label for="tijcef_<?php echo esc_attr($key); ?>"><?php echo esc_html($label); ?></label>
+                <input type="<?php echo esc_attr($type); ?>" id="tijcef_<?php echo esc_attr($key); ?>" name="tijcef_<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($value); ?>">
+            </div>
+        <?php endforeach; ?>
+        <p><label><input type="checkbox" name="tijcef_coverage_verified" value="1" <?php checked((bool) get_post_meta($post->ID, 'verified', true)); ?>> Source opened, organisation identity confirmed, date checked and link approved for public display</label></p>
+        <p><strong>Editorial safeguard:</strong> automated discoveries remain drafts. A mention appears on tijcef.org only after it is verified, checked and published here.</p>
+        <?php
+    }
+
+    public static function save_coverage_meta($post_id) {
+        if (
+            !isset($_POST['tijcef_coverage_nonce']) ||
+            !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['tijcef_coverage_nonce'])), 'tijcef_save_coverage') ||
+            !current_user_can('edit_post', $post_id) ||
+            (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        ) {
+            return;
+        }
+
+        foreach (array('publisher', 'source_url', 'published_on', 'mention_type', 'discovered_by') as $key) {
+            $value = isset($_POST['tijcef_' . $key]) ? wp_unslash($_POST['tijcef_' . $key]) : '';
+            update_post_meta($post_id, $key, $key === 'source_url' ? esc_url_raw($value) : sanitize_text_field($value));
+        }
+        update_post_meta($post_id, 'verified', isset($_POST['tijcef_coverage_verified']));
+    }
+
     public static function register_routes() {
         register_rest_route(self::REST_NAMESPACE, '/navigation', array(
             'methods' => WP_REST_Server::READABLE,
@@ -235,6 +340,48 @@ final class TIJCEF_Core {
             'callback' => array(__CLASS__, 'verify_payment'),
             'permission_callback' => '__return_true',
         ));
+        register_rest_route(self::REST_NAMESPACE, '/coverage', array(
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => array(__CLASS__, 'coverage'),
+            'permission_callback' => '__return_true',
+        ));
+    }
+
+    public static function coverage() {
+        $mentions = get_posts(array(
+            'post_type' => 'tijcef_coverage',
+            'post_status' => 'publish',
+            'posts_per_page' => 100,
+            'meta_key' => 'published_on',
+            'orderby' => 'meta_value',
+            'order' => 'DESC',
+            'meta_query' => array(
+                array(
+                    'key' => 'verified',
+                    'value' => '1',
+                    'compare' => '=',
+                ),
+            ),
+        ));
+
+        $items = array();
+        foreach ($mentions as $mention) {
+            $source_url = esc_url_raw(get_post_meta($mention->ID, 'source_url', true));
+            if (!$source_url) {
+                continue;
+            }
+            $items[] = array(
+                'id' => (int) $mention->ID,
+                'title' => html_entity_decode(get_the_title($mention), ENT_QUOTES, 'UTF-8'),
+                'publisher' => sanitize_text_field(get_post_meta($mention->ID, 'publisher', true)),
+                'sourceUrl' => $source_url,
+                'publishedOn' => sanitize_text_field(get_post_meta($mention->ID, 'published_on', true)),
+                'mentionType' => sanitize_text_field(get_post_meta($mention->ID, 'mention_type', true)),
+                'summary' => wp_strip_all_tags($mention->post_excerpt ?: $mention->post_content),
+                'verified' => true,
+            );
+        }
+        return rest_ensure_response(array('items' => $items));
     }
 
     public static function navigation() {
@@ -379,12 +526,116 @@ final class TIJCEF_Core {
         if (!$successful) {
             return new WP_Error('tijcef_payment_unverified', 'The payment could not be verified.', array('status' => 400));
         }
+
+        $transaction = isset($body['data']) && is_array($body['data']) ? $body['data'] : array();
+        $existing = get_posts(array(
+            'post_type' => 'tijcef_submission',
+            'post_status' => 'private',
+            'meta_key' => 'payment_reference',
+            'meta_value' => $reference,
+            'fields' => 'ids',
+            'posts_per_page' => 1,
+        ));
+        if (!$existing) {
+            $customer_email = isset($transaction['customer']['email']) ? sanitize_email($transaction['customer']['email']) : '';
+            $designation = '';
+            if (isset($transaction['metadata']['custom_fields']) && is_array($transaction['metadata']['custom_fields'])) {
+                foreach ($transaction['metadata']['custom_fields'] as $field) {
+                    if (isset($field['variable_name']) && $field['variable_name'] === 'designation') {
+                        $designation = sanitize_key(isset($field['value']) ? $field['value'] : '');
+                        break;
+                    }
+                }
+            }
+            $post_id = wp_insert_post(array(
+                'post_type' => 'tijcef_submission',
+                'post_status' => 'private',
+                'post_title' => 'Verified donation: ' . $reference,
+                'post_content' => 'Verified through the Paystack API and recorded by tijcef.org.',
+            ));
+            if (!is_wp_error($post_id)) {
+                update_post_meta($post_id, 'submission_type', 'donation');
+                update_post_meta($post_id, 'payment_reference', $reference);
+                update_post_meta($post_id, 'amount_minor', isset($transaction['amount']) ? (int) $transaction['amount'] : 0);
+                update_post_meta($post_id, 'currency', isset($transaction['currency']) ? sanitize_text_field($transaction['currency']) : 'NGN');
+                update_post_meta($post_id, 'donor_email', $customer_email);
+                update_post_meta($post_id, 'designation', $designation ?: 'where-needed');
+                update_post_meta($post_id, 'paid_at', isset($transaction['paid_at']) ? sanitize_text_field($transaction['paid_at']) : current_time('mysql'));
+            }
+        }
         return rest_ensure_response(array(
             'success' => true,
             'reference' => $reference,
-            'amount' => isset($body['data']['amount']) ? (int) $body['data']['amount'] : 0,
-            'currency' => isset($body['data']['currency']) ? sanitize_text_field($body['data']['currency']) : 'NGN',
+            'amount' => isset($transaction['amount']) ? (int) $transaction['amount'] : 0,
+            'currency' => isset($transaction['currency']) ? sanitize_text_field($transaction['currency']) : 'NGN',
         ));
+    }
+
+    public static function schedule_media_scan() {
+        if (!wp_next_scheduled(self::MEDIA_CRON_HOOK)) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', self::MEDIA_CRON_HOOK);
+        }
+    }
+
+    public static function discover_media_mentions() {
+        if (!function_exists('fetch_feed')) {
+            require_once ABSPATH . WPINC . '/feed.php';
+        }
+        $query = rawurlencode('"TIJCEF" OR "Tijwun Care and Empowerment Foundation"');
+        $feed = fetch_feed('https://news.google.com/rss/search?q=' . $query . '&hl=en-NG&gl=NG&ceid=NG:en');
+        if (is_wp_error($feed)) {
+            return;
+        }
+
+        $created = 0;
+        foreach ($feed->get_items(0, 30) as $item) {
+            $source_url = esc_url_raw($item->get_permalink());
+            $title = sanitize_text_field(wp_strip_all_tags($item->get_title()));
+            if (!$source_url || !$title) {
+                continue;
+            }
+            $existing = get_posts(array(
+                'post_type' => 'tijcef_coverage',
+                'post_status' => array('draft', 'pending', 'publish', 'private'),
+                'meta_key' => 'source_url',
+                'meta_value' => $source_url,
+                'fields' => 'ids',
+                'posts_per_page' => 1,
+            ));
+            if ($existing) {
+                continue;
+            }
+
+            $post_id = wp_insert_post(array(
+                'post_type' => 'tijcef_coverage',
+                'post_status' => 'draft',
+                'post_title' => $title,
+                'post_excerpt' => sanitize_textarea_field(wp_strip_all_tags($item->get_description())),
+            ));
+            if (is_wp_error($post_id)) {
+                continue;
+            }
+            $publisher = '';
+            $source = $item->get_source();
+            if ($source) {
+                $publisher = sanitize_text_field(wp_strip_all_tags($source->get_title()));
+            }
+            update_post_meta($post_id, 'publisher', $publisher);
+            update_post_meta($post_id, 'source_url', $source_url);
+            update_post_meta($post_id, 'published_on', sanitize_text_field($item->get_date('Y-m-d')));
+            update_post_meta($post_id, 'mention_type', 'news');
+            update_post_meta($post_id, 'verified', false);
+            update_post_meta($post_id, 'discovered_by', 'Automated exact-name news scan');
+            $created++;
+        }
+
+        if ($created > 0) {
+            wp_mail(
+                get_option('admin_email'),
+                sprintf('TIJCEF media tracker: %d mention(s) need review', $created),
+                sprintf('%d possible publication(s) were added as drafts. Open Media Tracker in WordPress, verify each original source, tick the verification box, and publish only valid TIJCEF mentions.', $created)
+            );
+        }
     }
 
     private static function rate_limit($action, $limit, $window) {
@@ -400,7 +651,13 @@ final class TIJCEF_Core {
 
     public static function cors_headers($served, $result, $request, $server) {
         $origin = isset($_SERVER['HTTP_ORIGIN']) ? esc_url_raw(wp_unslash($_SERVER['HTTP_ORIGIN'])) : '';
-        $allowed = array('https://www.tijcef.org', 'https://tijcef.org', 'http://localhost:8080', 'http://localhost:5173');
+        $allowed = array(
+            'https://www.tijcef.org',
+            'https://tijcef.org',
+            'https://tijcef-funding-ready-2026.successemma65.chatgpt.site',
+            'http://localhost:8080',
+            'http://localhost:5173',
+        );
         if (in_array($origin, $allowed, true)) {
             header('Access-Control-Allow-Origin: ' . $origin);
             header('Vary: Origin', false);
@@ -454,7 +711,7 @@ final class TIJCEF_Core {
 
     public static function deploy_on_content_change($new_status, $old_status, $post) {
         if (
-            !in_array($post->post_type, array('post', 'tijcef_grant'), true) ||
+            !in_array($post->post_type, array('post', 'tijcef_grant', 'tijcef_coverage'), true) ||
             ($new_status !== 'publish' && $old_status !== 'publish')
         ) {
             return;
@@ -544,13 +801,13 @@ final class TIJCEF_Core {
 
         $add_link('Home', '/');
         $add_link('About', '/about');
-        $pillars = $add_link('Our Pillars', '/pillars');
-        $add_category('Dignity', 'dignity', $pillars);
-        $add_category('Agency', 'agency', $pillars);
-        $add_category('Resilience', 'resilience', $pillars);
-        $add_category('Evidence', 'evidence', $pillars);
+        $pillars = $add_link('Our Work', '/pillars');
+        $add_link('Health, Dignity & WASH', '/pillars#dignity', $pillars);
+        $add_link('Education, Skills & Leadership', '/pillars#agency', $pillars);
+        $add_link('Climate & Community Resilience', '/pillars#resilience', $pillars);
+        $add_link('Research, Learning & Advocacy', '/pillars#evidence', $pillars);
 
-        $programs = $add_link('Programs', '/programs');
+        $programs = $add_link('Programmes', '/programs');
         $add_category('Current Programs', 'current-programs', $programs);
         $add_category('Completed Projects', 'completed-projects', $programs);
         $add_category('Impact Stories', 'impact-stories', $programs);
@@ -568,6 +825,7 @@ final class TIJCEF_Core {
         $add_link('Get Involved', '/get-involved');
         $resources = $add_link('Resources', '/resources');
         $add_category('Reports & Publications', 'reports-publications', $resources);
+        $add_link('Media & Mentions', '/media-coverage', $resources);
         $add_category('Toolkits', 'toolkits', $resources);
         $add_category('Gallery', 'gallery', $resources);
         $add_link('Contact', '/contact');

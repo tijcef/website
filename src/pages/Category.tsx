@@ -4,6 +4,7 @@ import { ArrowRight, CalendarDays } from "lucide-react";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageMeta from "@/components/site/PageMeta";
 import { Button } from "@/components/ui/button";
+import AdSlot from "@/components/site/AdSlot";
 import {
   getPostsByCategory,
   type WordPressPost,
@@ -55,6 +56,7 @@ export default function Category() {
       <PageMeta
         title={title}
         description={`Latest TIJCEF programmes, resources and field updates from ${title}.`}
+        noIndex={!loading && (Boolean(error) || posts.length === 0)}
       />
       <section className="border-b bg-muted/50 pb-14 pt-32">
         <div className="container">
@@ -95,7 +97,7 @@ export default function Category() {
         )}
 
         {!loading && !error && posts.length > 0 && (
-          <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+          <><div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
               <article key={post.id} className="group overflow-hidden rounded-2xl border bg-card shadow-card">
                 {post.featuredImage ? (
@@ -129,7 +131,7 @@ export default function Category() {
                 </div>
               </article>
             ))}
-          </div>
+          </div><AdSlot placement="directory" /></>
         )}
       </section>
     </SiteLayout>

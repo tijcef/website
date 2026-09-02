@@ -2,6 +2,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle2, ArrowRight, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SiteLayout from "@/components/site/SiteLayout";
+import PageMeta from "@/components/site/PageMeta";
 
 const COPY: Record<string, { eyebrow: string; title: string; body: string }> = {
   partnership: {
@@ -33,6 +34,7 @@ const ThankYou = () => {
 
   return (
     <SiteLayout>
+      <PageMeta title="Thank You" description="Your TIJCEF submission has been received." noIndex />
       <section className="container py-24 md:py-32">
         <div className="max-w-2xl mx-auto text-center">
           <div className="w-16 h-16 rounded-full gradient-primary text-primary-foreground flex items-center justify-center mx-auto mb-8">

@@ -17,13 +17,18 @@ const partnerSchema = z.object({
   email: z.string().trim().email("Invalid email").max(255),
   phone: z.string().trim().max(30).optional().or(z.literal("")),
   partnershipType: z.string().trim().max(100).optional().or(z.literal("")),
+  programmeArea: z.string().trim().max(120).optional().or(z.literal("")),
+  geography: z.string().trim().max(150).optional().or(z.literal("")),
+  fundingRange: z.string().trim().max(100).optional().or(z.literal("")),
+  timeline: z.string().trim().max(100).optional().or(z.literal("")),
   message: z.string().trim().min(1, "Please share a brief message").max(2000),
+  website: z.literal("").optional(),
 });
 
 const ways = [
   { icon: Heart, title: "Donate", desc: "Support approved programmes through a one-time gift.", cta: "Give now", to: "/donate", variant: "donate" as const },
   { icon: Handshake, title: "Partner", desc: "Foundations, CSR teams, and institutions building lasting impact.", cta: "Partner with us", to: "#partner", variant: "default" as const },
-  { icon: UserPlus, title: "Volunteer", desc: "Lend your skills&nbsp; in the field, online, or behind the scenes.", cta: "Apply to volunteer", to: "#volunteer", variant: "secondary" as const },
+  { icon: UserPlus, title: "Volunteer", desc: "Lend your skills—in the field, online or behind the scenes.", cta: "Apply to volunteer", to: "#volunteer", variant: "secondary" as const },
   { icon: Users, title: "Join Our Network", desc: "Connect with TIJCEF as a community advocate or institutional collaborator.", cta: "Contact TIJCEF", to: "/contact", variant: "outline" as const },
 ];
 
@@ -37,7 +42,12 @@ const GetInvolved = () => {
     email: "",
     phone: "",
     partnershipType: "",
+    programmeArea: "",
+    geography: "",
+    fundingRange: "",
+    timeline: "",
     message: "",
+    website: "",
   });
 
   const handlePartnerSubmit = async (e: React.FormEvent) => {
@@ -52,7 +62,7 @@ const GetInvolved = () => {
     setSubmitting(true);
     try {
       await submitPublicForm("inquiries", { kind: "partnership", ...result.data });
-      setPartner({ organization: "", contactName: "", email: "", phone: "", partnershipType: "", message: "" });
+      setPartner({ organization: "", contactName: "", email: "", phone: "", partnershipType: "", programmeArea: "", geography: "", fundingRange: "", timeline: "", message: "", website: "" });
       navigate("/thank-you?type=partnership");
     } catch (error) {
       toast({ title: "Submission failed", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
@@ -78,8 +88,8 @@ const GetInvolved = () => {
   return (
     <SimplePage
       eyebrow="Get Involved"
-      title="Four ways to stand with us."
-      subtitle="Every contribution&nbsp; financial, professional, or personal&nbsp; multiplies the impact of our work across Nigeria."
+      title="Choose a clear route to support or partner."
+      subtitle="Donate, volunteer or begin an institutional conversation with the information our team needs to respond responsibly."
       image={healthImg}
     >
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
@@ -104,12 +114,12 @@ const GetInvolved = () => {
           <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-4">Volunteer Application</div>
           <h2 className="font-display text-4xl md:text-5xl mb-5 leading-tight">Bring your skills to the work.</h2>
           <p className="text-foreground/75 leading-relaxed mb-6">
-            We welcome health professionals, educators, climate scientists, designers, writers, researchers, and field volunteers across Nigeria and globally.
+            We welcome health professionals, educators, environmental practitioners, designers, writers, researchers and field volunteers whose skills match an approved TIJCEF activity.
           </p>
           <ul className="space-y-3 text-sm text-muted-foreground">
-            <li className="flex gap-2 whitespace-pre-line"><span className="text-accent">✓</span>{"\n"}Flexible commitment&nbsp; remote or field-based</li>
+            <li className="flex gap-2"><span className="text-accent">✓</span>Flexible commitment—remote or field-based</li>
             <li className="flex gap-2"><span className="text-accent">✓</span> Training and mentorship provided</li>
-            <li className="flex gap-2"><span className="text-accent">✓</span> Letters of service & professional references</li>
+            <li className="flex gap-2"><span className="text-accent">✓</span>Letters of service after verified completion; references considered case by case</li>
           </ul>
         </Reveal>
         <Reveal delay={150}>
@@ -133,7 +143,7 @@ const GetInvolved = () => {
           <div className="max-w-2xl">
             <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-4">Partnership Inquiry</div>
             <h3 className="font-display text-3xl md:text-4xl leading-tight mb-3">Ready to build something measurable together?</h3>
-            <p className="text-primary-foreground/80">Foundations, CSR programs, government grants, and academic collaborations&nbsp; tell us about your organization and we'll be in touch.</p>
+            <p className="text-primary-foreground/80">Foundations, CSR programmes, government, academic and nonprofit collaborators: share the proposed programme, geography, funding range and timeline for an informed response.</p>
           </div>
         </div>
       </Reveal>
@@ -141,8 +151,10 @@ const GetInvolved = () => {
       <Reveal delay={100}>
         <form onSubmit={handlePartnerSubmit} className="p-8 md:p-10 rounded-2xl bg-card border border-border shadow-card space-y-4 max-w-3xl mx-auto">
           <fieldset disabled={submitting} className="space-y-4 disabled:opacity-70">
+            <input aria-hidden="true" tabIndex={-1} autoComplete="off" className="hidden" value={partner.website} onChange={(e) => setPartner({ ...partner, website: e.target.value })} />
             <div className="grid sm:grid-cols-2 gap-4">
               <Input
+                aria-label="Organisation name"
                 placeholder="Organization name"
                 value={partner.organization}
                 onChange={(e) => setPartner({ ...partner, organization: e.target.value })}
@@ -150,6 +162,7 @@ const GetInvolved = () => {
                 maxLength={150}
               />
               <Input
+                aria-label="Contact person"
                 placeholder="Contact person"
                 value={partner.contactName}
                 onChange={(e) => setPartner({ ...partner, contactName: e.target.value })}
@@ -159,6 +172,7 @@ const GetInvolved = () => {
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               <Input
+                aria-label="Work email"
                 type="email"
                 placeholder="Work email"
                 value={partner.email}
@@ -167,6 +181,7 @@ const GetInvolved = () => {
                 maxLength={255}
               />
               <Input
+                aria-label="Phone number"
                 type="tel"
                 placeholder="Phone (optional)"
                 value={partner.phone}
@@ -175,6 +190,7 @@ const GetInvolved = () => {
               />
             </div>
             <select
+              aria-label="Type of partnership"
               className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm disabled:cursor-not-allowed"
               value={partner.partnershipType}
               onChange={(e) => setPartner({ ...partner, partnershipType: e.target.value })}
@@ -187,7 +203,46 @@ const GetInvolved = () => {
               <option>NGO / Implementing partner</option>
               <option>Other</option>
             </select>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <select
+                aria-label="Programme area"
+                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm disabled:cursor-not-allowed"
+                value={partner.programmeArea}
+                onChange={(e) => setPartner({ ...partner, programmeArea: e.target.value })}
+              >
+                <option value="">Programme area</option>
+                <option>Health, Menstrual Dignity & WASH</option>
+                <option>Education, Skills & Leadership</option>
+                <option>Climate Action & Stronger Communities</option>
+                <option>Research, Learning & Advocacy</option>
+                <option>Multi-area partnership</option>
+              </select>
+              <Input
+                aria-label="Proposed geography"
+                placeholder="Proposed geography"
+                value={partner.geography}
+                onChange={(e) => setPartner({ ...partner, geography: e.target.value })}
+                maxLength={150}
+              />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Input
+                aria-label="Indicative funding range"
+                placeholder="Indicative funding range"
+                value={partner.fundingRange}
+                onChange={(e) => setPartner({ ...partner, fundingRange: e.target.value })}
+                maxLength={100}
+              />
+              <Input
+                aria-label="Proposed timeline"
+                placeholder="Proposed timeline"
+                value={partner.timeline}
+                onChange={(e) => setPartner({ ...partner, timeline: e.target.value })}
+                maxLength={100}
+              />
+            </div>
             <Textarea
+              aria-label="Partnership message"
               placeholder="Tell us about your organization and the partnership you have in mind…"
               rows={6}
               value={partner.message}
@@ -204,7 +259,7 @@ const GetInvolved = () => {
             )}
           </Button>
           <p className="text-xs text-muted-foreground text-center">
-            You may also contact <a href="mailto:info@tijcef.org" className="underline hover:text-accent">info@tijcef.org</a>.
+            By submitting, you agree to our <Link to="/privacy" className="underline hover:text-accent">privacy notice</Link>. You may also contact <a href="mailto:info@tijcef.org" className="underline hover:text-accent">info@tijcef.org</a>.
           </p>
         </form>
       </Reveal>

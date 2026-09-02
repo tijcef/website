@@ -4,7 +4,8 @@ import { ArrowLeft, CalendarDays } from "lucide-react";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageMeta from "@/components/site/PageMeta";
 import { Button } from "@/components/ui/button";
-import { getPostBySlug, type WordPressPost } from "@/lib/wordpress";
+import { getPostBySlug, sanitizeWordPressHtml, type WordPressPost } from "@/lib/wordpress";
+import AdSlot from "@/components/site/AdSlot";
 
 const formatDate = (value: string) => {
   const date = new Date(value);
@@ -78,6 +79,9 @@ export default function Post() {
         title={post.title}
         description={post.excerpt || "A TIJCEF programme and community impact update."}
         image={post.featuredImage || undefined}
+        type="article"
+        publishedTime={post.date}
+        modifiedTime={post.modified}
       />
       <article className="pb-20 pt-32">
         <header className="container max-w-4xl">
@@ -99,8 +103,9 @@ export default function Post() {
 
         <div
           className="prose prose-lg mx-auto max-w-3xl px-6 prose-headings:font-display prose-a:text-primary prose-img:rounded-xl"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: sanitizeWordPressHtml(post.content) }}
         />
+        <AdSlot placement="content" />
       </article>
     </SiteLayout>
   );

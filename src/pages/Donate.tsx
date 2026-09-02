@@ -1,7 +1,6 @@
 import { useState } from "react";
 import SimplePage from "@/components/site/SimplePage";
 import Reveal from "@/components/site/Reveal";
-import PageMeta from "@/components/site/PageMeta";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Check, Copy, CreditCard, Heart, Landmark, Shield } from "lucide-react";
@@ -54,6 +53,7 @@ export default function Donate() {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const finalAmount = custom ? Number(custom) : amount;
+  const displayAmount = Number.isFinite(finalAmount) && finalAmount > 0 ? finalAmount : 0;
 
   function copy(key: string, value: string) {
     navigator.clipboard?.writeText(value);
@@ -105,15 +105,11 @@ export default function Donate() {
   }
 
   return (
-    <>
-      <PageMeta
-  title="Donate to TIJCEF"
-  description="Support TIJCEF’s dignity, agency, resilience and evidence programmes through a secure one-time donation."
-/>
       <SimplePage
         eyebrow="Donate to TIJCEF"
         title="Support community-led change."
         subtitle="Your contribution supports approved TIJCEF programmes and is managed under our financial controls and donor restrictions."
+        metaDescription="Support TIJCEF programmes in health and WASH, education and leadership, climate resilience, or research and advocacy through a secure one-time donation."
         image={girlsImg}
       >
         <div className="grid gap-10 lg:grid-cols-5 lg:gap-16">
@@ -122,45 +118,40 @@ export default function Donate() {
               <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-accent">Choose a one-time gift</div>
               <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {amounts.map((value) => (
-                  <button key={value} type="button" onClick={() => { setAmount(value); setCustom(""); }} className={cn("rounded-xl border-2 py-4 font-display text-lg", !custom && amount === value ? "border-primary bg-primary/5 text-primary" : "border-border")}>
+                  <button key={value} type="button" aria-pressed={!custom && amount === value} onClick={() => { setAmount(value); setCustom(""); }} className={cn("rounded-xl border-2 py-4 font-display text-lg", !custom && amount === value ? "border-primary bg-primary/5 text-primary" : "border-border")}>
                     ₦{value.toLocaleString()}
                   </button>
                 ))}
               </div>
-              <Input type="number" min={100} placeholder="Or enter a custom amount (₦)" value={custom} onChange={(event) => setCustom(event.target.value)} className="mb-7 h-12" />
+              <Input aria-label="Custom donation amount in naira" type="number" min={100} placeholder="Or enter a custom amount (₦)" value={custom} onChange={(event) => setCustom(event.target.value)} className="mb-7 h-12" />
 
-             <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-accent">
-  Donation preference
-</div>
+              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-accent">Donation preference</div>
+              <select aria-label="Donation preference" value={designation} onChange={(event) => setDesignation(event.target.value)} className="mb-7 h-12 w-full rounded-md border bg-background px-3">
+                <option value="where-needed">Where most needed</option>
+                <option value="dignity">Health, Menstrual Dignity & WASH</option>
+                <option value="agency">Education, Skills & Leadership</option>
+                <option value="resilience">Climate Action & Stronger Communities</option>
+                <option value="evidence">Research, Learning & Advocacy</option>
+              </select>
 
-<select
-  value={designation}
-  onChange={(event) => setDesignation(event.target.value)}
-  className="mb-7 h-12 w-full rounded-md border bg-background px-3"
->
-  <option value="where-needed">Where most needed</option>
-  <option value="dignity">Dignity</option>
-  <option value="agency">Agency</option>
-  <option value="resilience">Resilience</option>
-  <option value="evidence">Evidence</option>
-</select>
               <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-accent">Payment method</div>
               <div className="mb-5 grid grid-cols-2 gap-3">
-                <button type="button" onClick={() => setMethod("paystack")} className={cn("rounded-xl border-2 p-4 text-left", method === "paystack" ? "border-primary bg-primary/5" : "border-border")}><CreditCard className="mb-2 h-5 w-5" /><strong>Paystack</strong><div className="text-xs text-muted-foreground">Card, transfer or USSD</div></button>
-                <button type="button" onClick={() => setMethod("bank")} className={cn("rounded-xl border-2 p-4 text-left", method === "bank" ? "border-primary bg-primary/5" : "border-border")}><Landmark className="mb-2 h-5 w-5" /><strong>Bank transfer</strong><div className="text-xs text-muted-foreground">Zenith Bank</div></button>
+                <button type="button" aria-pressed={method === "paystack"} onClick={() => setMethod("paystack")} className={cn("rounded-xl border-2 p-4 text-left", method === "paystack" ? "border-primary bg-primary/5" : "border-border")}><CreditCard className="mb-2 h-5 w-5" /><strong>Paystack</strong><div className="text-xs text-muted-foreground">Card, transfer or USSD</div></button>
+                <button type="button" aria-pressed={method === "bank"} onClick={() => setMethod("bank")} className={cn("rounded-xl border-2 p-4 text-left", method === "bank" ? "border-primary bg-primary/5" : "border-border")}><Landmark className="mb-2 h-5 w-5" /><strong>Bank transfer</strong><div className="text-xs text-muted-foreground">Zenith Bank</div></button>
               </div>
 
               {method === "paystack" ? (
                 <>
                   <label className="mb-5 block text-sm font-semibold">Email for receipt<Input type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 h-12" required /></label>
-                  <Button variant="donate" size="xl" className="w-full" onClick={donate} disabled={busy}>{busy ? "Opening secure payment…" : `Donate ₦${finalAmount.toLocaleString()}`}<ArrowRight className="h-5 w-5" /></Button>
+                  <Button variant="donate" size="xl" className="w-full" onClick={donate} disabled={busy}>{busy ? "Opening secure payment…" : `Donate ₦${displayAmount.toLocaleString()}`}<ArrowRight className="h-5 w-5" /></Button>
+                  <p className="mt-3 text-center text-xs text-muted-foreground">Your email is used for payment verification, acknowledgement and donor records under our privacy notice.</p>
                 </>
               ) : (
                 <div className="space-y-3 rounded-xl border bg-muted/60 p-5">
                   {[["Bank", bankDetails.bank], ["Account name", bankDetails.accountName], ["Account number", bankDetails.accountNumber]].map(([label, value]) => (
                     <div key={label} className="flex items-center justify-between gap-3 border-b pb-2 last:border-0">
                       <div><div className="text-xs uppercase text-muted-foreground">{label}</div><strong>{value}</strong></div>
-                      <button type="button" onClick={() => copy(label, value)} className="inline-flex items-center gap-1 text-xs text-primary">{copied === label ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}{copied === label ? "Copied" : "Copy"}</button>
+                      <button type="button" aria-label={`Copy ${label}`} onClick={() => copy(label, value)} className="inline-flex items-center gap-1 text-xs text-primary">{copied === label ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}{copied === label ? "Copied" : "Copy"}</button>
                     </div>
                   ))}
                   <p className="text-xs text-muted-foreground">Send proof of payment to <a className="underline" href="mailto:info@tijcef.org">info@tijcef.org</a> for acknowledgement.</p>
@@ -182,10 +173,10 @@ export default function Donate() {
                 <li>• Suspected fraud should be reported immediately.</li>
               </ul>
               <a href="/donation-policy" className="font-semibold text-primary underline">Read our donation and refund policy</a>
+              <a href="/transparency" className="block font-semibold text-primary underline">Review transparency and due diligence</a>
             </div>
           </Reveal>
         </div>
       </SimplePage>
-    </>
   );
 }

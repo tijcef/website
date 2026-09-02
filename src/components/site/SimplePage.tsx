@@ -7,6 +7,7 @@ interface Props {
   eyebrow: string;
   title: string;
   subtitle?: string;
+  metaDescription?: string;
   image: string;
   children: ReactNode;
 }
@@ -27,9 +28,9 @@ const PageHero = ({ eyebrow, title, subtitle, image }: Omit<Props, "children">) 
   </section>
 );
 
-const SimplePage = ({ eyebrow, title, subtitle, image, children }: Props) => (
+const SimplePage = ({ eyebrow, title, subtitle, metaDescription, image, children }: Props) => (
   <SiteLayout>
-    <PageMeta title={title} description={subtitle || `${title} — Tijwun Care and Empowerment Foundation.`} />
+    <PageMeta title={title} description={metaDescription || subtitle || `${title} — Tijwun Care and Empowerment Foundation.`} />
     <PageHero eyebrow={eyebrow} title={title} subtitle={subtitle} image={image} />
     <section className="py-20 md:py-28">
       <div className="container">{children}</div>

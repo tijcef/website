@@ -31,17 +31,31 @@ describe("TIJCEF navigation architecture", () => {
     expect(client).toContain("/wp-json/tijcef/v1/navigation");
     expect(client).toContain("/wp-json/wp/v2/posts?categories=");
     expect(plugin).toContain("TIJCEF Primary");
-    expect(plugin).toContain("create_default_categories_and_menu(true)");
+    expect(plugin).toContain("create_default_categories_and_menu(false)");
   });
 
   it("uses TIJCEF's four official pillars across the website and backend", () => {
     const homepage = read("../pages/Index.tsx");
     const pillarPage = read("../pages/Pillars.tsx");
+    const programmeData = read("../data/programmeAreas.ts");
     const plugin = read("../../wordpress-plugin/tijcef-core/tijcef-core.php");
     for (const pillar of ["Dignity", "Agency", "Resilience", "Evidence"]) {
-      expect(homepage).toContain(`title: "${pillar}"`);
-      expect(pillarPage).toContain(`title: "${pillar}"`);
+      expect(programmeData).toContain(`title: "${pillar}"`);
       expect(plugin).toContain(`'${pillar}'`);
+    }
+    expect(homepage).toContain("programmeAreas.map");
+    expect(pillarPage).toContain("programmeAreas.map");
+  });
+
+  it("pairs the four-pillar framework with descriptive programme names", () => {
+    const programmeData = read("../data/programmeAreas.ts");
+    for (const programme of [
+      "Health, Menstrual Dignity & WASH",
+      "Education, Skills & Leadership",
+      "Climate Action & Stronger Communities",
+      "Research, Learning & Advocacy",
+    ]) {
+      expect(programmeData).toContain(programme);
     }
   });
 });

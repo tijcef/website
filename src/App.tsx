@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { lazy, Suspense, useEffect } from "react";
 import Index from "./pages/Index.tsx";
+import AdSenseAuto from "./components/site/AdSenseAuto.tsx";
 const About = lazy(() => import("./pages/About.tsx"));
 const Pillars = lazy(() => import("./pages/Pillars.tsx"));
 const Programs = lazy(() => import("./pages/Programs.tsx"));
@@ -24,14 +25,22 @@ const Post = lazy(() => import("./pages/Post.tsx"));
 const Privacy = lazy(() => import("./pages/Privacy.tsx"));
 const Transparency = lazy(() => import("./pages/Transparency.tsx"));
 const Governance = lazy(() => import("./pages/Governance.tsx"));
+const Impact = lazy(() => import("./pages/Impact.tsx"));
+const MediaCoverage = lazy(() => import("./pages/MediaCoverage.tsx"));
 
 const queryClient = new QueryClient();
 
 function RouteEffects() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
+    if (hash) {
+      const frame = window.requestAnimationFrame(() => {
+        document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" });
+      });
+      return () => window.cancelAnimationFrame(frame);
+    }
     window.scrollTo({ top: 0, behavior: "auto" });
-  }, [pathname]);
+  }, [pathname, hash]);
   return null;
 }
 
@@ -47,14 +56,16 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <AdSenseAuto />
         <RouteEffects />
         <Suspense fallback={loading}>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/pillars" element={<Pillars />} />
-<Route path="/pillars/:slug" element={<Category />} />
             <Route path="/programs" element={<Programs />} />
+            <Route path="/impact" element={<Impact />} />
+            <Route path="/media-coverage" element={<MediaCoverage />} />
             <Route path="/get-involved" element={<GetInvolved />} />
             <Route path="/donate" element={<Donate />} />
             <Route path="/resources" element={<Resources />} />
@@ -73,6 +84,7 @@ const App = () => (
             <Route path="/complaints" element={<Governance page="complaints" />} />
             <Route path="/donation-policy" element={<Governance page="donation-policy" />} />
             <Route path="/terms" element={<Governance page="terms" />} />
+            <Route path="/accessibility" element={<Governance page="accessibility" />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

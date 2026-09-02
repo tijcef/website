@@ -6,6 +6,10 @@ const Reveal = ({ children, delay = 0, className }: { children: ReactNode; delay
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setVisible(true);
+      return;
+    }
     const obs = new IntersectionObserver(
       ([e]) => e.isIntersecting && setVisible(true),
       { threshold: 0.15 }

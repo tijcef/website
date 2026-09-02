@@ -83,7 +83,7 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-primary-foreground/75 leading-relaxed text-sm max-w-sm">
-              Advancing women’s dignity, strengthening girls’ agency, building resilient communities and generating evidence for lasting change across Nigeria.
+              Working with women, adolescent girls and young people through health and WASH, education and leadership, climate resilience, and community research.
             </p>
           </div>
 
@@ -91,9 +91,11 @@ const Footer = () => {
             <div className="text-xs uppercase tracking-[0.18em] text-accent mb-4">Explore</div>
             <ul className="space-y-2.5 text-sm text-primary-foreground/80">
               <li><Link to="/about" className="hover:text-accent transition-colors">About Us</Link></li>
-              <li><Link to="/pillars" className="hover:text-accent transition-colors">Our Pillars</Link></li>
+              <li><Link to="/pillars" className="hover:text-accent transition-colors">Our Work</Link></li>
               <li><Link to="/programs" className="hover:text-accent transition-colors">Programmes</Link></li>
+              <li><Link to="/impact" className="hover:text-accent transition-colors">Impact & Learning</Link></li>
               <li><Link to="/resources" className="hover:text-accent transition-colors">Resources</Link></li>
+              <li><Link to="/media-coverage" className="hover:text-accent transition-colors">Media & Mentions</Link></li>
             </ul>
           </div>
 
@@ -115,7 +117,7 @@ const Footer = () => {
               <li><Link to="/donate" className="hover:text-accent transition-colors">Donate</Link></li>
               <li><Link to="/get-involved" className="hover:text-accent transition-colors">Volunteer</Link></li>
               <li><Link to="/get-involved" className="hover:text-accent transition-colors">Become a Partner</Link></li>
-              <li><Link to="/get-involved" className="hover:text-accent transition-colors">Membership</Link></li>
+              <li><Link to="/transparency" className="hover:text-accent transition-colors">Partner Due Diligence</Link></li>
             </ul>
           </div>
 
@@ -138,7 +140,7 @@ const Footer = () => {
             <div className="flex gap-2 mt-5">
               {[
                 { Icon: Facebook, href: "https://facebook.com/tijcef", label: "Facebook" },
-                { Icon: Instagram, href: "https://instagram.com/tijcef_ng", label: "Instagram" },
+                { Icon: Instagram, href: "https://instagram.com/tijcef", label: "Instagram" },
                 { Icon: Twitter, href: "https://x.com/tijcef", label: "X (Twitter)" },
                 { Icon: Linkedin, href: "https://linkedin.com/company/tijwun-care-and-empowerment-foundation", label: "LinkedIn" },
               ].map(({ Icon, href, label }) => (
@@ -153,12 +155,13 @@ const Footer = () => {
         <div className="pt-10 mt-10 border-t border-primary-foreground/15 flex flex-col md:flex-row justify-between gap-4 text-xs text-primary-foreground/60">
           <div>© {new Date().getFullYear()} Tijwun Care and Empowerment Foundation. All rights reserved.</div>
           <div className="flex flex-wrap gap-5">
-            <span>CAC-Registered Nonprofit · Nigeria</span>
+            <span>Registered Nonprofit · Nigeria</span>
             <Link to="/privacy" className="hover:text-accent">Privacy</Link>
             <Link to="/transparency" className="hover:text-accent">Transparency</Link>
             <Link to="/safeguarding" className="hover:text-accent">Safeguarding</Link>
             <Link to="/complaints" className="hover:text-accent">Complaints</Link>
             <Link to="/terms" className="hover:text-accent">Terms</Link>
+            <Link to="/accessibility" className="hover:text-accent">Accessibility</Link>
           </div>
         </div>
       </div>

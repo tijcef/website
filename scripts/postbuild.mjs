@@ -9,11 +9,12 @@ const DEFAULT_IMAGE = `${SITE_URL}/og-logo.webp`;
 const template = await readFile(path.join(DIST, "index.html"), "utf8");
 
 const fixedRoutes = [
-  ["/", "TIJCEF — Empowering Women and Youth in Nigeria", "TIJCEF advances menstrual dignity, youth agency, climate resilience and community-led evidence across Nigeria."],
+  ["/", "TIJCEF — Community-Led Programmes for Women and Youth", "TIJCEF delivers health and WASH, education and leadership, climate resilience, and research programmes with women and youth in Nigeria."],
   ["/about", "About TIJCEF | TIJCEF", "Meet the people, purpose, values and community-centred story behind Tijwun Care and Empowerment Foundation."],
-  ["/pillars", "Dignity, Agency, Resilience and Evidence | TIJCEF", "Explore the four pillars that guide TIJCEF's work with women, adolescent girls and young people."],
+  ["/pillars", "TIJCEF Programme Areas: Dignity, Agency, Resilience and Evidence", "See how TIJCEF's four values map to clear programme areas: health and WASH, education and leadership, climate resilience, and research and advocacy."],
   ["/programs", "Programmes and Projects | TIJCEF", "Explore TIJCEF's community-based health, education, climate resilience and research programmes in Nigeria."],
   ["/impact", "Impact and Learning | TIJCEF", "Explore TIJCEF's verified reach, 2026 programme evidence, measurement approach and accountability commitments."],
+  ["/media-coverage", "Media Coverage and Publication Tracker | TIJCEF", "Browse verified independent coverage and public listings of TIJCEF, supported by an editor-reviewed publication tracking workflow."],
   ["/get-involved", "Volunteer and Partner with TIJCEF | TIJCEF", "Volunteer, partner or collaborate with TIJCEF to advance community-led change for women and youth."],
   ["/donate", "Donate to TIJCEF | TIJCEF", "Support TIJCEF's health, gender, climate and research programmes through a secure one-time donation."],
   ["/resources", "Reports, Research and Toolkits | TIJCEF", "Open-access TIJCEF reports, research, field learning, media coverage and implementation toolkits."],
@@ -32,7 +33,7 @@ const fixedRoutes = [
   ["/grants/membership", "Grant Hub Access | TIJCEF", "Learn how organisations can use the TIJCEF Grant Hub responsibly."],
   ["/grants/about", "About the Grant Hub | TIJCEF", "Learn how TIJCEF reviews and publishes funding and development opportunities."],
   ["/privacy", "Privacy Notice | TIJCEF", "How TIJCEF collects, uses and protects personal information."],
-  ["/transparency", "Transparency and Accountability | TIJCEF", "TIJCEF governance, safeguarding and accountability commitments."],
+  ["/transparency", "Partner Due Diligence and Accountability | TIJCEF", "Review TIJCEF governance, safeguarding, evidence, financial stewardship and partner due-diligence commitments."],
   ["/safeguarding", "Safeguarding and PSEA | TIJCEF", "TIJCEF's public safeguarding and protection commitment."],
   ["/complaints", "Complaints and Feedback | TIJCEF", "How community members, partners, volunteers and donors can submit feedback or a complaint to TIJCEF."],
   ["/donation-policy", "Donation and Refund Policy | TIJCEF", "TIJCEF donation processing, restrictions and refund policy."],
@@ -60,6 +61,8 @@ const stripHtml = (value = "") => String(value)
   .replace(/&#8217;|&rsquo;/gi, "’")
   .replace(/\s+/g, " ")
   .trim();
+
+const escapeXml = (value = "") => escapeHtml(value).replaceAll("&#039;", "&apos;");
 
 const safeJson = (value) => JSON.stringify(value).replace(/</g, "\\u003c");
 
@@ -128,6 +131,7 @@ async function writeRoute(page) {
 }
 
 const sitemap = new Map();
+const feedItems = [];
 for (const [route, title, description] of fixedRoutes) {
   await writeRoute({ route, title, description });
   sitemap.set(route, "");
@@ -158,7 +162,7 @@ try {
   const [categories, posts, grants] = await Promise.all([
     fetchCollection("/wp-json/wp/v2/categories?hide_empty=false&_fields=id,name,slug,count"),
     fetchCollection("/wp-json/wp/v2/posts?status=publish&orderby=modified&order=desc&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,date,modified,_embedded"),
-    fetchCollection("/wp-json/wp/v2/tijcef_grant?status=publish&orderby=modified&order=desc&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,date,modified,_embedded"),
+    fetchCollection("/wp-json/wp/v2/tijcef_grant?status=publish&orderby=modified&order=desc&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,date,modified,meta,_embedded"),
   ]);
 
   for (const category of categories) {
@@ -178,10 +182,11 @@ try {
     const route = `/post/${post.slug}`;
     await writeRoute({ route, title, description, image, type: "article", date: post.date, modified: post.modified });
     sitemap.set(route, post.modified || post.date || "");
+    feedItems.push({ route, title: stripHtml(post.title?.rendered), description, date: post.date });
   }
 
   for (const grant of grants) {
-    if (!grant?.slug) continue;
+    if (!grant?.slug || !grant?.meta?.verified || !grant?.meta?.application_url) continue;
     const title = `${stripHtml(grant.title?.rendered)} | TIJCEF Grant Hub`;
     const description = stripHtml(grant.excerpt?.rendered).slice(0, 170) || "A reviewed opportunity from the TIJCEF Grant Hub.";
     const image = grant?._embedded?.["wp:featuredmedia"]?.[0]?.source_url || DEFAULT_IMAGE;
@@ -196,6 +201,25 @@ try {
 const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${Array.from(sitemap.entries()).map(([route, lastmod]) => `  <url><loc>${SITE_URL}${route === "/" ? "/" : route}</loc>${lastmod ? `<lastmod>${String(lastmod).slice(0, 10)}</lastmod>` : ""}</url>`).join("\n")}\n</urlset>\n`;
 await writeFile(path.join(DIST, "sitemap.xml"), sitemapXml, "utf8");
 await writeFile(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`, "utf8");
+
+const feedXml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>TIJCEF Updates</title>
+    <link>${SITE_URL}/</link>
+    <description>Programme updates, field learning and publications from Tijwun Care and Empowerment Foundation.</description>
+    <language>en-NG</language>
+${feedItems.slice(0, 50).map((item) => `    <item>
+      <title>${escapeXml(item.title)}</title>
+      <link>${SITE_URL}${item.route}</link>
+      <guid isPermaLink="true">${SITE_URL}${item.route}</guid>
+      <description>${escapeXml(item.description)}</description>${item.date ? `
+      <pubDate>${new Date(item.date).toUTCString()}</pubDate>` : ""}
+    </item>`).join("\n")}
+  </channel>
+</rss>
+`;
+await writeFile(path.join(DIST, "feed.xml"), feedXml, "utf8");
 
 const notFound = routeHtml({
   route: "/404",

@@ -1,13 +1,13 @@
 import { FormEvent, useState } from "react";
 import SimplePage from "@/components/site/SimplePage";
 import Reveal from "@/components/site/Reveal";
-import PageMeta from "@/components/site/PageMeta";
 import { ArrowRight, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { submitPublicForm } from "@/lib/wordpress";
 import healthImg from "@/assets/health-dignity.jpg";
+import { Link } from "react-router-dom";
 
 export default function Contact() {
   const [busy, setBusy] = useState(false);
@@ -30,9 +30,7 @@ export default function Contact() {
   }
 
   return (
-    <>
-      <PageMeta title="Contact" description="Contact TIJCEF about programmes, partnerships, volunteering, donations or media enquiries." />
-      <SimplePage eyebrow="Contact TIJCEF" title="Let's build something together." subtitle="For partnerships, media, programmes or general questions, contact our team." image={healthImg}>
+      <SimplePage eyebrow="Contact TIJCEF" title="Let's build something together." subtitle="For partnerships, media, programmes or general questions, contact our team." metaDescription="Contact TIJCEF about programmes, partnerships, volunteering, donations or media enquiries." image={healthImg}>
         <div className="mb-20 grid gap-12 lg:grid-cols-5">
           <Reveal className="space-y-8 lg:col-span-2">
             {[
@@ -59,11 +57,11 @@ export default function Contact() {
               <Textarea name="message" aria-label="Message" placeholder="Tell us how we can help…" rows={6} required maxLength={3000} />
               <Button type="submit" size="lg" className="w-full" disabled={busy}>{busy ? "Sending…" : "Send Message"} <ArrowRight className="h-4 w-4" /></Button>
               {status && <p role="status" className="rounded-lg bg-muted p-3 text-sm">{status}</p>}
+              <p className="text-center text-xs text-muted-foreground">By submitting, you agree to our <Link to="/privacy" className="underline hover:text-primary">privacy notice</Link>. Do not include sensitive safeguarding details in this general form.</p>
             </form>
           </Reveal>
         </div>
         <Reveal><div className="aspect-[21/9] overflow-hidden rounded-2xl border bg-muted shadow-card"><iframe title="General location of TIJCEF office in Jalingo" src="https://www.openstreetmap.org/export/embed.html?bbox=11.25%2C8.80%2C11.47%2C9.00&layer=mapnik&marker=8.8937%2C11.3596" className="h-full w-full" loading="lazy" /></div><p className="mt-2 text-xs text-muted-foreground">Map indicates the general Jalingo area. Contact the office for directions before visiting.</p></Reveal>
       </SimplePage>
-    </>
   );
 }

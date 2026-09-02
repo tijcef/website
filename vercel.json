@@ -9,6 +9,7 @@
     { "source": "/pillars", "destination": "/pillars/index.html" },
     { "source": "/programs", "destination": "/programs/index.html" },
     { "source": "/impact", "destination": "/impact/index.html" },
+    { "source": "/media-coverage", "destination": "/media-coverage/index.html" },
     { "source": "/get-involved", "destination": "/get-involved/index.html" },
     { "source": "/donate", "destination": "/donate/index.html" },
     { "source": "/resources", "destination": "/resources/index.html" },

@@ -13,6 +13,10 @@ const Counter = ({ end, duration = 2200, suffix = "", prefix = "" }: Props) => {
   const started = useRef(false);
 
   useEffect(() => {
+    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setValue(end);
+      return;
+    }
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !started.current) {

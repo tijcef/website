@@ -3,21 +3,12 @@ import { Link, NavLink, Route, Routes, useParams } from "react-router-dom";
 import { ArrowRight, CalendarDays, CheckCircle2, ExternalLink, Search, ShieldCheck, Sparkles } from "lucide-react";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageMeta from "@/components/site/PageMeta";
+import AdSlot from "@/components/site/AdSlot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getGrantBySlug, getGrants, type Grant } from "@/lib/wordpress";
+import { getGrantBySlug, getGrants, sanitizeWordPressHtml, type Grant } from "@/lib/wordpress";
 
-const nav = [
-  ["/grants", "Overview"],
-  ["/grants/opportunities", "All Opportunities"],
-  ["/grants/grants", "Grants"],
-  ["/grants/scholarships", "Scholarships"],
-  ["/grants/fellowships", "Fellowships"],
-  ["/grants/jobs", "Jobs"],
-  ["/grants/internships", "Internships"],
-  ["/grants/membership", "Membership"],
-  ["/grants/about", "About"],
-];
+const nav = [["/grants", "Overview"], ["/grants/opportunities", "Opportunities"], ["/grants/membership", "Membership"], ["/grants/about", "About"]];
 const opportunityLabels: Record<string, string> = {
   all: "All Opportunities",
   grant: "Grants",
@@ -51,82 +42,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 }
 
 function Overview() {
-  const hubLinks = [
-    ["/grants/opportunities", "All Opportunities", "Browse every current opportunity published in the hub."],
-    ["/grants/grants", "Grants", "Find funding opportunities for nonprofits and community projects."],
-    ["/grants/scholarships", "Scholarships", "Explore education and study-funding opportunities."],
-    ["/grants/fellowships", "Fellowships", "Discover leadership, professional and research programmes."],
-    ["/grants/jobs", "Jobs", "View current employment opportunities from trusted sources."],
-    ["/grants/internships", "Internships", "Find practical learning and early-career opportunities."],
-  ];
-
-  return (
-    <>
-      <PageMeta
-        title="TIJCEF Grant Hub"
-        description="A transparent grant discovery and readiness platform for Nigerian nonprofits, researchers and community organisations."
-      />
-
-      <section className="bg-secondary text-white">
-        <div className="container grid gap-12 py-20 lg:grid-cols-2 lg:items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest">
-              <ShieldCheck className="h-4 w-4" /> TIJCEF Grant Hub
-            </div>
-            <h1 className="mt-5 text-5xl leading-tight md:text-7xl">
-              Funding opportunities without the noise.
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75">
-              Discover grants, scholarships, fellowships, jobs and internships relevant to Nigerians and Nigerian organisations.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild variant="gold" size="lg">
-                <Link to="/grants/opportunities">Browse all opportunities</Link>
-              </Button>
-              <Button asChild size="lg" className="border border-white/25 bg-white/10">
-                <Link to="/grants/about">How the hub works</Link>
-              </Button>
-            </div>
-          </div>
-
-          <div>
-            <h2 className="mb-5 text-2xl text-white">Explore the Grant Hub</h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {hubLinks.map(([to, title, description]) => (
-                <Link
-                  key={to}
-                  to={to}
-                  className="group rounded-2xl border border-white/15 bg-white/10 p-6 transition hover:-translate-y-1 hover:border-white/30 hover:bg-white/15"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="font-display text-2xl">{title}</div>
-                    <ArrowRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" />
-                  </div>
-                  <div className="mt-2 text-sm leading-relaxed text-white/70">{description}</div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="container py-20">
-        <div className="grid gap-6 md:grid-cols-3">
-          {[
-            [Search, "Discover", "Search opportunities relevant to your mission, geography and stage."],
-            [CheckCircle2, "Check", "Review eligibility, deadlines and source links before investing time."],
-            [Sparkles, "Prepare", "Use readiness guidance to build stronger, compliant applications."],
-          ].map(([Icon, title, body]: any) => (
-            <article key={title} className="rounded-2xl border bg-card p-7 shadow-card">
-              <Icon className="h-7 w-7 text-secondary" />
-              <h2 className="mt-5 text-2xl">{title}</h2>
-              <p className="mt-3 text-muted-foreground">{body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-    </>
-  );
+  return <><PageMeta title="TIJCEF Grant Hub" description="A transparent grant discovery and readiness platform for Nigerian nonprofits, researchers and community organisations." /><section className="bg-secondary text-white"><div className="container grid gap-12 py-20 lg:grid-cols-2 lg:items-center"><div><div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest"><ShieldCheck className="h-4 w-4" /> Responsible opportunity discovery</div><h1 className="mt-5 text-5xl leading-tight md:text-7xl">Funding intelligence without the noise.</h1><p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75">Discover reviewed opportunities, understand eligibility and strengthen your organisation before you apply.</p><div className="mt-8 flex flex-wrap gap-3"><Button asChild variant="gold" size="lg"><Link to="/grants/opportunities">Browse opportunities</Link></Button><Button asChild size="lg" className="border border-white/25 bg-white/10"><Link to="/grants/membership">Membership</Link></Button></div></div><div className="grid gap-4 sm:grid-cols-2">{[["Reviewed", "Source and deadline checks"], ["Transparent", "Direct funder links"], ["Practical", "Readiness guidance"], ["Nigeria-first", "Locally relevant filters"]].map(([value, label]) => <div key={value} className="rounded-2xl border border-white/15 bg-white/10 p-6"><div className="font-display text-2xl">{value}</div><div className="mt-2 text-sm text-white/65">{label}</div></div>)}</div></div></section><section className="container py-20"><div className="grid gap-6 md:grid-cols-3">{[[Search,"Discover","Search opportunities relevant to your mission, geography and stage."],[CheckCircle2,"Check","Review eligibility, deadlines and source links before investing time."],[Sparkles,"Prepare","Use readiness guidance to improve stronger, compliant applications."]].map(([Icon,title,body]: any)=><article key={title} className="rounded-2xl border bg-card p-7 shadow-card"><Icon className="h-7 w-7 text-secondary"/><h2 className="mt-5 text-2xl">{title}</h2><p className="mt-3 text-muted-foreground">{body}</p></article>)}</div></section></>;
 }
 
 function useGrantData() {
@@ -273,6 +189,7 @@ function Opportunities({ opportunityType = "all" }: { opportunityType?: string }
           </article>
         ))}
       </div>
+      {!loading && !error && filtered.length > 0 && <AdSlot placement="directory" />}
 
       {!loading && !error && filtered.length === 0 && (
         <p className="mt-10 rounded-xl border border-dashed p-10 text-center text-muted-foreground">
@@ -328,6 +245,7 @@ function Detail() {
   if (error || !grant) {
     return (
       <section className="container min-h-[60vh] py-16">
+        <PageMeta title="Opportunity Unavailable" description="The requested TIJCEF Grant Hub opportunity is unavailable." noIndex />
         <h1 className="text-4xl">Opportunity unavailable</h1>
         <p className="mt-3 text-muted-foreground">{error}</p>
         <Button asChild className="mt-6">
@@ -343,6 +261,9 @@ function Detail() {
         title={grant.title}
         description={grant.description.slice(0, 155)}
         image={grant.featuredImage || undefined}
+        type="article"
+        publishedTime={grant.date}
+        modifiedTime={grant.modified}
       />
       <header className="container max-w-5xl py-14">
         <Link
@@ -424,14 +345,16 @@ function Detail() {
 
       {grant.content ? (
         <div
-          className="wp-content prose prose-lg mx-auto mt-12 max-w-3xl px-6 prose-headings:font-display prose-a:text-primary prose-img:rounded-xl"
-          dangerouslySetInnerHTML={{ __html: grant.content }}
+          className="prose prose-lg mx-auto mt-12 max-w-3xl px-6 prose-headings:font-display prose-a:text-primary prose-img:rounded-xl"
+          dangerouslySetInnerHTML={{ __html: sanitizeWordPressHtml(grant.content) }}
         />
       ) : (
         <p className="mx-auto mt-12 max-w-3xl whitespace-pre-line px-6 text-lg leading-relaxed">
           {grant.description}
         </p>
       )}
+
+      <AdSlot placement="content" />
 
       <aside className="container mt-12 max-w-4xl rounded-2xl bg-secondary p-8 text-white">
         <h2 className="text-3xl">Ready to apply?</h2>
@@ -455,5 +378,6 @@ function Detail() {
 
 function Membership() { return <section className="container py-16"><PageMeta title="Grant Hub Access" description="Learn how organisations can use TIJCEF Grant Hub responsibly."/><div className="max-w-3xl"><h1 className="text-5xl">Public access, responsible guidance</h1><p className="mt-5 text-lg text-muted-foreground">Opportunity browsing is public. TIJCEF may announce separate readiness clinics or capacity-development activities only after their scope, eligibility and costs have been formally approved.</p><Button asChild className="mt-8"><Link to="/contact">Contact the grants team</Link></Button></div></section>; }
 function About() { return <section className="container py-16"><PageMeta title="About the Grant Hub" description="How TIJCEF reviews and publishes funding opportunities."/><div className="max-w-3xl"><h1 className="text-5xl">Built for trust</h1><p className="mt-5 text-lg leading-relaxed text-muted-foreground">TIJCEF Grant Hub helps Nigerian nonprofits, researchers and community organisations discover opportunities and improve readiness. Listings should include a direct source, review date and transparent verification status. We are not a funder unless a listing explicitly states otherwise.</p></div></section>; }
+function GrantNotFound() { return <section className="container min-h-[60vh] py-16"><PageMeta title="Grant Hub Page Not Found" description="The requested Grant Hub page could not be found." noIndex/><h1 className="text-4xl">This Grant Hub page could not be found.</h1><p className="mt-3 text-muted-foreground">Browse the current opportunity directory or return to the Grant Hub overview.</p><Button asChild className="mt-6"><Link to="/grants/opportunities">Browse opportunities</Link></Button></section>; }
 
-export default function GrantHub() { return <Shell><Routes><Route index element={<Overview/>}/><Route path="opportunities" element={<Opportunities/>}/><Route path="grants" element={<Opportunities opportunityType="grant"/>}/><Route path="scholarships" element={<Opportunities opportunityType="scholarship"/>}/><Route path="fellowships" element={<Opportunities opportunityType="fellowship"/>}/><Route path="jobs" element={<Opportunities opportunityType="job"/>}/><Route path="internships" element={<Opportunities opportunityType="internship"/>}/><Route path="opportunities/:slug" element={<Detail/>}/><Route path="membership" element={<Membership/>}/><Route path="about" element={<About/>}/><Route path="*" element={<Overview/>}/></Routes></Shell>; }
+export default function GrantHub() { return <Shell><Routes><Route index element={<Overview/>}/><Route path="opportunities" element={<Opportunities/>}/><Route path="grants" element={<Opportunities opportunityType="grant"/>}/><Route path="scholarships" element={<Opportunities opportunityType="scholarship"/>}/><Route path="fellowships" element={<Opportunities opportunityType="fellowship"/>}/><Route path="jobs" element={<Opportunities opportunityType="job"/>}/><Route path="internships" element={<Opportunities opportunityType="internship"/>}/><Route path="opportunities/:slug" element={<Detail/>}/><Route path="membership" element={<Membership/>}/><Route path="about" element={<About/>}/><Route path="*" element={<GrantNotFound/>}/></Routes></Shell>; }

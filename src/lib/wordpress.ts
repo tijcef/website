@@ -9,6 +9,7 @@ export type Grant = {
   excerpt: string;
   content: string;
   date: string;
+  modified: string;
   funder: string;
   sector: string;
   country: string;
@@ -35,9 +36,50 @@ export type WordPressPost = {
   excerpt: string;
   content: string;
   date: string;
+  modified: string;
   featuredImage: string;
   featuredImageAlt: string;
 };
+
+export type MediaMention = {
+  id: number | string;
+  title: string;
+  publisher: string;
+  sourceUrl: string;
+  publishedOn: string;
+  mentionType: string;
+  summary: string;
+  verified: boolean;
+};
+
+export function sanitizeWordPressHtml(value: string) {
+  if (!value || typeof DOMParser === "undefined") return value;
+  const documentFragment = new DOMParser().parseFromString(value, "text/html");
+  documentFragment
+    .querySelectorAll("script,style,iframe,object,embed,form,input,button,textarea,select,link,meta,base")
+    .forEach((element) => element.remove());
+
+  documentFragment.body.querySelectorAll("*").forEach((element) => {
+    for (const attribute of Array.from(element.attributes)) {
+      const name = attribute.name.toLowerCase();
+      const rawValue = attribute.value.trim();
+      if (name.startsWith("on") || name === "style" || name === "srcdoc") {
+        element.removeAttribute(attribute.name);
+      }
+      if ((name === "href" || name === "src") && /^(?:javascript|data):/i.test(rawValue)) {
+        element.removeAttribute(attribute.name);
+      }
+    }
+    if (element.tagName === "A" && element.getAttribute("target") === "_blank") {
+      element.setAttribute("rel", "noopener noreferrer");
+    }
+    if (element.tagName === "IMG") {
+      element.setAttribute("loading", "lazy");
+      element.setAttribute("decoding", "async");
+    }
+  });
+  return documentFragment.body.innerHTML;
+}
 
 const text = (value: unknown) =>
   typeof value === "object" && value && "rendered" in value
@@ -101,10 +143,10 @@ const removeRetiredNavigation = (items: NavigationItem[]): NavigationItem[] =>
     }));
 
 const pillarNavigation: NavigationItem[] = [
-  { id: "dignity", label: "Dignity", url: "/category/dignity", children: [] },
-  { id: "agency", label: "Agency", url: "/category/agency", children: [] },
-  { id: "resilience", label: "Resilience", url: "/category/resilience", children: [] },
-  { id: "evidence", label: "Evidence", url: "/category/evidence", children: [] },
+  { id: "dignity", label: "Health, Dignity & WASH", url: "/pillars#dignity", children: [] },
+  { id: "agency", label: "Education, Skills & Leadership", url: "/pillars#agency", children: [] },
+  { id: "resilience", label: "Climate & Community Resilience", url: "/pillars#resilience", children: [] },
+  { id: "evidence", label: "Research, Learning & Advocacy", url: "/pillars#evidence", children: [] },
 ];
 
 const grantNavigation: NavigationItem = {
@@ -125,10 +167,15 @@ const enforceNavigationContract = (items: NavigationItem[]): NavigationItem[] =>
   const sanitized = removeRetiredNavigation(items).map((item) => {
     const label = item.label.trim().toLowerCase();
     if (label === "our pillars" || item.url.replace(/\/$/, "") === "/pillars") {
-      return { ...item, label: "Our Pillars", url: "/pillars", children: pillarNavigation };
+      return { ...item, label: "Our Work", url: "/pillars", children: pillarNavigation };
     }
     if (label === "grant" || label === "grants" || label === "grant hub") {
       return grantNavigation;
+    }
+    if (label === "resources" || item.url.replace(/\/$/, "") === "/resources") {
+      const children = item.children.filter((child) => child.url.replace(/\/$/, "") !== "/media-coverage");
+      children.splice(1, 0, { id: "media-coverage", label: "Media & Mentions", url: "/media-coverage", children: [] });
+      return { ...item, label: "Resources", url: "/resources", children };
     }
     return item;
   });
@@ -136,6 +183,15 @@ const enforceNavigationContract = (items: NavigationItem[]): NavigationItem[] =>
   if (!sanitized.some((item) => item.label === "Grant Hub")) {
     const programsIndex = sanitized.findIndex((item) => item.label.trim().toLowerCase() === "programs");
     sanitized.splice(programsIndex >= 0 ? programsIndex + 1 : sanitized.length, 0, grantNavigation);
+  }
+  if (!sanitized.some((item) => item.url.replace(/\/$/, "") === "/impact")) {
+    const programsIndex = sanitized.findIndex((item) => item.url.replace(/\/$/, "") === "/programs");
+    sanitized.splice(programsIndex >= 0 ? programsIndex + 1 : sanitized.length, 0, {
+      id: "impact",
+      label: "Impact",
+      url: "/impact",
+      children: [],
+    });
   }
   return sanitized;
 };
@@ -177,6 +233,7 @@ const mapGrant = (row: any): Grant => {
     excerpt,
     content,
     date: String(row.date || ""),
+    modified: String(row.modified || row.date || ""),
     funder: String(row.meta?.funder || ""),
     sector: String(row.meta?.sector || "General"),
     country: String(row.meta?.country || "Nigeria"),
@@ -191,7 +248,7 @@ const mapGrant = (row: any): Grant => {
 };
 
 const grantQueryFields =
-  "id,slug,title,excerpt,content,date,meta,_links,_embedded";
+  "id,slug,title,excerpt,content,date,modified,meta,_links,_embedded";
 
 export async function getGrants(): Promise<Grant[]> {
   const response = await apiFetch(
@@ -199,7 +256,7 @@ export async function getGrants(): Promise<Grant[]> {
   );
   if (!response.ok) throw new Error("Grant service is temporarily unavailable.");
   const rows = await response.json();
-  return rows.map(mapGrant);
+  return rows.map(mapGrant).filter((grant: Grant) => grant.verified && grant.applicationUrl);
 }
 
 export async function getGrantBySlug(slug: string): Promise<Grant | null> {
@@ -208,7 +265,8 @@ export async function getGrantBySlug(slug: string): Promise<Grant | null> {
   );
   if (!response.ok) throw new Error("This opportunity is temporarily unavailable.");
   const rows = await response.json();
-  return rows[0] ? mapGrant(rows[0]) : null;
+  const grant = rows[0] ? mapGrant(rows[0]) : null;
+  return grant?.verified && grant.applicationUrl ? grant : null;
 }
 
 const mapPost = (row: any): WordPressPost => {
@@ -220,6 +278,7 @@ const mapPost = (row: any): WordPressPost => {
     excerpt: stripHtml(String(row.excerpt?.rendered || "")),
     content: String(row.content?.rendered || ""),
     date: String(row.date || ""),
+    modified: String(row.modified || row.date || ""),
     featuredImage: featuredMedia.url,
     featuredImageAlt: featuredMedia.alt,
   };
@@ -237,7 +296,7 @@ export async function getPostsByCategory(
   if (!category) throw new Error("This content section has not been published.");
 
   const postsResponse = await apiFetch(
-    `/wp-json/wp/v2/posts?categories=${category.id}&per_page=24&_embed=1`
+    `/wp-json/wp/v2/posts?categories=${category.id}&per_page=24&orderby=date&order=desc&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,content,date,modified,_embedded`
   );
   if (!postsResponse.ok) throw new Error("Posts are temporarily unavailable.");
   const posts = await postsResponse.json();
@@ -249,11 +308,31 @@ export async function getPostsByCategory(
 
 export async function getPostBySlug(slug: string): Promise<WordPressPost | null> {
   const response = await apiFetch(
-    `/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=1`
+    `/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,content,date,modified,_embedded`
   );
   if (!response.ok) throw new Error("This story is temporarily unavailable.");
   const posts = await response.json();
   return posts[0] ? mapPost(posts[0]) : null;
+}
+
+export async function getMediaCoverage(): Promise<MediaMention[]> {
+  const response = await apiFetch("/wp-json/tijcef/v1/coverage");
+  if (!response.ok) throw new Error("The media tracker is temporarily unavailable.");
+  const payload = await response.json();
+  const rows = Array.isArray(payload) ? payload : payload.items;
+  if (!Array.isArray(rows)) return [];
+  return rows
+    .map((row: any) => ({
+      id: row.id ?? row.sourceUrl ?? row.source_url ?? row.title,
+      title: String(row.title || ""),
+      publisher: String(row.publisher || "Independent source"),
+      sourceUrl: String(row.sourceUrl || row.source_url || ""),
+      publishedOn: String(row.publishedOn || row.published_on || ""),
+      mentionType: String(row.mentionType || row.mention_type || "Media"),
+      summary: String(row.summary || ""),
+      verified: Boolean(row.verified),
+    }))
+    .filter((item: MediaMention) => item.verified && item.title && /^https?:\/\//i.test(item.sourceUrl));
 }
 
 export async function submitPublicForm(path: string, payload: Record<string, unknown>) {

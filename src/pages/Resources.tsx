@@ -2,21 +2,17 @@ import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import SimplePage from "@/components/site/SimplePage";
 import Reveal from "@/components/site/Reveal";
-import { FileText, BookOpen, Image as ImageIcon, Newspaper, ArrowRight, Globe2 } from "lucide-react";
+import { FileText, BookOpen, Image as ImageIcon, Newspaper, ArrowRight } from "lucide-react";
 import researchImg from "@/assets/research.jpg";
 
 const items = [
-  { type: "Annual Report", icon: FileText, title: "TIJCEF 2025 Annual Report", date: "March 2026", desc: "Our full year in review\u00A0 programs, finances, evaluations, and the road ahead.", href: "/TIJCEF_ANNUAL_REPORT_2025.pdf" },
-  { type: "Research", icon: BookOpen, title: "State of Menstrual Health in Taraba and Adamawa States", date: "January 2026", desc: "Contextual overview of access barriers, knowledge gaps, and WASH challenges affecting adolescent girls.", href: "/resources/menstrual-health-taraba-adamawa", internal: true },
-  { type: "Toolkit", icon: FileText, title: "Pad-A-Girl School Implementation Toolkit", date: "November 2025", desc: "Free, open-source guide for schools and partners.", href: "/resources/pad-a-girl-toolkit", internal: true },
-  { type: "Press", icon: Newspaper, title: "Vanguard: Humanitarian Advocate Champions Grassroots Empowerment for Women & Youth", date: "February 2026", desc: "Vanguard Nigeria features TIJCEF's grassroots work empowering women and youth across Nigeria.", href: "https://www.vanguardngr.com/2026/02/humanitarian-advocate-champions-grassroots-empowerment-for-women-youth-in-nigeria/" },
-  { type: "Press", icon: Newspaper, title: "The Sun: Tijwun's Role in Promoting Women, Youth & Community Empowerment", date: "2025", desc: "The Sun Nigeria spotlights Emmanuel Sunday and TIJCEF's contributions to community empowerment.", href: "https://thesun.ng/emmanuel-sunday-tijwuns-role-in-promoting-women-youth-community-empowerment-in-nigeria/" },
-  { type: "Press", icon: Newspaper, title: "Independent: TIJCEF in Collaboration with Lead the Girl Child Foundation", date: "2025", desc: "Independent Nigeria covers our partnership advancing girl-child education and dignity.", href: "https://independent.ng/tijwun-care-and-empowerment-foundation-in-collaboration-with-lead-the-girl-child-foundation/" },
-  { type: "Press", icon: Newspaper, title: "UN SDG Partnerships: Tijwun Care and Empowerment Foundation (TIJCEF)", date: "2025", desc: "TIJCEF is featured on the United Nations SDG Partnerships Platform for our contributions to the Sustainable Development Goals.", href: "https://sdgs.un.org/partnerships/tijwun-care-and-empowerment-foundation-tijcef" },
-  { type: "Directory", icon: Globe2, title: "NNNGO: Listed Among Nigeria's Thematic Nonprofits", date: "2025", desc: "TIJCEF is recognized in the Nigerian Network of NGOs directory by thematic areas.", href: "https://nnngo.org/directory-by-thematic-areas/" },
-  { type: "Directory", icon: FileText, title: "GovTribe: TIJCEF Vendor Profile", date: "2025", desc: "Our official vendor profile on GovTribe's federal contracting and grants intelligence platform.", href: "https://govtribe.com/vendors/tijwun-care-and-empowerment-foundation-stgv7" },
-  { type: "Blog", icon: BookOpen, title: "What we learned from 12 community circles", date: "September 2025", desc: "Field reflections from our community wellbeing program.", href: "/resources/community-circles", internal: true },
-  { type: "Gallery", icon: ImageIcon, title: "Faces of Empowerment 2025", date: "August 2025", desc: "Portraits and stories from across our programs.", href: "/resources/faces-of-empowerment-2025", internal: true },
+  { type: "Annual Report", icon: FileText, title: "TIJCEF 2025 Annual Report - Corrected Edition", date: "September 2026", desc: "A reconciled account of TIJCEF's programme framework, approved reach figures, learning and priorities.", href: "/TIJCEF_ANNUAL_REPORT_2025.pdf" },
+  { type: "Media Kit", icon: Newspaper, title: "TIJCEF Media and Press Kit", date: "September 2026", desc: "Verified organisational profile, approved impact figures, programme areas, leadership and media contacts.", href: "/TIJCEF_PRESS_KIT.pdf" },
+  { type: "Media Tracker", icon: Newspaper, title: "Media Coverage and Public Mentions", date: "Updated continuously", desc: "A reviewed record of independent coverage, official listings and public references to TIJCEF.", href: "/media-coverage", internal: true },
+  { type: "Research", icon: BookOpen, title: "State of Menstrual Health in Taraba and Adamawa States", date: "January 2026", desc: "Contextual overview of access barriers, knowledge gaps and WASH challenges affecting adolescent girls.", href: "/resources/menstrual-health-taraba-adamawa", internal: true },
+  { type: "Toolkit", icon: FileText, title: "Pad-A-Girl School Implementation Toolkit", date: "November 2025", desc: "An open guide for school and community menstrual health education.", href: "/resources/pad-a-girl-toolkit", internal: true },
+  { type: "Blog", icon: BookOpen, title: "What we learned from 12 community circles", date: "September 2025", desc: "Field reflections from TIJCEF's community wellbeing conversations.", href: "/resources/community-circles", internal: true },
+  { type: "Gallery", icon: ImageIcon, title: "Faces of Empowerment 2025", date: "August 2025", desc: "Portraits and stories from across TIJCEF programmes.", href: "/resources/faces-of-empowerment-2025", internal: true },
 ];
 
 const Resources = () => {
@@ -53,7 +49,7 @@ const Resources = () => {
               <div className="text-xs text-muted-foreground mb-3">{r.date}</div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{r.desc}</p>
               <div className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                {r.href ? "Read article" : "Read more"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                {r.type === "Annual Report" || r.type === "Media Kit" ? "Open document" : r.href ? "Open resource" : "Read more"} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </article>
           </Wrapper>

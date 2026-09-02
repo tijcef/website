@@ -5,12 +5,13 @@ import Reveal from "@/components/site/Reveal";
 import SimplePage from "@/components/site/SimplePage";
 import { Button } from "@/components/ui/button";
 import researchImg from "@/assets/research.jpg";
+import { approvedImpact } from "@/data/programmeAreas";
 
 const headlineResults = [
-  { value: 3500, suffix: "+", label: "People reached cumulatively" },
-  { value: 1200, suffix: "+", label: "People reached in 2026" },
-  { value: 4, suffix: "", label: "Programme pillars" },
-  { value: 3, suffix: "", label: "States with activities" },
+  { value: approvedImpact.cumulativeReach, suffix: "+", label: "People reached cumulatively" },
+  { value: approvedImpact.reach2026, suffix: "+", label: "People reached in 2026" },
+  { value: approvedImpact.programmeAreas, suffix: "", label: "Programme areas" },
+  { value: approvedImpact.statesWithActivities, suffix: "", label: "States with activities" },
 ];
 
 const activityEvidence = [
@@ -19,24 +20,28 @@ const activityEvidence = [
     place: "Yola · February 2026",
     result: "Approximately 400 girls engaged",
     detail: "Health education and dignity support delivered through a school-based outreach.",
+    source: "Activity register and programme documentation",
   },
   {
     title: "School outreach at Adroit International Academy",
     place: "Yola · 2026",
     result: "Approximately 200 learners engaged",
-    detail: "Age-appropriate learning and wellbeing engagement with students in a school setting.",
+    detail: "Menstrual health and confidence-building engagement delivered with Lead the Girl Foundation.",
+    source: "Partner and programme documentation",
   },
   {
     title: "Youth Empowerment Seminar",
     place: "Girei LGA · 2026",
     result: "50 young people trained",
     detail: "Entrepreneurial skills, self-reliance and leadership development at Zion Centre.",
+    source: "Attendance and activity records",
   },
   {
     title: "Women’s Leadership Empowerment",
     place: "Taraba State · 2026",
     result: "45 women engaged",
     detail: "A focused programme supporting women’s leadership, participation and agency.",
+    source: "Attendance and activity records",
   },
 ];
 
@@ -45,7 +50,7 @@ export default function Impact() {
     <SimplePage
       eyebrow="Impact and Learning"
       title="Evidence people can see. Learning communities can use."
-      subtitle="We report verified reach, document how activities were delivered and strengthen our measurement as TIJCEF grows."
+      subtitle="We report approved reach figures, show how activities were documented and distinguish immediate delivery from longer-term change."
       metaDescription="Explore TIJCEF's verified reach, 2026 programme evidence, measurement approach and accountability commitments across Nigeria."
       image={researchImg}
     >
@@ -55,7 +60,7 @@ export default function Impact() {
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">Impact at a glance</div>
             <h2 id="impact-at-a-glance" className="mt-4 text-4xl md:text-5xl">Verified figures, presented with context.</h2>
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-              Figures are drawn from TIJCEF programme records and are reviewed before public reporting. They describe people reached, not guaranteed long-term outcomes.
+              Figures are drawn from TIJCEF programme records and reviewed before public reporting. They describe documented reach, not unique-person counts across every year or guaranteed long-term outcomes.
             </p>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -90,11 +95,41 @@ export default function Impact() {
                   {item.result}
                 </div>
                 <p className="mt-4 leading-relaxed text-muted-foreground">{item.detail}</p>
+                <div className="mt-5 border-t pt-4 text-xs text-muted-foreground">
+                  <strong className="text-foreground">Evidence source:</strong> {item.source}
+                </div>
               </article>
             </Reveal>
           ))}
         </div>
       </section>
+
+      <Reveal>
+        <section className="mb-20 rounded-3xl border bg-card p-8 shadow-card md:p-12" aria-labelledby="measurement-framework">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">Measurement framework</div>
+              <h2 id="measurement-framework" className="mt-4 text-4xl md:text-5xl">From activity to outcome.</h2>
+              <p className="mt-5 leading-relaxed text-muted-foreground">
+                TIJCEF uses a proportionate results chain for each project. Indicators and tools are agreed before delivery, then reviewed with partners and programme teams.
+              </p>
+            </div>
+            <ol className="grid gap-4 sm:grid-cols-2">
+              {[
+                ["1. Inputs", "People, partner contributions, materials and approved budgets."],
+                ["2. Activities", "Sessions, outreach, training, service days and research tasks delivered."],
+                ["3. Outputs", "Attendance, completion, materials distributed and evidence produced."],
+                ["4. Outcomes", "Changes in knowledge, confidence, practice or community capacity measured where feasible."],
+              ].map(([title, text]) => (
+                <li key={title} className="rounded-2xl bg-muted/60 p-6">
+                  <h3 className="text-xl">{title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      </Reveal>
 
       <Reveal>
         <section className="mb-20 grid gap-6 lg:grid-cols-3" aria-label="TIJCEF impact standards">
@@ -119,7 +154,7 @@ export default function Impact() {
               <div className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">Accountability in action</div>
               <h2 className="mt-4 max-w-2xl text-3xl md:text-4xl">Read the evidence behind our public commitments.</h2>
               <p className="mt-4 max-w-2xl leading-relaxed text-primary-foreground/80">
-                Our annual report, safeguarding commitments and transparency page explain how TIJCEF manages programmes, risk and public reporting.
+                Our corrected annual report, safeguarding commitments, media tracker and transparency centre explain how TIJCEF manages programmes, risk, learning and public claims.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
@@ -128,6 +163,9 @@ export default function Impact() {
               </Button>
               <Button asChild variant="heroOutline" size="lg">
                 <Link to="/transparency">Transparency centre</Link>
+              </Button>
+              <Button asChild variant="heroOutline" size="lg">
+                <Link to="/media-coverage">Media and mentions</Link>
               </Button>
             </div>
           </div>

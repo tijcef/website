@@ -38,8 +38,22 @@ describe("TIJCEF indexing and advertising safeguards", () => {
   it("keeps verified public impact figures consistent", () => {
     const homepage = read("../pages/Index.tsx");
     const impact = read("../pages/Impact.tsx");
-    expect(homepage).toContain("end: 3500");
-    expect(impact).toContain("value: 3500");
+    const programmeData = read("../data/programmeAreas.ts");
+    expect(programmeData).toContain("cumulativeReach: 3500");
+    expect(programmeData).toContain("reach2026: 1200");
+    expect(homepage).toContain("approvedImpact.cumulativeReach");
+    expect(impact).toContain("approvedImpact.cumulativeReach");
     expect(homepage).not.toContain("end: 8500");
+  });
+
+  it("publishes only editor-verified grants and media mentions", () => {
+    const client = read("../lib/wordpress.ts");
+    const plugin = read("../../wordpress-plugin/tijcef-core/tijcef-core.php");
+    expect(client).toContain("grant.verified && grant.applicationUrl");
+    expect(client).toContain("/wp-json/tijcef/v1/coverage");
+    expect(client).toContain("row.sourceUrl || row.source_url");
+    expect(plugin).toContain("Automated exact-name news scan");
+    expect(plugin).toContain("post_status' => 'draft'");
+    expect(plugin).toContain("tijcef_coverage_verified");
   });
 });

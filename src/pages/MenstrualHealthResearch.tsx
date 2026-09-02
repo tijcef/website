@@ -27,26 +27,10 @@ const observations = [
 ];
 
 const pillars = [
-  {
-    icon: HeartPulse,
-    title: "Dignity",
-    text: "Advancing menstrual health, wellbeing and respectful access to essential support.",
-  },
-  {
-    icon: Sparkles,
-    title: "Agency",
-    text: "Equipping girls and young people to learn, lead and make informed decisions.",
-  },
-  {
-    icon: Leaf,
-    title: "Resilience",
-    text: "Helping communities prepare, adapt and respond to environmental challenges.",
-  },
-  {
-    icon: BookOpen,
-    title: "Evidence",
-    text: "Using research, impact measurement and learning to strengthen programmes.",
-  },
+  { icon: HeartPulse, title: "Health", text: "Improving menstrual hygiene and wellbeing" },
+  { icon: Sparkles, title: "Gender Equity", text: "Reducing stigma and supporting girls' participation" },
+  { icon: Leaf, title: "Climate Action", text: "Promoting sustainable sanitation and waste practices" },
+  { icon: BookOpen, title: "Research", text: "Strengthening evidence-based programming" },
 ];
 
 const MenstrualHealthResearch = () => (
@@ -144,7 +128,7 @@ const MenstrualHealthResearch = () => (
 
       <Reveal>
         <section>
-          <h2 className="font-display text-3xl mb-6">How This Research Connects to TIJCEF’s Four Pillars</h2>
+          <h2 className="font-display text-3xl mb-6">Link to TIJCEF's Four Pillars</h2>
           <div className="grid sm:grid-cols-2 gap-6">
             {pillars.map((p) => (
               <div key={p.title} className="p-6 rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-elegant">
