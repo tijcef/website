@@ -27,6 +27,7 @@ const Transparency = lazy(() => import("./pages/Transparency.tsx"));
 const Governance = lazy(() => import("./pages/Governance.tsx"));
 const Impact = lazy(() => import("./pages/Impact.tsx"));
 const MediaCoverage = lazy(() => import("./pages/MediaCoverage.tsx"));
+const Verify = lazy(() => import("./pages/Verify.tsx"));
 
 const queryClient = new QueryClient();
 
@@ -78,6 +79,7 @@ const App = () => (
             <Route path="/grants/*" element={<GrantHub />} />
             <Route path="/category/:slug" element={<Category />} />
             <Route path="/post/:slug" element={<Post />} />
+            <Route path="/verify" element={<Verify />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/transparency" element={<Transparency />} />
             <Route path="/safeguarding" element={<Governance page="safeguarding" />} />
