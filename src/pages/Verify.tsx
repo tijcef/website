@@ -43,7 +43,7 @@ export default function Verify() {
 
   return (
     <SiteLayout>
-      <PageMeta title="Verify an Official TIJCEF Document" description="Verify certificates, staff IDs, appointment letters, partnership letters and other official documents issued by TIJCEF." />
+      <PageMeta noIndex title="Verify an Official TIJCEF Document" description="Verify certificates, staff IDs, appointment letters, partnership letters and other official documents issued by TIJCEF." />
       <main className="min-h-[70vh] bg-slate-50 py-14 md:py-20">
         <section className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="text-center">

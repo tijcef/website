@@ -5,12 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/postbuild.mjs",
+    "build": "vite build && vite build --ssr src/prerender.tsx --outDir .prerender && node scripts/postbuild.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "refresh:content": "node scripts/refresh-content.mjs",
+    "build:refresh": "npm run refresh:content && npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

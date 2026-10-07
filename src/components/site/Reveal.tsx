@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 const Reveal = ({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {

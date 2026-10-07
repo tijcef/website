@@ -19,7 +19,7 @@ npm install
 npm run dev
 ```
 
-Set `VITE_WORDPRESS_URL=https://studio.tijcef.org`. This dedicated WordPress installation must not be confused with the ClearFact CMS.
+Set `VITE_WORDPRESS_URL=https://studio.tijcef.org`. This is the dedicated TIJCEF WordPress installation.
 
 ## WordPress
 

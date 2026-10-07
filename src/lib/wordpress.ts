@@ -353,3 +353,16 @@ export async function verifyDonation(reference: string) {
 }
 
 export { WP_URL };
+
+/** Public TIJCEF updates, newest first, independent of category. */
+export async function getLatestPosts(page = 1, perPage = 6): Promise<WordPressPost[]> {
+  const response = await apiFetch(`/wp-json/wp/v2/posts?status=publish&per_page=${perPage}&page=${page}&orderby=date&order=desc&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,content,date,modified,_embedded`);
+  if (response.status === 400) {
+    const error = await response.json();
+    if (error.code === 'rest_post_invalid_page_number') return [];
+  }
+  if (!response.ok) throw new Error('Recent TIJCEF updates are temporarily unavailable.');
+  const rows = await response.json();
+  if (!Array.isArray(rows)) throw new Error('Invalid TIJCEF updates response.');
+  return rows.filter(row => row.slug).map(mapPost);
+}

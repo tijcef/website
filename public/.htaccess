@@ -6,17 +6,19 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} ^tijcef\.org$ [NC]
 RewriteRule ^ https://www.tijcef.org%{REQUEST_URI} [R=301,L,NE]
 
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
+# THE_REQUEST prevents these redirects firing for internal index.html rewrites.
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html(?:[?\s]) [NC]
+RewriteRule ^(.*/)?index\.html$ /$1 [R=301,L,NE]
+RewriteCond %{THE_REQUEST} \s/+(.+?)/+(?:[?\s])
+RewriteRule ^(.+?)/+$ /$1 [R=301,L,NE]
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://www.tijcef.org%{REQUEST_URI} [R=301,L,NE]
+RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
+RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+RewriteRule ^(.+?)/?$ $1/index.html [L]
 
-# Dynamic content normally has a pre-rendered directory generated at build time.
-# If a newly published item is requested before that snapshot exists, serve the
-# React shell with HTTP 200 so the page can load from WordPress instead of being
-# incorrectly reported as a 404. The next deploy creates its SEO snapshot.
-RewriteRule ^post/[a-z0-9-]+/?$ /index.html [L,NC]
-RewriteRule ^category/[a-z0-9-]+/?$ /index.html [L,NC]
-RewriteRule ^grants/opportunities/[a-z0-9-]+/?$ /index.html [L,NC]
+RewriteRule ^post/[^/]+/?$ post-shell.html [L]
 
 ErrorDocument 404 /404.html
 

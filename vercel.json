@@ -2,66 +2,316 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "trailingSlash": false,
   "redirects": [
-    { "source": "/index.html", "destination": "/", "permanent": true }
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "tijcef.org"
+        }
+      ],
+      "destination": "https://www.tijcef.org/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*/index.html",
+      "destination": "/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/about", "destination": "/about/index.html" },
-    { "source": "/pillars", "destination": "/pillars/index.html" },
-    { "source": "/programs", "destination": "/programs/index.html" },
-    { "source": "/impact", "destination": "/impact/index.html" },
-    { "source": "/media-coverage", "destination": "/media-coverage/index.html" },
-    { "source": "/get-involved", "destination": "/get-involved/index.html" },
-    { "source": "/donate", "destination": "/donate/index.html" },
-    { "source": "/resources", "destination": "/resources/index.html" },
-    { "source": "/resources/pad-a-girl-toolkit", "destination": "/resources/pad-a-girl-toolkit/index.html" },
-    { "source": "/resources/community-circles", "destination": "/resources/community-circles/index.html" },
-    { "source": "/resources/menstrual-health-taraba-adamawa", "destination": "/resources/menstrual-health-taraba-adamawa/index.html" },
-    { "source": "/resources/faces-of-empowerment-2025", "destination": "/resources/faces-of-empowerment-2025/index.html" },
-    { "source": "/contact", "destination": "/contact/index.html" },
-    { "source": "/verify", "destination": "/verify/index.html" },
-    { "source": "/grants", "destination": "/grants/index.html" },
-    { "source": "/grants/opportunities", "destination": "/grants/opportunities/index.html" },
-    { "source": "/grants/grants", "destination": "/grants/grants/index.html" },
-    { "source": "/grants/scholarships", "destination": "/grants/scholarships/index.html" },
-    { "source": "/grants/fellowships", "destination": "/grants/fellowships/index.html" },
-    { "source": "/grants/jobs", "destination": "/grants/jobs/index.html" },
-    { "source": "/grants/internships", "destination": "/grants/internships/index.html" },
-    { "source": "/grants/membership", "destination": "/grants/membership/index.html" },
-    { "source": "/grants/about", "destination": "/grants/about/index.html" },
-    { "source": "/privacy", "destination": "/privacy/index.html" },
-    { "source": "/transparency", "destination": "/transparency/index.html" },
-    { "source": "/safeguarding", "destination": "/safeguarding/index.html" },
-    { "source": "/complaints", "destination": "/complaints/index.html" },
-    { "source": "/donation-policy", "destination": "/donation-policy/index.html" },
-    { "source": "/terms", "destination": "/terms/index.html" },
-    { "source": "/accessibility", "destination": "/accessibility/index.html" },
-    { "source": "/thank-you", "destination": "/thank-you/index.html" },
-    { "source": "/post/:slug", "destination": "/post/:slug/index.html" },
-    { "source": "/category/:slug", "destination": "/category/:slug/index.html" },
-    { "source": "/grants/opportunities/:slug", "destination": "/grants/opportunities/:slug/index.html" }
+    {
+      "source": "/about",
+      "destination": "/about/index.html"
+    },
+    {
+      "source": "/pillars",
+      "destination": "/pillars/index.html"
+    },
+    {
+      "source": "/programs",
+      "destination": "/programs/index.html"
+    },
+    {
+      "source": "/impact",
+      "destination": "/impact/index.html"
+    },
+    {
+      "source": "/media-coverage",
+      "destination": "/media-coverage/index.html"
+    },
+    {
+      "source": "/get-involved",
+      "destination": "/get-involved/index.html"
+    },
+    {
+      "source": "/donate",
+      "destination": "/donate/index.html"
+    },
+    {
+      "source": "/resources",
+      "destination": "/resources/index.html"
+    },
+    {
+      "source": "/resources/pad-a-girl-toolkit",
+      "destination": "/resources/pad-a-girl-toolkit/index.html"
+    },
+    {
+      "source": "/resources/community-circles",
+      "destination": "/resources/community-circles/index.html"
+    },
+    {
+      "source": "/resources/menstrual-health-taraba-adamawa",
+      "destination": "/resources/menstrual-health-taraba-adamawa/index.html"
+    },
+    {
+      "source": "/resources/faces-of-empowerment-2025",
+      "destination": "/resources/faces-of-empowerment-2025/index.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact/index.html"
+    },
+    {
+      "source": "/grants",
+      "destination": "/grants/index.html"
+    },
+    {
+      "source": "/grants/opportunities",
+      "destination": "/grants/opportunities/index.html"
+    },
+    {
+      "source": "/grants/grants",
+      "destination": "/grants/grants/index.html"
+    },
+    {
+      "source": "/grants/scholarships",
+      "destination": "/grants/scholarships/index.html"
+    },
+    {
+      "source": "/grants/fellowships",
+      "destination": "/grants/fellowships/index.html"
+    },
+    {
+      "source": "/grants/jobs",
+      "destination": "/grants/jobs/index.html"
+    },
+    {
+      "source": "/grants/internships",
+      "destination": "/grants/internships/index.html"
+    },
+    {
+      "source": "/grants/membership",
+      "destination": "/grants/membership/index.html"
+    },
+    {
+      "source": "/grants/about",
+      "destination": "/grants/about/index.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy/index.html"
+    },
+    {
+      "source": "/transparency",
+      "destination": "/transparency/index.html"
+    },
+    {
+      "source": "/safeguarding",
+      "destination": "/safeguarding/index.html"
+    },
+    {
+      "source": "/complaints",
+      "destination": "/complaints/index.html"
+    },
+    {
+      "source": "/donation-policy",
+      "destination": "/donation-policy/index.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms/index.html"
+    },
+    {
+      "source": "/accessibility",
+      "destination": "/accessibility/index.html"
+    },
+    {
+      "source": "/thank-you",
+      "destination": "/thank-you/index.html"
+    },
+    {
+      "source": "/category/:slug",
+      "destination": "/category/:slug/index.html"
+    },
+    {
+      "source": "/grants/opportunities/:slug",
+      "destination": "/grants/opportunities/:slug/index.html"
+    },
+    {
+      "source": "/verify",
+      "destination": "/verify/index.html"
+    },
+    {
+      "source": "/category/evidence",
+      "destination": "/category/evidence/index.html"
+    },
+    {
+      "source": "/category/resilience",
+      "destination": "/category/resilience/index.html"
+    },
+    {
+      "source": "/category/uncategorized",
+      "destination": "/category/uncategorized/index.html"
+    },
+    {
+      "source": "/category/reports-publications",
+      "destination": "/category/reports-publications/index.html"
+    },
+    {
+      "source": "/category/impact-stories",
+      "destination": "/category/impact-stories/index.html"
+    },
+    {
+      "source": "/category/dignity",
+      "destination": "/category/dignity/index.html"
+    },
+    {
+      "source": "/category/gallery",
+      "destination": "/category/gallery/index.html"
+    },
+    {
+      "source": "/category/agency",
+      "destination": "/category/agency/index.html"
+    },
+    {
+      "source": "/category/toolkits",
+      "destination": "/category/toolkits/index.html"
+    },
+    {
+      "source": "/category/current-programs",
+      "destination": "/category/current-programs/index.html"
+    },
+    {
+      "source": "/category/completed-projects",
+      "destination": "/category/completed-projects/index.html"
+    },
+    {
+      "source": "/post/inside-tijcefs-school-takeover-day-staff-volunteers-lead-full-day-learning-in-yola",
+      "destination": "/post/inside-tijcefs-school-takeover-day-staff-volunteers-lead-full-day-learning-in-yola/index.html"
+    },
+    {
+      "source": "/post/tijcef-strengthens-evidence-based-programming-through-monitoring-and-impact-documentation",
+      "destination": "/post/tijcef-strengthens-evidence-based-programming-through-monitoring-and-impact-documentation/index.html"
+    },
+    {
+      "source": "/post/tijcef-strengthens-community-resilience-through-volunteer-training-in-yola",
+      "destination": "/post/tijcef-strengthens-community-resilience-through-volunteer-training-in-yola/index.html"
+    },
+    {
+      "source": "/post/tijcef-builds-youth-resilience-through-empowerment-seminar-in-girei",
+      "destination": "/post/tijcef-builds-youth-resilience-through-empowerment-seminar-in-girei/index.html"
+    },
+    {
+      "source": "/post/tijcef-holds-two-day-leadership-training-to-strengthen-capacity-in-january-2026",
+      "destination": "/post/tijcef-holds-two-day-leadership-training-to-strengthen-capacity-in-january-2026/index.html"
+    },
+    {
+      "source": "/post/tijcef-extends-care-to-children-at-katsina-orphanage-through-2023-outreach",
+      "destination": "/post/tijcef-extends-care-to-children-at-katsina-orphanage-through-2023-outreach/index.html"
+    },
+    {
+      "source": "/post/tijcef-promotes-stem-education-among-400-girls-in-yola",
+      "destination": "/post/tijcef-promotes-stem-education-among-400-girls-in-yola/index.html"
+    },
+    {
+      "source": "/post/tijcef-gains-international-visibility-through-its-listing-on-the-united-nations-sdg",
+      "destination": "/post/tijcef-gains-international-visibility-through-its-listing-on-the-united-nations-sdg/index.html"
+    },
+    {
+      "source": "/post/gallery-tijcef-stem-empowerment-yola",
+      "destination": "/post/gallery-tijcef-stem-empowerment-yola/index.html"
+    },
+    {
+      "source": "/post/stem-empowerment-400-girls-yola",
+      "destination": "/post/stem-empowerment-400-girls-yola/index.html"
+    },
+    {
+      "source": "/post/tijcef-lead-the-girl-foundation-empower-200-girls-at-adroit-international-academy-yola",
+      "destination": "/post/tijcef-lead-the-girl-foundation-empower-200-girls-at-adroit-international-academy-yola/index.html"
+    },
+    {
+      "source": "/grants/opportunities/who-opens-2026-2027-impact-grants-of-up-to-15000-for-african-researchers-and-institutions",
+      "destination": "/grants/opportunities/who-opens-2026-2027-impact-grants-of-up-to-15000-for-african-researchers-and-institutions/index.html"
+    },
+    {
+      "source": "/grants/opportunities/african-water-facility-opens-2026-call-for-proposals-with-grants-of-up-to-e1-million",
+      "destination": "/grants/opportunities/african-water-facility-opens-2026-call-for-proposals-with-grants-of-up-to-e1-million/index.html"
+    },
+    {
+      "source": "/grants/opportunities/third-wave-fund-opens-mobilize-power-fund-grants-of-up-to-20000",
+      "destination": "/grants/opportunities/third-wave-fund-opens-mobilize-power-fund-grants-of-up-to-20000/index.html"
+    },
+    {
+      "source": "/grants/opportunities/women-led-organisations-can-access-up-to-e5000-womenpower2030-grant",
+      "destination": "/grants/opportunities/women-led-organisations-can-access-up-to-e5000-womenpower2030-grant/index.html"
+    },
+    {
+      "source": "/post/:slug",
+      "destination": "/post-shell.html"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
       ]
     },
     {
       "source": "/thank-you",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, follow" },
-        { "key": "Cache-Control", "value": "no-store" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
       ]
     },
     {
       "source": "/404.html",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, follow" },
-        { "key": "Cache-Control", "value": "no-store" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
       ]
     }
   ]

@@ -1,3 +1,4 @@
+import RecentWork from "@/components/site/RecentWork";
 import { Link } from "react-router-dom";
 import { ArrowRight, HeartPulse, Sprout, Microscope, Sparkles, Quote, ShieldCheck, Globe2, Users, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,12 +31,6 @@ const stats = [
   { end: approvedImpact.reach2026, suffix: "+", label: "People reached in 2026" },
   { end: approvedImpact.programmeAreas, suffix: "", label: "Programme areas" },
   { end: approvedImpact.statesWithActivities, suffix: "", label: "States with recorded activities" },
-];
-
-const stories = [
-  { quote: "Menstrual health education and dignity support were delivered at Government Girls College, Yola, engaging approximately 400 girls.", name: "Menstrual Health Outreach", role: "Yola · February 2026", img: girlsImg, imgAlt: "A TIJCEF team member speaking during a community programme" },
-  { quote: "Entrepreneurial skills and self-reliance training were delivered to 50 young people at Zion Centre in Girei LGA.", name: "Youth Empowerment Seminar", role: "Adamawa · 2026", img: aminaImg, imgAlt: "A TIJCEF programme participant" },
-  { quote: "TIJCEF's programme records report more than 1,200 people reached during 2026 across its community activities.", name: "2026 Programme Update", role: "Subject to annual reporting review", img: healthImg, imgAlt: "Students displaying menstrual health materials during a TIJCEF school programme" },
 ];
 
 const Index = () => {
@@ -215,19 +210,19 @@ const Index = () => {
             </Reveal>
             <div className="grid sm:grid-cols-2 gap-5">
               {[
-                { icon: ShieldCheck, title: "Legal & Governance", desc: "A registered Nigerian nonprofit with named programme, finance, operations and safeguarding responsibilities." },
-                { icon: Globe2, title: "SDG & Local Alignment", desc: "Programme areas are mapped to relevant SDGs and grounded in documented community priorities." },
-                { icon: Users, title: "Safeguarding & Participation", desc: "Consent, responsible storytelling and community participation are built into programme delivery." },
-                { icon: Award, title: "Evidence & Reporting", desc: "Reach figures are distinguished from outcomes, reviewed against programme records and reported with context." },
+                { icon: ShieldCheck, title: "Legal & Governance", to: "/transparency", desc: "A registered Nigerian nonprofit with named programme, finance, operations and safeguarding responsibilities." },
+                { icon: Globe2, title: "SDG & Local Alignment", to: "/pillars", desc: "Programme areas are mapped to relevant SDGs and grounded in documented community priorities." },
+                { icon: Users, title: "Safeguarding & Participation", to: "/safeguarding", desc: "Consent, responsible storytelling and community participation are built into programme delivery." },
+                { icon: Award, title: "Evidence & Reporting", to: "/impact", desc: "Reach figures are distinguished from outcomes, reviewed against programme records and reported with context." },
               ].map((b, i) => (
                 <Reveal key={b.title} delay={i * 80}>
-                  <div className="p-7 rounded-2xl bg-card border border-border shadow-card h-full hover:shadow-elegant hover:-translate-y-1 transition-all duration-500">
+                  <Link to={b.to} aria-label={`Read ${b.title}`} className="block p-7 rounded-2xl bg-card border border-border shadow-card h-full hover:shadow-elegant hover:-translate-y-1 transition-all duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                     <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
                       <b.icon className="w-5 h-5" />
                     </div>
                     <h3 className="font-display text-xl mb-2">{b.title}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
-                  </div>
+                  </Link>
                 </Reveal>
               ))}
             </div>
@@ -242,29 +237,13 @@ const Index = () => {
         <div className="container relative">
           <Reveal>
             <div className="max-w-3xl mb-20">
-              <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-5">Programme Snapshots</div>
+              <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-5">Latest TIJCEF Updates</div>
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-balance">
                 Recent work, reported carefully.
               </h2>
             </div>
           </Reveal>
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            {stories.map((s, i) => (
-              <Reveal key={i} delay={i * 120}>
-                <div className="glass rounded-2xl p-8 h-full flex flex-col">
-                  <Quote className="w-8 h-8 text-accent mb-5" />
-                  <p className="font-display text-lg lg:text-xl leading-snug mb-7 flex-1">{s.quote}</p>
-                  <div className="flex items-center gap-3 pt-5 border-t border-primary-foreground/15">
-                    <img src={s.img} alt={s.imgAlt} loading="lazy" width={80} height={80} className="w-12 h-12 rounded-full object-cover" />
-                    <div>
-                      <div className="font-semibold text-sm">{s.name}</div>
-                      <div className="text-xs text-primary-foreground/65">{s.role}</div>
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+          <RecentWork />
         </div>
       </section>
 

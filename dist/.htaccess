@@ -6,9 +6,19 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} ^tijcef\.org$ [NC]
 RewriteRule ^ https://www.tijcef.org%{REQUEST_URI} [R=301,L,NE]
 
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
+# THE_REQUEST prevents these redirects firing for internal index.html rewrites.
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html(?:[?\s]) [NC]
+RewriteRule ^(.*/)?index\.html$ /$1 [R=301,L,NE]
+RewriteCond %{THE_REQUEST} \s/+(.+?)/+(?:[?\s])
+RewriteRule ^(.+?)/+$ /$1 [R=301,L,NE]
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://www.tijcef.org%{REQUEST_URI} [R=301,L,NE]
+RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
+RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+RewriteRule ^(.+?)/?$ $1/index.html [L]
+
+RewriteRule ^post/[^/]+/?$ post-shell.html [L]
 
 ErrorDocument 404 /404.html
 

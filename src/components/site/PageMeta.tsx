@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { createContext, useContext, useEffect } from "react";
 
 const SITE_URL = "https://www.tijcef.org";
 const SITE_NAME = "TIJCEF";
 const DEFAULT_IMAGE = `${SITE_URL}/og-logo.webp`;
 
 type JsonLd = Record<string, unknown> | Array<Record<string, unknown>>;
+
+export const PrerenderMetaContext = createContext<((meta: PageMetaProps) => void) | null>(null);
 
 type PageMetaProps = {
   title: string;
@@ -61,6 +63,8 @@ export default function PageMeta({
   jsonLd,
   includeSiteName = true,
 }: PageMetaProps) {
+  const collect = useContext(PrerenderMetaContext);
+  if (collect) collect({ title, description, image, noIndex, canonicalPath, type, publishedTime, modifiedTime, jsonLd, includeSiteName });
   useEffect(() => {
     document.getElementById("tijcef-prerender-schema")?.remove();
     const pageTitle = includeSiteName && !title.toLowerCase().includes("tijcef")
