@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vite build --ssr src/prerender.tsx --outDir .prerender && node scripts/postbuild.mjs",
+    "build": "node scripts/build-website.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -13,8 +13,10 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "refresh:content": "node scripts/refresh-content.mjs",
-    "build:refresh": "npm run refresh:content && npm run build",
-    "check:seo": "node scripts/check-seo.mjs"
+    "build:refresh": "node scripts/build-website.mjs",
+    "check:seo": "node scripts/check-seo.mjs",
+    "check:sharing": "node scripts/check-sharing.mjs",
+    "build:offline": "node scripts/build-website.mjs --offline"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

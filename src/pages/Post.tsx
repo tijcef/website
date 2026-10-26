@@ -1,3 +1,4 @@
+import { savedPublication } from "@/lib/publication-cache";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, CalendarDays } from "lucide-react";
@@ -20,13 +21,15 @@ const formatDate = (value: string) => {
 
 export default function Post() {
   const { slug = "" } = useParams();
-  const [post, setPost] = useState<WordPressPost | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [post, setPost] = useState<WordPressPost | null>(()=>savedPublication<WordPressPost>(`/post/${slug}`));
+  const [loading, setLoading] = useState(()=>!savedPublication<WordPressPost>(`/post/${slug}`));
+  const [showSaved, setShowSaved] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
+    const saved=savedPublication<WordPressPost>(`/post/${slug}`);
+    setPost(saved); setLoading(!saved); setShowSaved(false);
     setError("");
     getPostBySlug(slug)
       .then((result) => {
@@ -35,10 +38,10 @@ export default function Post() {
           setError("This update may have been moved or removed.");
           return;
         }
-        setPost(result);
+        setPost({...result, featuredImage: result.featuredImage || saved?.featuredImage || "", featuredImageAlt: result.featuredImageAlt || saved?.featuredImageAlt || result.title});
       })
       .catch((reason) => {
-        if (active) setError(reason instanceof Error ? reason.message : "This update is unavailable.");
+        if (active) { if (saved) {setShowSaved(true);} else setError(reason instanceof Error ? reason.message : "This update is unavailable."); }
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -84,6 +87,7 @@ export default function Post() {
         modifiedTime={post.modified}
       />
       <article className="pb-20 pt-32">
+        {showSaved && <p role="status" className="container mb-5 text-sm text-muted-foreground">Showing the saved publication while the latest content is unavailable.</p>}
         <header className="container max-w-4xl">
           {post.date && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -93,7 +97,7 @@ export default function Post() {
           )}
           <h1 className="mt-5 text-5xl leading-tight md:text-7xl">{post.title}</h1>
           {post.excerpt && <p className="mt-6 text-xl leading-relaxed text-muted-foreground">{post.excerpt}</p>}
-          <SocialShare title={post.title} className="mt-7 border-t border-border pt-5" />
+          <SocialShare url={`https://www.tijcef.org/post/${post.slug}`} title={post.title} className="mt-7 border-t border-border pt-5" />
         </header>
 
         {post.featuredImage && (
@@ -107,7 +111,7 @@ export default function Post() {
           dangerouslySetInnerHTML={{ __html: sanitizeWordPressHtml(post.content) }}
         />
         <div className="mx-auto mt-10 max-w-3xl border-t border-border px-6 pt-6">
-          <SocialShare title={post.title} />
+          <SocialShare url={`https://www.tijcef.org/post/${post.slug}`} title={post.title} />
         </div>
         
       </article>

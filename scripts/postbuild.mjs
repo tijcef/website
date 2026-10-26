@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { render, staticPaths } from '../.prerender/prerender.js';
+import { JSDOM } from 'jsdom';
+import { renderShare, render, staticPaths } from '../.prerender/prerender.js';
 const origin = 'https://www.tijcef.org';
 const template = await readFile('dist/index.html', 'utf8');
 const escape = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -12,6 +13,8 @@ function enrichPage(output, {canonical,title,description,type='website',image,mo
  if(type==='article') {schema.headline=title; if(modified) schema.dateModified=modified;}
  return output.replace(/<meta property="og:type"[^>]*>/,`<meta property="og:type" content="${type}" />`)
  .replace(/<meta (property="og:image"|name="twitter:image")[^>]*>/g,(_,attr)=>`<meta ${attr} content="${escape(socialImage)}" />`)
+ .replace(/<meta property="og:image:(width|height)"[^>]*>/g, match => socialImage === `${origin}/og-logo.webp` ? match : '')
+ .replace(/<meta (property="og:image:alt"|name="twitter:image:alt")[^>]*>/g,(_,attr)=>`<meta ${attr} content="${escape(title)}" />`)
  .replace('</head>',`<script id="tijcef-prerender-schema" type="application/ld+json">${json(schema)}</script></head>`);
 }
 
@@ -48,6 +51,31 @@ for (const row of snapshots) {
  if (body) body = body.replace(/<header[\s\S]*?<\/header>/, () => refreshedShell.match(/<header[\s\S]*?<\/header>/)?.[0] || '').replace(/<footer[\s\S]*?<\/footer>/, () => refreshedShell.match(/<footer[\s\S]*?<\/footer>/)?.[0] || '');
  if (!body || !title) throw new Error(`Incomplete content snapshot: ${path}`);
  const canonical = `${origin}${path}`;
+ const sourceDocument = new JSDOM(source).window.document;
+ let publicationData;
+ const plainTitle = sourceDocument.title.replace(/ \| TIJCEF$/, '');
+ const savedPost = recentPosts.find(post => path === `/post/${post.slug}`);
+ const sourceImage = sourceDocument.querySelector('meta[property="og:image"]')?.content;
+ const candidateImage = row.featuredImage || savedPost?.featuredImage || (sourceImage && !/og-logo|tijcef-logo/.test(sourceImage) ? sourceImage : '') || sourceDocument.querySelector('main img[src], article img[src]')?.getAttribute('src');
+ let image;
+ if (candidateImage) { try { const parsed = new URL(candidateImage, origin); if (/^https?:$/.test(parsed.protocol)) image = parsed.href; } catch {} }
+ if (!path.startsWith('/category/')) {
+   const document = new JSDOM(`<div id="publication">${body}</div>`).window.document;
+   const main = document.querySelector('main') || document.querySelector('article');
+   if (!main) throw new Error(`Missing publication content: ${path}`);
+   main.querySelectorAll('[data-publication-share]').forEach(node=>node.remove());
+   const contentMain = main.cloneNode(true); contentMain.querySelector('h1')?.remove();
+   const articleData = {id:savedPost?.id || 0,slug:path.split('/').pop(),title:plainTitle,excerpt:new JSDOM(description).window.document.body.textContent,content:contentMain.innerHTML,date:row.date || savedPost?.date || '',modified:row.modified || savedPost?.modified || '',featuredImage:image || '',featuredImageAlt:row.featuredImageAlt || savedPost?.featuredImageAlt || plainTitle};
+   publicationData = {path,data:path.startsWith('/post/') ? articleData : {...articleData,description:articleData.excerpt,funder:row.funder || '',sector:row.sector || 'General',country:row.country || '',deadline:row.deadline || '',amount:row.amount || 'Confirm with funder',applicationUrl:row.applicationUrl || '',verified:row.verified === true,opportunityType:row.opportunityType || 'grant'}};
+
+   const sharing = renderShare(plainTitle, path);
+   const first = document.createElement('div'); first.className = 'my-6 border-t pt-5'; first.innerHTML = sharing;
+   const last = first.cloneNode(true);
+   const heading = main.querySelector('h1');
+   if (heading) heading.after(first); else main.prepend(first);
+   main.append(last);
+   body = document.getElementById('publication').innerHTML;
+ }
  let output = template.replace(/<title>[\s\S]*?<\/title>/, () => `<title>${title}</title>`)
  .replace(/<meta name="description"[^>]*>/, () => `<meta name="description" content="${description}" />`)
  .replace(/<link rel="canonical"[^>]*>/, () => `<link rel="canonical" href="${canonical}" />`)
@@ -55,10 +83,12 @@ for (const row of snapshots) {
  .replace(/<meta (property="og:title"|name="twitter:title")[^>]*>/g, (_,attr) => `<meta ${attr} content="${title}" />`)
  .replace(/<meta (property="og:description"|name="twitter:description")[^>]*>/g, (_,attr) => `<meta ${attr} content="${description}" />`)
  .replace('<div id="root"></div>', () => `<div id="root">${body}</div>`);
- output = enrichPage(output,{canonical,title,description,type:path.startsWith('/category/')?'website':'article',modified:row.modified});
+ output = enrichPage(output,{canonical,title,description,type:path.startsWith('/category/')?'website':'article',image,modified:row.modified});
+ if(row.noIndex) output = output.replace(/<meta name="robots"[^>]*>/, '<meta name="robots" content="noindex,follow" />');
+ if(publicationData) output = output.replace('</head>',`<script id="tijcef-publication-data" type="application/json">${json(publicationData)}</script></head>`);
  await mkdir(`dist${path}`,{recursive:true});
  await writeFile(`dist${path}/index.html`,output);
- indexable.push(canonical);
+ if(!row.noIndex) indexable.push(canonical);
 }
 await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${indexable.map(url=>`<url><loc>${escape(url)}</loc></url>`).join('\n')}\n</urlset>\n`);
 // CMS-backed /wp-json/wp/v2/posts and /wp-json/wp/v2/tijcef_grant URLs must
@@ -72,7 +102,7 @@ const redirects = ['https://tijcef.org/* https://www.tijcef.org/:splat 301', '/i
 for (const path of paths.filter(path => path !== '/')) {
  redirects.push(`${path}/index.html ${path} 301`, `${path}/ ${path} 301`, `${path} ${path}/index.html 200`);
 }
-redirects.push('/post/* /post-shell.html 200', '/grants/opportunities/* /opportunity-shell.html 200');
+redirects.push('/post/* /post-shell.html 200', '/grants/opportunities/* /opportunity-shell.html 200', '/category/* /category-shell.html 200');
 redirects.push('/404.html                 /404.html                    404', '/*                        /404.html                    404');
 await writeFile('dist/_redirects', redirects.join('\n') + '\n');
 await writeFile('public/_redirects', redirects.join('\n') + '\n');
@@ -87,7 +117,8 @@ const shell = template.replace(/<link rel="canonical"[^>]*>/, '')
  .replace(/<meta name="robots"[^>]*>/, '<meta name="robots" content="noindex,follow" />');
 await writeFile('dist/post-shell.html',shell);
 await writeFile('dist/opportunity-shell.html',shell.replace('<title>TIJCEF Update</title>','<title>TIJCEF Opportunity</title>'));
+await writeFile('dist/category-shell.html',shell.replace('<title>TIJCEF Update</title>','<title>TIJCEF Publications</title>'));
 const config = JSON.parse(await readFile('vercel.json','utf8'));
-config.rewrites = config.rewrites.filter(row => row.source !== '/post/:slug' && row.source !== '/grants/opportunities/:slug' && !snapshots.some(s => s.path === row.source));
-config.rewrites.push(...snapshots.map(row => ({source:row.path,destination:`${row.path}/index.html`})), {source:'/post/:slug',destination:'/post-shell.html'}, {source:'/grants/opportunities/:slug',destination:'/opportunity-shell.html'});
+config.rewrites = config.rewrites.filter(row => row.source !== '/post/:slug' && row.source !== '/grants/opportunities/:slug' && row.source !== '/category/:slug' && !snapshots.some(s => s.path === row.source));
+config.rewrites.push(...snapshots.map(row => ({source:row.path,destination:`${row.path}/index.html`})), {source:'/post/:slug',destination:'/post-shell.html'}, {source:'/grants/opportunities/:slug',destination:'/opportunity-shell.html'}, {source:'/category/:slug',destination:'/category-shell.html'});
 await writeFile('vercel.json',JSON.stringify(config,null,2)+'\n');

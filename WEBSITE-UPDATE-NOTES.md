@@ -29,3 +29,29 @@ Google controls crawling and inclusion. A sitemap and valid metadata help discov
 
 ## Details still requiring organisational confirmation
 Registration number/current trustee roster, PSNAF's full name and partnership details, event-specific photographs and permissions, unique-person versus repeat-participation counts, and the relation between GGC STEM and menstrual-health event reports. No new identifiers, testimonials or outcomes have been invented.
+
+## Social sharing update — 26 October 2026
+- Facebook, WhatsApp, X and LinkedIn links at the top and bottom of articles and opportunity detail pages.
+- Sharing always uses the clean permanent https://www.tijcef.org publication URL, including from local/private previews. Tracking parameters, fragments and local origins are excluded.
+- Copy Link with visible confirmation; selectable manual-copy fallback when clipboard access is unavailable; native phone sharing where supported. Cancelling native sharing is harmless.
+- Static publication HTML includes platform links before JavaScript runs.
+- Saved publications stay available if the CMS request fails temporarily; a saved-content notice is shown. A server response confirming removal overrides the saved article. Opportunity readers are reminded to confirm current deadlines.
+- Generated social metadata uses the publication's saved featured photo or first available content image. Eleven of the fifteen supplied publications have a photo; four use the TIJCEF logo because no publication photo was supplied. Future content refreshes retain featured-image metadata.
+- Updated the leadership entries to the user's confirmed names and roles: Arch. Akipo Praise Mbutakto, Deputy Operations Officer; Engr. Nuhu D. Mamtso, General Secretary; Mrs. Bege J. Edan, Finance Officer; Emmanuel Sunday Tijwun, Founder & Executive Director.
+
+Checks: TypeScript, production build and 27 automated tests passed, plus the SEO and sharing checks. Browser review confirmed article sharing and the manual-copy fallback. No social post was sent. Actual platform preview caches and phone share sheets still depend on the visitor's device and public deployment.
+
+For new or edited WordPress publications, run `bun run refresh:content` followed by `bun run build`, `bun run check:seo` and `bun run check:sharing` before deployment. Configure the existing WordPress deployment hook to trigger that refresh-and-build workflow if automatic publication updates are desired. No production hook credentials were available here. Generic unpublished shells cannot supply a photo preview to social crawlers until the publication is included in the generated HTML.
+
+Installation: back up the repository, then copy the contents of tijcef-complete into its root, preserving .git and private .env settings. Run the checks above and commit/push through the user's authenticated GitHub terminal. Updating the private review Site does not push to GitHub or replace www.tijcef.org. Existing www routing and backend plugin installation requirements still apply.
+
+## Backend publishing audit — latest changes
+The authoritative setup instructions are now in DEPLOYMENT-CHECKLIST.md. Normal builds refresh WordPress posts, opportunities and categories before rendering; fail if a required collection is unavailable; exclude empty categories from the sitemap; and validate the finished output. Newly created category routes now have generated pages and a fallback route.
+
+TIJCEF Core 3.1.0 queues publishing requests until WordPress shutdown so metadata/media updates finish first, dispatches one request per save request without losing consecutive edits to the old minute throttle, records whether a hook request was accepted, and exposes that status to administrators under Tools → Frontend Publishing. This is code readiness, not verification that the live hook is configured.
+
+Latest live-content build: 11 posts, 5 CMS opportunity records, 11 categories; 15 eligible publication pages have platform sharing and publication-specific preview images. Empty categories are noindex. Checks passed for 53 sitemap pages, 45 internal destinations, bundled assets, SEO and sharing. All 29 automated tests passed, including successful content refresh and failure preservation. The live production article still lacked the new share/preview HTML during the audit; deploy this package to the public domain and install the updated plugin.
+
+No actual WordPress publication, real application or payment was submitted in this audit. Mail delivery, payment credentials, the live deploy-hook value and Vercel deployment configuration remain operational checks. Vercel account access was not connected. Public WordPress API/CORS availability is confirmed; it does not prove an end-to-end publication/rebuild cycle.
+
+PHP syntax parsing passed for both included plugins. This does not replace execution testing within WordPress.

@@ -9,3 +9,5 @@ output/
 .DS_Store
 
 .prerender/
+
+*.json.pending

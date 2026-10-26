@@ -1,3 +1,5 @@
+import { savedPublication } from "@/lib/publication-cache";
+import SocialShare from "@/components/site/SocialShare";
 import { useEffect, useMemo, useState } from "react";
 import { Link, NavLink, Route, Routes, useParams } from "react-router-dom";
 import { ArrowRight, CalendarDays, CheckCircle2, ExternalLink, Search, ShieldCheck, Sparkles } from "lucide-react";
@@ -201,13 +203,15 @@ function Opportunities({ opportunityType = "all" }: { opportunityType?: string }
 
 function Detail() {
   const { slug } = useParams();
-  const [grant, setGrant] = useState<Grant | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [grant, setGrant] = useState<Grant | null>(()=>savedPublication<Grant>(`/grants/opportunities/${slug}`));
+  const [loading, setLoading] = useState(()=>!savedPublication<Grant>(`/grants/opportunities/${slug}`));
+  const [showSaved,setShowSaved] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
+    const saved=savedPublication<Grant>(`/grants/opportunities/${slug}`);
+    setGrant(saved); setLoading(!saved); setShowSaved(false);
     setError("");
     getGrantBySlug(slug || "")
       .then((result) => {
@@ -216,11 +220,11 @@ function Detail() {
           setError("This opportunity may have closed or been removed.");
           return;
         }
-        setGrant(result);
+        setGrant({...result, featuredImage: result.featuredImage || saved?.featuredImage || "", featuredImageAlt: result.featuredImageAlt || saved?.featuredImageAlt || result.title});
       })
       .catch((reason) => {
         if (active) {
-          setError(reason instanceof Error ? reason.message : "This opportunity is unavailable.");
+          if(saved) {setShowSaved(true);} else setError(reason instanceof Error ? reason.message : "This opportunity is unavailable.");
         }
       })
       .finally(() => {
@@ -256,6 +260,7 @@ function Detail() {
 
   return (
     <article className="pb-20">
+      {showSaved && <p role="status" className="container pt-6 text-sm text-muted-foreground">Showing a saved opportunity. Confirm current eligibility and deadline with the funder before applying.</p>}
       <PageMeta
         title={grant.title}
         description={grant.description.slice(0, 155)}
@@ -283,6 +288,7 @@ function Detail() {
           )}
         </div>
         <h1 className="mt-5 text-5xl leading-tight md:text-7xl">{grant.title}</h1>
+        <SocialShare title={grant.title} url={`https://www.tijcef.org/grants/opportunities/${grant.slug}`} className="mt-6 border-t pt-5"/>
         <p className="mt-4 text-lg font-semibold text-muted-foreground">{grant.funder}</p>
         {grant.excerpt && (
           <p className="mt-6 max-w-3xl text-xl leading-relaxed text-muted-foreground">{grant.excerpt}</p>
@@ -355,6 +361,7 @@ function Detail() {
 
       
 
+      <div className="container mt-10 max-w-4xl border-t pt-6"><SocialShare title={grant.title} url={`https://www.tijcef.org/grants/opportunities/${grant.slug}`}/></div>
       <aside className="container mt-12 max-w-4xl rounded-2xl bg-secondary p-8 text-white">
         <h2 className="text-3xl">Ready to apply?</h2>
         <p className="mt-3 max-w-2xl text-white/75">

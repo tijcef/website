@@ -2,7 +2,7 @@
 /**
  * Plugin Name: TIJCEF Core
  * Description: Headless content, navigation, Grant Hub, media monitoring and public form services for tijcef.org.
- * Version: 3.0.0
+ * Version: 3.1.0
  * Author: Tijwun Care and Empowerment Foundation
  */
 
@@ -14,6 +14,7 @@ final class TIJCEF_Core {
     const REST_NAMESPACE = 'tijcef/v1';
     const PRIMARY_MENU = 'TIJCEF Primary';
     const MEDIA_CRON_HOOK = 'tijcef_discover_media_mentions';
+    private static $frontend_deploy_queued = false;
 
     private static $grant_fields = array(
         'funder' => 'text',
@@ -50,8 +51,15 @@ final class TIJCEF_Core {
         add_action('template_redirect', array(__CLASS__, 'redirect_public_content'), 1);
         add_action('send_headers', array(__CLASS__, 'backend_x_robots_header'));
         add_action('transition_post_status', array(__CLASS__, 'deploy_on_content_change'), 10, 3);
-        add_action('wp_update_nav_menu', array(__CLASS__, 'trigger_frontend_deploy'));
-        add_action('edited_category', array(__CLASS__, 'trigger_frontend_deploy'));
+        add_action('wp_update_nav_menu', array(__CLASS__, 'queue_frontend_deploy'));
+        add_action('created_category', array(__CLASS__, 'queue_frontend_deploy'));
+        add_action('delete_category', array(__CLASS__, 'queue_frontend_deploy'));
+        add_action('shutdown', array(__CLASS__, 'dispatch_frontend_deploy'));
+        add_action('admin_menu', array(__CLASS__, 'publishing_status_menu'));
+        add_action('rest_after_insert_post', array(__CLASS__, 'rest_publication_saved'), 10, 3);
+        add_action('rest_after_insert_tijcef_grant', array(__CLASS__, 'rest_publication_saved'), 10, 3);
+        add_action('before_delete_post', array(__CLASS__, 'publication_deleted'));
+        add_action('edited_category', array(__CLASS__, 'queue_frontend_deploy'));
         add_action(self::MEDIA_CRON_HOOK, array(__CLASS__, 'discover_media_mentions'));
     }
 
@@ -731,18 +739,56 @@ final class TIJCEF_Core {
         self::trigger_frontend_deploy();
     }
 
+    public static function rest_publication_saved($post, $request = null, $creating = false) {
+        if ($post->post_status === 'publish') self::queue_frontend_deploy();
+    }
+
+    public static function publication_deleted($post_id) {
+        $post = get_post($post_id);
+        if ($post && $post->post_status === 'publish' && in_array($post->post_type, array('post', 'tijcef_grant', 'tijcef_coverage'), true)) self::queue_frontend_deploy();
+    }
+
+    public static function queue_frontend_deploy(...$ignored) {
+        self::$frontend_deploy_queued = true;
+    }
+
     public static function trigger_frontend_deploy(...$ignored) {
+        self::queue_frontend_deploy();
+    }
+
+    public static function dispatch_frontend_deploy() {
+        if (!self::$frontend_deploy_queued) return;
+        self::$frontend_deploy_queued = false;
+        $state = array('checked_at' => current_time('mysql'), 'status' => 'not_configured', 'http_code' => 0);
         if (!defined('TIJCEF_VERCEL_DEPLOY_HOOK') || !TIJCEF_VERCEL_DEPLOY_HOOK) {
+            update_option('tijcef_frontend_publish_status', $state, false);
             return;
         }
-        if (get_transient('tijcef_frontend_deploy_pending')) {
-            return;
-        }
-        set_transient('tijcef_frontend_deploy_pending', 1, MINUTE_IN_SECONDS);
-        wp_remote_post(esc_url_raw(TIJCEF_VERCEL_DEPLOY_HOOK), array(
-            'blocking' => false,
-            'timeout' => 3,
-        ));
+        // Dispatch after the complete request saves post content, metadata and media.
+        // One dispatch per request; later publish requests are never silently dropped.
+        $response = wp_safe_remote_post(esc_url_raw(TIJCEF_VERCEL_DEPLOY_HOOK), array('blocking' => true, 'timeout' => 10));
+        $code = is_wp_error($response) ? 0 : wp_remote_retrieve_response_code($response);
+        $state['http_code'] = $code;
+        $state['status'] = $code >= 200 && $code < 300 ? 'request_accepted' : 'request_failed';
+        update_option('tijcef_frontend_publish_status', $state, false);
+    }
+
+    public static function publishing_status_menu() {
+        add_management_page('Frontend Publishing', 'Frontend Publishing', 'manage_options', 'tijcef-publishing', array(__CLASS__, 'publishing_status_page'));
+    }
+
+    public static function publishing_status_page() {
+        if (!current_user_can('manage_options')) return;
+        $configured = defined('TIJCEF_VERCEL_DEPLOY_HOOK') && TIJCEF_VERCEL_DEPLOY_HOOK;
+        $state = get_option('tijcef_frontend_publish_status', array());
+        echo '<div class="wrap"><h1>TIJCEF Frontend Publishing</h1>';
+        echo '<p><strong>Deploy hook:</strong> ' . ($configured ? 'Configured' : 'Not configured') . '</p>';
+        echo '<p><strong>Last dispatch:</strong> ' . esc_html(isset($state['checked_at']) ? $state['checked_at'] : 'No dispatch recorded') . '</p>';
+        echo '<p><strong>Request status:</strong> ' . esc_html(isset($state['status']) ? $state['status'] : 'Not checked') . '</p>';
+        echo '<p><strong>HTTP code:</strong> ' . esc_html(isset($state['http_code']) ? (string) $state['http_code'] : '-') . '</p>';
+        echo '<p>Request accepted means the hosting platform accepted the rebuild request. Confirm deployment success in the hosting dashboard.</p>';
+        echo '<p>The frontend build command must be <code>bun run build</code> (or <code>node scripts/build-website.mjs</code>), and its output directory must be <code>dist</code>. Each build refreshes published WordPress content before generating sharing previews and the sitemap.</p>';
+        echo '<p>Configure the private <code>TIJCEF_VERCEL_DEPLOY_HOOK</code> constant in wp-config.php. Never post its value publicly.</p></div>';
     }
 
     private static function create_default_categories_and_menu($force_rebuild = false) {

@@ -112,6 +112,7 @@ const stripHtml = (value: string) =>
   value
     .replace(/<[^>]+>/g, " ")
     .replace(/&nbsp;/g, " ")
+    .replace(/&hellip;|&#8230;/g, "…")
     .replace(/&amp;/g, "&")
     .replace(/&#8217;|&rsquo;/g, "’")
     .replace(/\s+/g, " ")
@@ -296,7 +297,7 @@ export async function getPostsByCategory(
   if (!category) throw new Error("This content section has not been published.");
 
   const postsResponse = await apiFetch(
-    `/wp-json/wp/v2/posts?categories=${category.id}&per_page=24&orderby=date&order=desc&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,content,date,modified,_embedded`
+    `/wp-json/wp/v2/posts?categories=${category.id}&per_page=24&orderby=date&order=desc&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,content,date,modified,_links,_embedded`
   );
   if (!postsResponse.ok) throw new Error("Posts are temporarily unavailable.");
   const posts = await postsResponse.json();
@@ -308,7 +309,7 @@ export async function getPostsByCategory(
 
 export async function getPostBySlug(slug: string): Promise<WordPressPost | null> {
   const response = await apiFetch(
-    `/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,content,date,modified,_embedded`
+    `/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,content,date,modified,_links,_embedded`
   );
   if (!response.ok) throw new Error("This story is temporarily unavailable.");
   const posts = await response.json();
@@ -358,7 +359,7 @@ export { WP_URL };
 
 /** Public TIJCEF updates, newest first, independent of category. */
 export async function getLatestPosts(page = 1, perPage = 6): Promise<WordPressPost[]> {
-  const response = await apiFetch(`/wp-json/wp/v2/posts?status=publish&per_page=${perPage}&page=${page}&orderby=date&order=desc&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,content,date,modified,_embedded`);
+  const response = await apiFetch(`/wp-json/wp/v2/posts?status=publish&per_page=${perPage}&page=${page}&orderby=date&order=desc&_embed=wp:featuredmedia&_fields=id,slug,title,excerpt,content,date,modified,_links,_embedded`);
   if (response.status === 400) {
     const error = await response.json();
     if (error.code === 'rest_post_invalid_page_number') return [];

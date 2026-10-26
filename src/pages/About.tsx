@@ -10,10 +10,10 @@ import team4 from "@/assets/team-4.webp";
 import { activityStates } from "@/data/programmeAreas";
 
 const team = [
-  { name: "Arch. Praise Akipo", role: "PSEA and AAP Focal Person", img: team1 },
-  { name: "Engr. Nuhu D. Mamtso", role: "Operations Officer", img: team2 },
+  { name: "Arch. Akipo Praise Mbutakto", role: "Deputy Operations Officer", img: team1 },
+  { name: "Engr. Nuhu D. Mamtso", role: "General Secretary", img: team2 },
   { name: "Mrs. Bege J. Edan", role: "Finance Officer", img: team3 },
-  { name: "Emmanuel Sunday Tijwun", role: "Founder and Executive Director", img: team4 },
+  { name: "Emmanuel Sunday Tijwun", role: "Founder & Executive Director", img: team4 },
 ];
 
 const About = () => (

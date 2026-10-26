@@ -146,56 +146,8 @@
       "destination": "/thank-you/index.html"
     },
     {
-      "source": "/category/:slug",
-      "destination": "/category/:slug/index.html"
-    },
-    {
       "source": "/verify",
       "destination": "/verify/index.html"
-    },
-    {
-      "source": "/category/evidence",
-      "destination": "/category/evidence/index.html"
-    },
-    {
-      "source": "/category/resilience",
-      "destination": "/category/resilience/index.html"
-    },
-    {
-      "source": "/category/uncategorized",
-      "destination": "/category/uncategorized/index.html"
-    },
-    {
-      "source": "/category/reports-publications",
-      "destination": "/category/reports-publications/index.html"
-    },
-    {
-      "source": "/category/impact-stories",
-      "destination": "/category/impact-stories/index.html"
-    },
-    {
-      "source": "/category/dignity",
-      "destination": "/category/dignity/index.html"
-    },
-    {
-      "source": "/category/gallery",
-      "destination": "/category/gallery/index.html"
-    },
-    {
-      "source": "/category/agency",
-      "destination": "/category/agency/index.html"
-    },
-    {
-      "source": "/category/toolkits",
-      "destination": "/category/toolkits/index.html"
-    },
-    {
-      "source": "/category/current-programs",
-      "destination": "/category/current-programs/index.html"
-    },
-    {
-      "source": "/category/completed-projects",
-      "destination": "/category/completed-projects/index.html"
     },
     {
       "source": "/post/inside-tijcefs-school-takeover-day-staff-volunteers-lead-full-day-learning-in-yola",
@@ -258,12 +210,60 @@
       "destination": "/grants/opportunities/women-led-organisations-can-access-up-to-e5000-womenpower2030-grant/index.html"
     },
     {
+      "source": "/category/agency",
+      "destination": "/category/agency/index.html"
+    },
+    {
+      "source": "/category/completed-projects",
+      "destination": "/category/completed-projects/index.html"
+    },
+    {
+      "source": "/category/current-programs",
+      "destination": "/category/current-programs/index.html"
+    },
+    {
+      "source": "/category/dignity",
+      "destination": "/category/dignity/index.html"
+    },
+    {
+      "source": "/category/evidence",
+      "destination": "/category/evidence/index.html"
+    },
+    {
+      "source": "/category/gallery",
+      "destination": "/category/gallery/index.html"
+    },
+    {
+      "source": "/category/impact-stories",
+      "destination": "/category/impact-stories/index.html"
+    },
+    {
+      "source": "/category/reports-publications",
+      "destination": "/category/reports-publications/index.html"
+    },
+    {
+      "source": "/category/resilience",
+      "destination": "/category/resilience/index.html"
+    },
+    {
+      "source": "/category/toolkits",
+      "destination": "/category/toolkits/index.html"
+    },
+    {
+      "source": "/category/uncategorized",
+      "destination": "/category/uncategorized/index.html"
+    },
+    {
       "source": "/post/:slug",
       "destination": "/post-shell.html"
     },
     {
       "source": "/grants/opportunities/:slug",
       "destination": "/opportunity-shell.html"
+    },
+    {
+      "source": "/category/:slug",
+      "destination": "/category-shell.html"
     }
   ],
   "headers": [
@@ -327,5 +327,7 @@
         }
       ]
     }
-  ]
+  ],
+  "buildCommand": "node scripts/build-website.mjs",
+  "outputDirectory": "dist"
 }

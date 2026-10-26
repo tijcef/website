@@ -1,4 +1,7 @@
-import { useMemo } from "react";
+import { useEffect, useId, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Copy, Share2 } from "lucide-react";
+import { publicationUrl } from "@/lib/share";
 
 type SocialShareProps = {
   title: string;
@@ -20,7 +23,22 @@ const LinkedInIcon = () => (
 );
 
 export default function SocialShare({ title, url, className = "" }: SocialShareProps) {
-  const shareUrl = useMemo(() => url || (typeof window !== "undefined" ? window.location.href : "https://www.tijcef.org"), [url]);
+  const { pathname } = useLocation();
+  const shareUrl = publicationUrl(url || pathname);
+  const [canShare, setCanShare] = useState(false);
+  const [message, setMessage] = useState("");
+  const [manualCopy, setManualCopy] = useState(false);
+  const copyId = useId();
+  useEffect(() => { setCanShare(typeof navigator.share === "function"); }, []);
+  useEffect(() => { setMessage(""); setManualCopy(false); }, [shareUrl]);
+  async function copyLink() {
+    try { if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable'); await navigator.clipboard.writeText(shareUrl); setManualCopy(false); setMessage("Link copied."); }
+    catch { setManualCopy(true); setMessage("Select and copy the publication link below."); }
+  }
+  async function share() {
+    try { await navigator.share({title,url:shareUrl}); setMessage(""); }
+    catch(error) { if (!(error instanceof DOMException && error.name === "AbortError")) setMessage("Sharing could not open. Use a social button or Copy Link."); }
+  }
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedTitle = encodeURIComponent(title);
 
@@ -32,7 +50,7 @@ export default function SocialShare({ title, url, className = "" }: SocialShareP
   ];
 
   return (
-    <div className={`flex flex-wrap items-center gap-3 ${className}`} aria-label="Share this publication">
+    <div className={`flex flex-wrap items-center gap-3 ${className}`} aria-label="Share this publication" data-publication-share="true">
       <span className="text-sm font-semibold text-foreground">Share this:</span>
       {links.map((item) => (
         <a
@@ -47,6 +65,10 @@ export default function SocialShare({ title, url, className = "" }: SocialShareP
           {item.icon}
         </a>
       ))}
+      <button type="button" onClick={copyLink} className="inline-flex min-h-10 items-center gap-2 rounded-full border bg-background px-4 text-sm text-foreground hover:border-primary"><Copy className="h-4 w-4" aria-hidden="true"/>Copy Link</button>
+      {canShare && <button type="button" onClick={share} className="inline-flex min-h-10 items-center gap-2 rounded-full border bg-background px-4 text-sm text-foreground hover:border-primary"><Share2 className="h-4 w-4" aria-hidden="true"/>More sharing options</button>}
+      {message && <p role="status" className="w-full text-sm text-muted-foreground">{message}</p>}
+      {manualCopy && <label htmlFor={copyId} className="w-full text-sm">Publication link<input id={copyId} readOnly value={shareUrl} onFocus={event=>event.currentTarget.select()} className="mt-2 block w-full rounded-md border bg-background p-3 text-foreground"/></label>}
     </div>
   );
 }

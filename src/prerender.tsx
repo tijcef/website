@@ -1,3 +1,4 @@
+import SocialShare from "@/components/site/SocialShare";
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
@@ -26,3 +27,5 @@ export function render(path: string, recentPosts = []) {
  const html = renderToString(<PrerenderMetaContext.Provider value={value => { meta = value; }}><RecentPostsContext.Provider value={recentPosts}><QueryClientProvider client={new QueryClient()}><TooltipProvider><StaticRouter location={path}><Routes>{routeElements}</Routes></StaticRouter></TooltipProvider></QueryClientProvider></RecentPostsContext.Provider></PrerenderMetaContext.Provider>);
  return { html, meta };
 }
+
+export function renderShare(title: string, path: string) { return renderToString(<StaticRouter location={path}><SocialShare title={title} url={`https://www.tijcef.org${path}`}/></StaticRouter>); }
