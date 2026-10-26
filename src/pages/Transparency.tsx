@@ -43,6 +43,7 @@ export default function Transparency() {
       metaDescription="Review TIJCEF governance, programme evidence, safeguarding, financial stewardship, complaints and due-diligence information."
       image={researchImage}
     >
+      <section className="mb-12 rounded-2xl border p-7"><h2 className="text-2xl">Legal identity and governance</h2><p className="mt-3">Tijwun Care and Empowerment Foundation (TIJCEF), Nigeria.</p><p className="mt-3 text-muted-foreground">The operational team manages delivery, finance and safeguarding. Trustee or board oversight is separate from operational responsibilities. Request the registration certificate, registration number and current trustee information through our due-diligence contact.</p><Link className="mt-4 inline-block font-semibold underline" to="/contact">Request registration and governance information</Link></section>
       <Reveal>
         <section className="mb-20" aria-labelledby="accountability-standards">
           <div className="max-w-3xl">
@@ -92,7 +93,7 @@ export default function Transparency() {
           <h2 id="public-documents" className="mt-4 text-4xl">Review before you partner.</h2>
           <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
-              ["Corrected 2025 Annual Report", "/TIJCEF_ANNUAL_REPORT_2025.pdf"],
+              ["2025 Annual Report", "/TIJCEF_ANNUAL_REPORT_2025.pdf"],
               ["Media and Press Kit", "/TIJCEF_PRESS_KIT.pdf"],
               ["Impact and Learning", "/impact"],
               ["Safeguarding and PSEA", "/safeguarding"],

@@ -39,7 +39,7 @@ for (const [endpoint,prefix] of [['posts','/post/'],['tijcef_grant','/grants/opp
    const path = prefix + encodeURIComponent(row.slug);
    const title = new JSDOM(row.title.rendered).window.document.body.textContent;
    const description = new JSDOM(row.excerpt?.rendered || row.content.rendered).window.document.body.textContent.replace(/\s+/g,' ').trim().slice(0,180);
-   snapshots.set(path,{path,source:`<html><head><title>${esc(title)} | TIJCEF</title><meta name="description" content="${esc(description)}"><link rel="canonical" href="https://www.tijcef.org${path}"></head><body><div id="root"><main><h1>${esc(title)}</h1>${clean(row.content.rendered)}</main></div><noscript></noscript></body></html>`, fetchedAt:new Date().toISOString()});
+   snapshots.set(path,{path,source:`<html><head><title>${esc(title)} | TIJCEF</title><meta name="description" content="${esc(description)}"><link rel="canonical" href="https://www.tijcef.org${path}"></head><body><div id="root"><main><h1>${esc(title)}</h1>${clean(row.content.rendered)}</main></div><noscript></noscript></body></html>`, modified:row.modified_gmt ? row.modified_gmt + 'Z' : undefined, fetchedAt:new Date().toISOString()});
   }
   console.log(`Refreshed ${endpoint}: ${rows.length} published records`);
  } catch(error) {

@@ -15,16 +15,14 @@ describe('Recent TIJCEF work',()=>{
   expect(screen.getAllByRole('heading')[0]).toHaveTextContent('TIJCEF Update 2');
   expect(screen.getByRole('heading',{name:'TIJCEF Update 2'}).closest('article')).toHaveClass('rounded-2xl');
   expect(document.querySelector('article img')).toHaveClass('rounded-full');
-  expect(screen.queryByRole('link')).not.toBeInTheDocument();
+  expect(screen.getByRole('link',{name:'TIJCEF Update 2'})).toHaveAttribute('href','/post/update-2');
  });
- it('loads older updates after the first full page without repeating cards',async()=>{
-  const first=Array.from({length:6},(_,i)=>post(i+1,`2026-10-0${7-i}`));
-  vi.mocked(getLatestPosts).mockImplementation(async(page)=>page===1?first:[post(7,'2026-09-01')]);
+ it('keeps the homepage to three recent stories and links to the archive',async()=>{
+  vi.mocked(getLatestPosts).mockResolvedValue(Array.from({length:6},(_,i)=>post(i+1,`2026-10-0${7-i}`)));
   render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><RecentPostsContext.Provider value={[]}><MemoryRouter><RecentWork/></MemoryRouter></RecentPostsContext.Provider></QueryClientProvider>);
-  fireEvent.click(await screen.findByRole('button',{name:'Load more updates'}));
-  await screen.findByRole('heading',{name:'TIJCEF Update 7'});
-  await waitFor(()=>expect(screen.getAllByRole('heading')).toHaveLength(7));
-  expect(screen.queryByRole('button',{name:'Load more updates'})).not.toBeInTheDocument();
+  await screen.findByRole('heading',{name:'TIJCEF Update 1'});
+  expect(screen.getAllByRole('heading')).toHaveLength(3);
+  expect(screen.getByRole('link',{name:'More community stories'})).toHaveAttribute('href','/category/impact-stories');
  });
 });
 

@@ -26,13 +26,13 @@ describe("TIJCEF indexing and advertising safeguards", () => {
     expect(redirects).not.toMatch(/^\/\*\s+\/index\.html\s+200/m);
   });
 
-  it("renders ads only when a valid publisher and slot are configured", () => {
-    const adSlot = read("../components/site/AdSlot.tsx");
-    expect(adSlot).toContain("validClient && validSlot(slot)");
-    expect(adSlot).toContain("if (!configured || failed) return null");
-    expect(adSlot).toContain('data-full-width-responsive="true"');
-    const postbuild = read("../../scripts/postbuild.mjs");
-    expect(postbuild).toContain("f08c47fec0942fa0");
+  it("keeps public pages free of advertising integrations", () => {
+    for (const file of ["../App.tsx","../pages/GrantHub.tsx","../pages/Post.tsx","../pages/Category.tsx","../../index.html"]) {
+      const source=read(file);
+      expect(source).not.toContain('AdSlot');
+      expect(source).not.toContain('AdSenseAuto');
+      expect(source).not.toContain('google-adsense-account');
+    }
   });
 
   it("keeps verified public impact figures consistent", () => {

@@ -88,7 +88,7 @@ const GetInvolved = () => {
   return (
     <SimplePage
       eyebrow="Get Involved"
-      title="Choose a clear route to support or partner."
+      title="Help build stronger communities."
       subtitle="Donate, volunteer or begin an institutional conversation with the information our team needs to respond responsibly."
       image={healthImg}
     >

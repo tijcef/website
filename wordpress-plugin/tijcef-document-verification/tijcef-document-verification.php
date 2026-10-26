@@ -39,6 +39,6 @@ add_action('rest_api_init', function(){
     $q=new WP_Query(['post_type'=>'tijcef_document','post_status'=>'publish','posts_per_page'=>1,'meta_query'=>['relation'=>'OR',['key'=>'_document_id','value'=>$code,'compare'=>'='],['key'=>'_token','value'=>$code,'compare'=>'=']]]);
     if(!$q->have_posts()) return new WP_REST_Response(['valid'=>false],404);
     $id=$q->posts[0]->ID; $status=get_post_meta($id,'_status',true) ?: 'Valid';
-    return new WP_REST_Response(['valid'=>true,'document_id'=>get_post_meta($id,'_document_id',true),'document_type'=>get_post_meta($id,'_document_type',true),'holder'=>get_post_meta($id,'_holder',true),'issue_date'=>get_post_meta($id,'_issue_date',true),'status'=>$status],200);
+    return new WP_REST_Response(['valid'=>($status === 'Valid'),'document_id'=>get_post_meta($id,'_document_id',true),'document_type'=>get_post_meta($id,'_document_type',true),'holder'=>get_post_meta($id,'_holder',true),'issue_date'=>get_post_meta($id,'_issue_date',true),'status'=>$status],200);
   }]);
 });

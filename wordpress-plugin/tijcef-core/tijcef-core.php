@@ -456,7 +456,10 @@ final class TIJCEF_Core {
                 'post_title' => 'Newsletter: ' . $email,
                 'post_content' => 'Newsletter subscription received through tijcef.org.',
             ));
-            if (!is_wp_error($post_id)) {
+            if (!$post_id || is_wp_error($post_id)) {
+                return new WP_Error('tijcef_save_failed', 'Subscription could not be saved. Please try again.', array('status' => 500));
+            }
+            if ($post_id && !is_wp_error($post_id)) {
                 update_post_meta($post_id, 'submission_type', 'newsletter');
                 update_post_meta($post_id, 'subscriber_email', $email);
             }
@@ -480,7 +483,13 @@ final class TIJCEF_Core {
             return new WP_Error('tijcef_invalid_email', 'Please enter a valid email address.', array('status' => 400));
         }
         $kind = sanitize_key(isset($payload['kind']) ? $payload['kind'] : 'contact');
-        $name = sanitize_text_field(isset($payload['name']) ? $payload['name'] : 'Website visitor');
+        $name = sanitize_text_field(isset($payload['name']) ? $payload['name'] : (isset($payload['contactName']) ? $payload['contactName'] : trim((isset($payload['firstName']) ? $payload['firstName'] : '') . ' ' . (isset($payload['lastName']) ? $payload['lastName'] : ''))));
+        if (!in_array($kind, array('contact', 'partnership', 'volunteer', 'membership'), true) || !$email || !is_email($email) || !trim($name)) {
+            return new WP_Error('tijcef_invalid_submission', 'Please provide a valid name, email and application type.', array('status' => 400));
+        }
+        if ($kind === 'membership' && $request->get_param('consent') !== 'yes') {
+            return new WP_Error('tijcef_consent_required', 'Please confirm consent before applying.', array('status' => 400));
+        }
         $clean = array();
         foreach ($payload as $key => $value) {
             if ($key === 'website') {
@@ -494,7 +503,7 @@ final class TIJCEF_Core {
             'post_title' => ucfirst($kind) . ': ' . $name,
             'post_content' => wp_json_encode($clean, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
         ));
-        if (is_wp_error($post_id)) {
+        if (!$post_id || is_wp_error($post_id)) {
             return new WP_Error('tijcef_save_failed', 'We could not save your message. Please try again.', array('status' => 500));
         }
         update_post_meta($post_id, 'submission_type', $kind);
@@ -553,7 +562,10 @@ final class TIJCEF_Core {
                 'post_title' => 'Verified donation: ' . $reference,
                 'post_content' => 'Verified through the Paystack API and recorded by tijcef.org.',
             ));
-            if (!is_wp_error($post_id)) {
+            if (!$post_id || is_wp_error($post_id)) {
+                return new WP_Error('tijcef_payment_record_pending', 'Payment verified; recording is pending. Keep your reference and contact TIJCEF. Do not pay again.', array('status' => 500));
+            }
+            if ($post_id && !is_wp_error($post_id)) {
                 update_post_meta($post_id, 'submission_type', 'donation');
                 update_post_meta($post_id, 'payment_reference', $reference);
                 update_post_meta($post_id, 'amount_minor', isset($transaction['amount']) ? (int) $transaction['amount'] : 0);
@@ -612,7 +624,7 @@ final class TIJCEF_Core {
                 'post_title' => $title,
                 'post_excerpt' => sanitize_textarea_field(wp_strip_all_tags($item->get_description())),
             ));
-            if (is_wp_error($post_id)) {
+            if (!$post_id || is_wp_error($post_id)) {
                 continue;
             }
             $publisher = '';

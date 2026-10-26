@@ -239,8 +239,8 @@ const mapGrant = (row: any): Grant => {
     country: String(row.meta?.country || "Nigeria"),
     deadline: String(row.meta?.deadline || ""),
     amount: String(row.meta?.amount || "See opportunity"),
-    applicationUrl: String(row.meta?.application_url || ""),
-    verified: Boolean(row.meta?.verified),
+    applicationUrl: /^https?:\/\//i.test(String(row.meta?.application_url || "").trim()) ? String(row.meta.application_url).trim() : "",
+    verified: row.meta?.verified === true || row.meta?.verified === 1 || row.meta?.verified === "1",
     opportunityType: String(row.meta?.opportunity_type || "grant").toLowerCase(),
     featuredImage: featuredMedia.url,
     featuredImageAlt: featuredMedia.alt,
@@ -345,7 +345,9 @@ export async function submitPublicForm(path: string, payload: Record<string, unk
     const body = await response.json().catch(() => ({}));
     throw new Error(body.message || "We could not submit the form. Please try again.");
   }
-  return response.json();
+  const result = await response.json();
+  if (result.success !== true) throw new Error(result.message || "Your submission was not confirmed. Please try again or contact TIJCEF.");
+  return result;
 }
 
 export async function verifyDonation(reference: string) {

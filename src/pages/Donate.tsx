@@ -47,7 +47,7 @@ export default function Donate() {
   const [amount, setAmount] = useState(10000);
   const [custom, setCustom] = useState("");
   const [designation, setDesignation] = useState("where-needed");
-  const [method, setMethod] = useState<"paystack" | "bank">("paystack");
+  const [method, setMethod] = useState<"paystack" | "bank">(PAYSTACK_PUBLIC_KEY ? "paystack" : "bank");
   const [copied, setCopied] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
@@ -92,7 +92,7 @@ export default function Donate() {
             await verifyDonation(response.reference || reference);
             setStatus("Thank you. Your donation was verified and recorded successfully.");
           } catch {
-            setStatus("Payment was received but verification is pending. Keep your Paystack reference and contact TIJCEF.");
+            setStatus("Payment confirmation is pending. Keep your Paystack reference and contact TIJCEF before attempting another donation.");
           }
           setBusy(false);
         },

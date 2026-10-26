@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { lazy, Suspense, useEffect } from "react";
 import Index from "./pages/Index.tsx";
-import AdSenseAuto from "./components/site/AdSenseAuto.tsx";
 const About = lazy(() => import("./pages/About.tsx"));
 const Pillars = lazy(() => import("./pages/Pillars.tsx"));
 const Programs = lazy(() => import("./pages/Programs.tsx"));
@@ -35,10 +34,24 @@ function RouteEffects() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
     if (hash) {
-      const frame = window.requestAnimationFrame(() => {
-        document.getElementById(hash.slice(1))?.scrollIntoView({ block: "start" });
-      });
-      return () => window.cancelAnimationFrame(frame);
+      let observer: MutationObserver | undefined;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const scrollToTarget = () => {
+        let id: string;
+        try { id = decodeURIComponent(hash.slice(1)); } catch { id = hash.slice(1); }
+        const target = document.getElementById(id);
+        if (!target) return false;
+        target.scrollIntoView({ block: "start" });
+        observer?.disconnect();
+        if (timer) clearTimeout(timer);
+        return true;
+      };
+      if (!scrollToTarget()) {
+        observer = new MutationObserver(scrollToTarget);
+        observer.observe(document.getElementById('root') || document.body, { childList: true, subtree: true });
+        timer = setTimeout(() => observer?.disconnect(), 8000);
+      }
+      return () => { observer?.disconnect(); if (timer) clearTimeout(timer); };
     }
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [pathname, hash]);
@@ -57,7 +70,6 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AdSenseAuto />
         <RouteEffects />
         <Suspense fallback={loading}>
           <Routes>

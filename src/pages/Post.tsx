@@ -5,7 +5,6 @@ import SiteLayout from "@/components/site/SiteLayout";
 import PageMeta from "@/components/site/PageMeta";
 import { Button } from "@/components/ui/button";
 import { getPostBySlug, sanitizeWordPressHtml, type WordPressPost } from "@/lib/wordpress";
-import AdSlot from "@/components/site/AdSlot";
 import SocialShare from "@/components/site/SocialShare";
 
 const formatDate = (value: string) => {
@@ -52,7 +51,7 @@ export default function Post() {
   if (loading) {
     return (
       <SiteLayout>
-        <div className="container min-h-[70vh] pt-36">
+        <PageMeta title="Loading TIJCEF update" description="Loading the requested TIJCEF update." noIndex /><div className="container min-h-[70vh] pt-36">
           <div className="h-6 w-40 animate-pulse rounded bg-muted" />
           <div className="mt-6 h-16 max-w-3xl animate-pulse rounded bg-muted" />
           <div className="mt-10 h-96 animate-pulse rounded-2xl bg-muted" />
@@ -110,7 +109,7 @@ export default function Post() {
         <div className="mx-auto mt-10 max-w-3xl border-t border-border px-6 pt-6">
           <SocialShare title={post.title} />
         </div>
-        <AdSlot placement="content" />
+        
       </article>
     </SiteLayout>
   );

@@ -8,8 +8,8 @@ import researchImg from "@/assets/research.jpg";
 import { approvedImpact } from "@/data/programmeAreas";
 
 const headlineResults = [
-  { value: approvedImpact.cumulativeReach, suffix: "+", label: "People reached cumulatively" },
-  { value: approvedImpact.reach2026, suffix: "+", label: "People reached in 2026" },
+  { value: approvedImpact.cumulativeReach, suffix: "+", label: "Cumulative participant engagements" },
+  { value: approvedImpact.reach2026, suffix: "+", label: "Participant engagements in 2026" },
   { value: approvedImpact.programmeAreas, suffix: "", label: "Programme areas" },
   { value: approvedImpact.statesWithActivities, suffix: "", label: "States with activities" },
 ];
@@ -19,7 +19,7 @@ const activityEvidence = [
     title: "Menstrual dignity at Government Girls College",
     place: "Yola · February 2026",
     result: "Approximately 400 girls engaged",
-    detail: "Health education and dignity support delivered through a school-based outreach.",
+    detail: "School-based outreach. Related website reports also describe STEM engagement; these are not treated here as an additional 400 participants.",
     source: "Activity register and programme documentation",
   },
   {
@@ -51,14 +51,15 @@ export default function Impact() {
       eyebrow="Impact and Learning"
       title="Evidence people can see. Learning communities can use."
       subtitle="We report approved reach figures, show how activities were documented and distinguish immediate delivery from longer-term change."
-      metaDescription="Explore TIJCEF's verified reach, 2026 programme evidence, measurement approach and accountability commitments across Nigeria."
+      metaDescription="Explore TIJCEF's reported reach, 2026 programme evidence, measurement approach and accountability commitments across Nigeria."
       image={researchImg}
     >
+      <p className="mb-8 rounded-xl bg-muted p-5 text-sm">Reporting scope: cumulative programme records and 2026 activity snapshots. Counts may include repeat participation and should not be added together. This website presentation was reviewed on 26 October 2026; that is not a new measurement date. <a className="underline" href="/TIJCEF_ANNUAL_REPORT_2025.pdf">Read the 2025 annual report</a> for the previous reporting year.</p>
       <Reveal>
         <section aria-labelledby="impact-at-a-glance" className="mb-20">
           <div className="mb-10 max-w-3xl">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">Impact at a glance</div>
-            <h2 id="impact-at-a-glance" className="mt-4 text-4xl md:text-5xl">Verified figures, presented with context.</h2>
+            <h2 id="impact-at-a-glance" className="mt-4 text-4xl md:text-5xl">Programme figures, presented with context.</h2>
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
               Figures are drawn from TIJCEF programme records and reviewed before public reporting. They describe documented reach, not unique-person counts across every year or guaranteed long-term outcomes.
             </p>
@@ -154,7 +155,7 @@ export default function Impact() {
               <div className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">Accountability in action</div>
               <h2 className="mt-4 max-w-2xl text-3xl md:text-4xl">Read the evidence behind our public commitments.</h2>
               <p className="mt-4 max-w-2xl leading-relaxed text-primary-foreground/80">
-                Our corrected annual report, safeguarding commitments, media tracker and transparency centre explain how TIJCEF manages programmes, risk, learning and public claims.
+                Our annual report, safeguarding commitments, media tracker and transparency centre explain how TIJCEF manages programmes, risk, learning and public claims.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">

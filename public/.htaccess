@@ -19,6 +19,7 @@ RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
 RewriteRule ^(.+?)/?$ $1/index.html [L]
 
 RewriteRule ^post/[^/]+/?$ post-shell.html [L]
+RewriteRule ^grants/opportunities/[^/]+/?$ opportunity-shell.html [L]
 
 ErrorDocument 404 /404.html
 

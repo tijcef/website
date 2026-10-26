@@ -18,10 +18,10 @@ describe("TIJCEF navigation architecture", () => {
     }
   });
 
-  it("keeps Grant Hub as a main menu with five opportunity sections", () => {
+  it("keeps five opportunity types under the simplified Opportunities menu", () => {
     const header = read("../components/site/Header.tsx");
     for (const section of ["grants", "scholarships", "fellowships", "jobs", "internships"]) {
-      expect(header).toContain(`/grants/${section}`);
+      expect(header).toContain(`'${section}'`);
     }
   });
 

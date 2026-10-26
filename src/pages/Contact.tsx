@@ -52,13 +52,13 @@ export default function Contact() {
               </div>
               <Input name="organization" aria-label="Organisation" placeholder="Organization (optional)" maxLength={160} />
               <select name="subject" aria-label="Enquiry subject" className="h-10 w-full rounded-md border bg-background px-3 text-sm">
-                <option>General inquiry</option><option>Partnership or sponsorship</option><option>Media or press</option><option>Volunteer</option><option>Donation question</option><option>Safeguarding or complaint</option>
+                <option>General inquiry</option><option>Partnership or sponsorship</option><option>Media or press</option><option>Volunteer</option><option>Donation question</option>
               </select>
               <Textarea name="message" aria-label="Message" placeholder="Tell us how we can help…" rows={6} required maxLength={3000} />
               <Button type="submit" size="lg" className="w-full" disabled={busy}>{busy ? "Sending…" : "Send Message"} <ArrowRight className="h-4 w-4" /></Button>
               {status && <p role="status" className="rounded-lg bg-muted p-3 text-sm">{status}</p>}
               <p className="text-center text-xs text-muted-foreground">By submitting, you agree to our <Link to="/privacy" className="underline hover:text-primary">privacy notice</Link>. Do not include sensitive safeguarding details in this general form.</p>
-            </form>
+            <Link to="/complaints" className="block text-sm font-semibold underline">Complaints and confidential reporting routes</Link></form>
           </Reveal>
         </div>
         <Reveal><div className="aspect-[21/9] overflow-hidden rounded-2xl border bg-muted shadow-card"><iframe title="General location of TIJCEF office in Jalingo" src="https://www.openstreetmap.org/export/embed.html?bbox=11.25%2C8.80%2C11.47%2C9.00&layer=mapnik&marker=8.8937%2C11.3596" className="h-full w-full" loading="lazy" /></div><p className="mt-2 text-xs text-muted-foreground">Map indicates the general Jalingo area. Contact the office for directions before visiting.</p></Reveal>

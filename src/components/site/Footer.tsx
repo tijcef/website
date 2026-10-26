@@ -100,7 +100,7 @@ const Footer = () => {
           </div>
 
           <div className="lg:col-span-2">
-            <div className="text-xs uppercase tracking-[0.18em] text-accent mb-4">Grant Hub</div>
+            <div className="text-xs uppercase tracking-[0.18em] text-accent mb-4">Opportunities</div>
             <ul className="space-y-2.5 text-sm text-primary-foreground/80">
               <li><Link to="/grants" className="hover:text-accent transition-colors">Overview</Link></li>
               <li><Link to="/grants/grants" className="hover:text-accent transition-colors">Grants</Link></li>
@@ -115,8 +115,9 @@ const Footer = () => {
             <div className="text-xs uppercase tracking-[0.18em] text-accent mb-4">Act</div>
             <ul className="space-y-2.5 text-sm text-primary-foreground/80">
               <li><Link to="/donate" className="hover:text-accent transition-colors">Donate</Link></li>
-              <li><Link to="/get-involved" className="hover:text-accent transition-colors">Volunteer</Link></li>
-              <li><Link to="/get-involved" className="hover:text-accent transition-colors">Become a Partner</Link></li>
+              <li><Link to="/grants/membership" className="hover:text-accent transition-colors">Membership</Link></li>
+              <li><Link to="/get-involved#volunteer" className="hover:text-accent transition-colors">Volunteer</Link></li>
+              <li><Link to="/get-involved#partner" className="hover:text-accent transition-colors">Become a Partner</Link></li>
               <li><Link to="/transparency" className="hover:text-accent transition-colors">Partner Due Diligence</Link></li>
             </ul>
           </div>

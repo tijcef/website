@@ -3,63 +3,16 @@ import { useEffect, useState } from "react";
 import { ChevronDown, ChevronRight, Heart, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  getNavigation,
-  type NavigationItem,
-} from "@/lib/wordpress";
+import { type NavigationItem } from "@/lib/wordpress";
 import logo from "@/assets/tijcef-logo.webp";
 
 const fallbackLinks: NavigationItem[] = [
-  { id: "home", url: "/", label: "Home", children: [] },
-  { id: "about", url: "/about", label: "About", children: [] },
-  {
-    id: "pillars",
-    url: "/pillars",
-    label: "Our Work",
-    children: [
-      { id: "dignity", url: "/pillars#dignity", label: "Health, Dignity & WASH", children: [] },
-      { id: "agency", url: "/pillars#agency", label: "Education, Skills & Leadership", children: [] },
-      { id: "resilience", url: "/pillars#resilience", label: "Climate & Community Resilience", children: [] },
-      { id: "evidence", url: "/pillars#evidence", label: "Research, Learning & Advocacy", children: [] },
-    ],
-  },
-  {
-    id: "programs",
-    url: "/programs",
-    label: "Programmes",
-    children: [
-      { id: "current-programs", url: "/category/current-programs", label: "Current Programmes", children: [] },
-      { id: "completed-projects", url: "/category/completed-projects", label: "Completed Projects", children: [] },
-      { id: "impact-stories", url: "/category/impact-stories", label: "Impact Stories", children: [] },
-    ],
-  },
-  { id: "impact", url: "/impact", label: "Impact", children: [] },
-  {
-    id: "grant-hub",
-    url: "/grants",
-    label: "Grant Hub",
-    children: [
-      { id: "all-opportunities", url: "/grants/opportunities", label: "All Opportunities", children: [] },
-      { id: "grants", url: "/grants/grants", label: "Grants", children: [] },
-      { id: "scholarships", url: "/grants/scholarships", label: "Scholarships", children: [] },
-      { id: "fellowships", url: "/grants/fellowships", label: "Fellowships", children: [] },
-      { id: "jobs", url: "/grants/jobs", label: "Jobs", children: [] },
-      { id: "internships", url: "/grants/internships", label: "Internships", children: [] },
-    ],
-  },
-  { id: "get-involved", url: "/get-involved", label: "Get Involved", children: [] },
-  {
-    id: "resources",
-    url: "/resources",
-    label: "Resources",
-    children: [
-      { id: "reports", url: "/category/reports-publications", label: "Reports & Publications", children: [] },
-      { id: "media-coverage", url: "/media-coverage", label: "Media & Mentions", children: [] },
-      { id: "toolkits", url: "/category/toolkits", label: "Toolkits", children: [] },
-      { id: "gallery", url: "/category/gallery", label: "Gallery", children: [] },
-    ],
-  },
-  { id: "contact", url: "/contact", label: "Contact", children: [] },
+ {id:'about',url:'/about',label:'About',children:[{id:'transparency',url:'/transparency',label:'Governance & Transparency',children:[]}]},
+ {id:'work',url:'/programs',label:'Our Work',children:[{id:'areas',url:'/pillars',label:'Our Four Programme Areas',children:[]},{id:'projects',url:'/programs',label:'Programmes & Projects',children:[]},{id:'resources',url:'/resources',label:'Resources & Reports',children:[]}]},
+ {id:'impact',url:'/impact',label:'Impact',children:[{id:'media',url:'/media-coverage',label:'Media & Mentions',children:[]}]},
+ {id:'opportunities',url:'/grants',label:'Opportunities',children:['grants','scholarships','fellowships','jobs','internships'].map(section=>({id:section,url:`/grants/${section}`,label:section.charAt(0).toUpperCase()+section.slice(1),children:[]}))},
+ {id:'involved',url:'/get-involved',label:'Get Involved',children:[{id:'partner',url:'/get-involved#partner',label:'Partner with Us',children:[]},{id:'volunteer',url:'/get-involved#volunteer',label:'Volunteer',children:[]},{id:'membership',url:'/grants/membership',label:'Membership',children:[]}]},
+ {id:'contact',url:'/contact',label:'Contact',children:[]},
 ];
 
 const NAVIGATION_CACHE_KEY = "tijcef-primary-navigation-v3";
@@ -220,7 +173,7 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [links, setLinks] = useState<NavigationItem[]>(fallbackLinks);
+  const links = fallbackLinks;
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -241,29 +194,6 @@ const Header = () => {
       document.body.style.overflow = "";
     };
   }, [open]);
-
-  useEffect(() => {
-    try {
-      const cached = JSON.parse(localStorage.getItem(NAVIGATION_CACHE_KEY) || "null");
-      if (cached?.expiresAt > Date.now() && Array.isArray(cached.items)) {
-        setLinks(cached.items);
-      }
-    } catch {
-      localStorage.removeItem(NAVIGATION_CACHE_KEY);
-    }
-
-    getNavigation()
-      .then((items) => {
-        setLinks(items);
-        localStorage.setItem(
-          NAVIGATION_CACHE_KEY,
-          JSON.stringify({ items, expiresAt: Date.now() + NAVIGATION_CACHE_MS })
-        );
-      })
-      .catch(() => {
-        // The built-in navigation keeps the site usable while WordPress is unavailable.
-      });
-  }, []);
 
   const onHero = pathname === "/" && !scrolled;
   const toggleExpanded = (id: string) => {

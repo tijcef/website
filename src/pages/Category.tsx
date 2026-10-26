@@ -4,7 +4,6 @@ import { ArrowRight, CalendarDays } from "lucide-react";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageMeta from "@/components/site/PageMeta";
 import { Button } from "@/components/ui/button";
-import AdSlot from "@/components/site/AdSlot";
 import {
   getPostsByCategory,
   type WordPressPost,
@@ -131,7 +130,7 @@ export default function Category() {
                 </div>
               </article>
             ))}
-          </div><AdSlot placement="directory" /></>
+          </div></>
         )}
       </section>
     </SiteLayout>

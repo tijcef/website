@@ -27,8 +27,8 @@ const pillars = programmeAreas.map((area) => ({
 }));
 
 const stats = [
-  { end: approvedImpact.cumulativeReach, suffix: "+", label: "Cumulative people reached" },
-  { end: approvedImpact.reach2026, suffix: "+", label: "People reached in 2026" },
+  { end: approvedImpact.cumulativeReach, suffix: "+", label: "Cumulative participant engagements" },
+  { end: approvedImpact.reach2026, suffix: "+", label: "Participant engagements in 2026" },
   { end: approvedImpact.programmeAreas, suffix: "", label: "Programme areas" },
   { end: approvedImpact.statesWithActivities, suffix: "", label: "States with recorded activities" },
 ];
@@ -52,7 +52,7 @@ const Index = () => {
         }}
       />
       {/* HERO */}
-      <section className="relative min-h-screen flex items-end overflow-hidden">
+      <section className="relative min-h-[78svh] flex items-end overflow-hidden">
         <div className="absolute inset-0">
           <img src={heroImg} alt="Students participating in a TIJCEF school outreach" className="w-full h-full object-cover animate-slow-zoom" width={1855} height={848} fetchPriority="high" decoding="async" />
           <div className="absolute inset-0 gradient-hero" />
@@ -68,7 +68,7 @@ const Index = () => {
               </div>
             </Reveal>
             <Reveal delay={120}>
-              <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl leading-[0.95] tracking-tight mb-7 text-balance">
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl leading-[0.95] tracking-tight mb-7 text-balance">
                 Empowering women.<br />
                 Uplifting youth.<br />
                 <span className="italic text-accent font-light">Building resilient communities.</span>
@@ -82,55 +82,24 @@ const Index = () => {
             <Reveal delay={360}>
               <div className="flex flex-wrap gap-4">
                 <Button asChild variant="donate" size="xl">
-                  <Link to="/donate">Donate Now <ArrowRight className="w-5 h-5" /></Link>
+                  <Link to="/donate">Support Our Work <ArrowRight className="w-5 h-5" /></Link>
                 </Button>
-                <Button asChild variant="heroOutline" size="xl">
-                  <Link to="/get-involved">Become a Partner</Link>
-                </Button>
-                <Button asChild variant="heroOutline" size="xl">
-                  <Link to="/get-involved">Join as Volunteer</Link>
-                </Button>
+                <Button asChild variant="heroOutline" size="xl"><Link to="/impact">Explore Our Impact</Link></Button>
               </div>
             </Reveal>
           </div>
         </div>
 
-        {/* Stats overlay */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 hidden md:block">
-          <div className="container">
-            <div className="glass-card rounded-t-2xl border-b-0 grid grid-cols-2 lg:grid-cols-4 divide-x divide-border/40">
-              {stats.map((s, i) => (
-                <div key={i} className="px-6 py-7 text-center">
-                  <div className="font-display text-3xl lg:text-5xl text-primary leading-none mb-2">
-                    <Counter end={s.end} suffix={s.suffix} />
-                  </div>
-                  <div className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
       </section>
-
-      {/* MOBILE STATS */}
-      <section className="md:hidden py-12 bg-muted/40">
-        <div className="container grid grid-cols-2 gap-6">
-          {stats.map((s, i) => (
-            <div key={i} className="text-center">
-              <div className="font-display text-3xl text-primary"><Counter end={s.end} suffix={s.suffix} /></div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
+      <section className="border-b bg-muted/40 py-8" aria-label="Programme reach"><div className="container grid grid-cols-2 gap-6 lg:grid-cols-4">{stats.map(s=><div key={s.label} className="text-center"><div className="font-display text-3xl md:text-4xl text-primary"><Counter end={s.end} suffix={s.suffix}/></div><div className="mt-2 text-xs uppercase tracking-wider text-muted-foreground">{s.label}</div></div>)}</div></section>
+      <div className="container py-4 text-center text-xs text-muted-foreground">Reporting period: cumulative records and 2026 activities. Figures may include repeat participation. <Link className="underline" to="/impact">How we count and report</Link></div>
       {/* ABOUT / MISSION */}
-      <section className="py-28 md:py-36">
+      <section className="py-16 md:py-20">
         <div className="container grid lg:grid-cols-12 gap-16 items-center">
           <Reveal className="lg:col-span-5">
             <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-5">Who We Are</div>
             <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-balance mb-7">
-              Community delivery backed<br />by evidence and accountability.
+              Working together for stronger communities.
             </h2>
           </Reveal>
           <Reveal delay={150} className="lg:col-span-7">
@@ -156,17 +125,17 @@ const Index = () => {
       </section>
 
       {/* FOUR PROGRAMME AREAS */}
-      <section className="py-28 md:py-36 bg-muted/40 relative overflow-hidden">
+      <section className="py-16 md:py-20 bg-muted/40 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-1/3 h-full gradient-soft opacity-50" />
         <div className="container relative">
           <Reveal>
-            <div className="max-w-3xl mb-20">
+            <div className="max-w-3xl mb-10">
               <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-5">Our Four Programme Areas</div>
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-balance">
                 Clear programmes. One accountable mission.
               </h2>
               <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                The Dignity, Agency, Resilience and Evidence framework is paired with plain-language programme areas so communities and partners can see exactly what TIJCEF does.
+                Our four pillars guide practical support for women, girls and young people.
               </p>
             </div>
           </Reveal>
@@ -174,7 +143,7 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {pillars.map((p, i) => (
               <Reveal key={p.title} delay={i * 100}>
-                <Link to={`/pillars#${p.slug}`} className="group block relative h-[420px] rounded-2xl overflow-hidden shadow-card hover:shadow-deep transition-all duration-700">
+                <Link to={`/pillars#${p.slug}`} className="group block relative min-h-[340px] rounded-2xl overflow-hidden shadow-card hover:shadow-deep transition-all duration-700">
                   <img src={p.img} alt={p.imgAlt} loading="lazy" width={1200} height={900} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent" />
                   <div className="absolute inset-0 p-8 flex flex-col justify-end text-primary-foreground">
@@ -195,14 +164,32 @@ const Index = () => {
         </div>
       </section>
 
+      <section className="container py-16" aria-labelledby="featured-project"><div className="rounded-2xl bg-muted p-8 md:p-12"><p className="text-xs uppercase tracking-widest text-primary">Ongoing work · Across TIJCEF programmes</p><h2 id="featured-project" className="my-4 text-3xl md:text-4xl">Turning community evidence into action</h2><p className="max-w-2xl text-muted-foreground">Our research, monitoring and learning programme brings community feedback and programme records into planning. Partner with us on research, geospatial analysis and practical learning tools.</p><div className="mt-6 flex flex-wrap gap-4"><Button asChild><Link to="/programs?status=Ongoing">Explore ongoing work</Link></Button><Button asChild variant="outline"><Link to="/get-involved#partner">Discuss a partnership</Link></Button></div></div></section>
+      {/* STORIES */}
+      <section className="py-16 md:py-20 bg-primary text-primary-foreground relative overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-accent/10 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-secondary/30 blur-3xl" />
+        <div className="container relative">
+          <Reveal>
+            <div className="max-w-3xl mb-10">
+              <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-5">Latest TIJCEF Updates</div>
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-balance">
+                Latest from our communities
+              </h2>
+            </div>
+          </Reveal>
+          <RecentWork />
+        </div>
+      </section>
+
       {/* WHY SUPPORT */}
-      <section className="py-28 md:py-36">
+      <section className="py-16 md:py-20">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <Reveal>
               <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-5">For Funders and Partners</div>
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] mb-7 text-balance">
-                What partners can assess before funding.
+                Why partner with TIJCEF?
               </h2>
               <p className="text-lg text-foreground/75 leading-relaxed">
                 TIJCEF makes its programme evidence, governance commitments, safeguarding standards and reporting approach visible so prospective partners can conduct proportionate due diligence.
@@ -230,34 +217,18 @@ const Index = () => {
         </div>
       </section>
 
-      {/* STORIES */}
-      <section className="py-28 md:py-36 bg-primary text-primary-foreground relative overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-accent/10 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-secondary/30 blur-3xl" />
-        <div className="container relative">
-          <Reveal>
-            <div className="max-w-3xl mb-20">
-              <div className="text-xs uppercase tracking-[0.22em] text-accent font-semibold mb-5">Latest TIJCEF Updates</div>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] text-balance">
-                Recent work, reported carefully.
-              </h2>
-            </div>
-          </Reveal>
-          <RecentWork />
-        </div>
-      </section>
-
+      <section className="container py-12"><div className="rounded-2xl border p-8"><h2 className="text-3xl">Meet the people behind the programmes</h2><p className="mt-3 max-w-2xl text-muted-foreground">Explore our Faces of Empowerment collection and the community experiences behind our work.</p><Link className="mt-4 inline-block font-semibold text-primary underline" to="/resources/faces-of-empowerment-2025">Read community stories</Link></div></section>
       {/* PARTNERS */}
       <section className="py-20 border-y border-border">
         <div className="container">
           <Reveal>
             <div className="text-center text-xs uppercase tracking-[0.22em] text-muted-foreground mb-10">
-              In Partnership With
+              Programme collaborations
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center max-w-2xl mx-auto">
               {["Lead the Girl Foundation", "PSNAF"].map((p) => (
                 <div key={p} className="text-center font-display text-lg text-muted-foreground/60 hover:text-primary transition-colors">
-                  {p}
+                  {p}<p className="mt-2 text-sm text-muted-foreground">{p === "Lead the Girl Foundation" ? "Collaborated on menstrual health and confidence-building outreach at Adroit International Academy, Yola." : "Contact our team for information about this collaboration."}</p>
                 </div>
               ))}
             </div>
@@ -266,7 +237,7 @@ const Index = () => {
       </section>
 
       {/* DONATION CTA */}
-      <section className="py-28 md:py-36 relative overflow-hidden">
+      <section className="py-16 md:py-20 relative overflow-hidden">
         <div className="absolute inset-0">
           <img src={girlsImg} alt="" loading="lazy" width={1200} height={900} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/85 to-primary/50" />

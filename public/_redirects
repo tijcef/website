@@ -172,5 +172,6 @@ https://tijcef.org/* https://www.tijcef.org/:splat 301
 /grants/opportunities/women-led-organisations-can-access-up-to-e5000-womenpower2030-grant/ /grants/opportunities/women-led-organisations-can-access-up-to-e5000-womenpower2030-grant 301
 /grants/opportunities/women-led-organisations-can-access-up-to-e5000-womenpower2030-grant /grants/opportunities/women-led-organisations-can-access-up-to-e5000-womenpower2030-grant/index.html 200
 /post/* /post-shell.html 200
+/grants/opportunities/* /opportunity-shell.html 200
 /404.html                 /404.html                    404
 /*                        /404.html                    404

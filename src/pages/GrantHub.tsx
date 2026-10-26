@@ -3,10 +3,9 @@ import { Link, NavLink, Route, Routes, useParams } from "react-router-dom";
 import { ArrowRight, CalendarDays, CheckCircle2, ExternalLink, Search, ShieldCheck, Sparkles } from "lucide-react";
 import SiteLayout from "@/components/site/SiteLayout";
 import PageMeta from "@/components/site/PageMeta";
-import AdSlot from "@/components/site/AdSlot";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getGrantBySlug, getGrants, sanitizeWordPressHtml, type Grant } from "@/lib/wordpress";
+import { submitPublicForm, getGrantBySlug, getGrants, sanitizeWordPressHtml, type Grant } from "@/lib/wordpress";
 
 const nav = [["/grants", "Overview"], ["/grants/opportunities", "Opportunities"], ["/grants/membership", "Membership"], ["/grants/about", "About"]];
 const opportunityLabels: Record<string, string> = {
@@ -189,7 +188,7 @@ function Opportunities({ opportunityType = "all" }: { opportunityType?: string }
           </article>
         ))}
       </div>
-      {!loading && !error && filtered.length > 0 && <AdSlot placement="directory" />}
+      
 
       {!loading && !error && filtered.length === 0 && (
         <p className="mt-10 rounded-xl border border-dashed p-10 text-center text-muted-foreground">
@@ -354,7 +353,7 @@ function Detail() {
         </p>
       )}
 
-      <AdSlot placement="content" />
+      
 
       <aside className="container mt-12 max-w-4xl rounded-2xl bg-secondary p-8 text-white">
         <h2 className="text-3xl">Ready to apply?</h2>
@@ -376,7 +375,28 @@ function Detail() {
   );
 }
 
-function Membership() { return <section className="container py-16"><PageMeta title="Grant Hub Access" description="Learn how organisations can use TIJCEF Grant Hub responsibly."/><div className="max-w-3xl"><h1 className="text-5xl">Public access, responsible guidance</h1><p className="mt-5 text-lg text-muted-foreground">Opportunity browsing is public. TIJCEF may announce separate readiness clinics or capacity-development activities only after their scope, eligibility and costs have been formally approved.</p><Button asChild className="mt-8"><Link to="/contact">Contact the grants team</Link></Button></div></section>; }
+function Membership() {
+ const [busy,setBusy]=useState(false); const [status,setStatus]=useState(''); const [sent,setSent]=useState(false);
+ async function submit(event: React.FormEvent<HTMLFormElement>) {
+  event.preventDefault(); const form=event.currentTarget; setBusy(true); setStatus('');
+  try { await submitPublicForm('inquiries',{kind:'membership',...Object.fromEntries(new FormData(form))}); setSent(true); form.reset(); setStatus('Your membership application has been received for review. This is not automatic membership approval.'); }
+  catch(error) {setStatus(error instanceof Error ? error.message : 'Unable to submit. Please try again or email info@tijcef.org.');}
+  finally {setBusy(false);}
+ }
+ return <section className="container py-16"><PageMeta title="Membership application" description="Apply to join the TIJCEF opportunity and community network."/><div className="mx-auto max-w-2xl"><h1 className="text-4xl md:text-5xl">Join the TIJCEF network</h1><p className="mt-5 text-muted-foreground">Apply as an individual or organisation. Our team will review your interests and contact you about suitable participation. Opportunity browsing remains public. No payment is collected by this application.</p>
+ <form onSubmit={submit} className="mt-8 space-y-5 rounded-2xl border bg-card p-6 md:p-8">
+ <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true"/>
+ <label className="block text-sm font-semibold">Full name<Input name="name" required maxLength={120} autoComplete="name" className="mt-2" disabled={busy||sent}/></label>
+ <label className="block text-sm font-semibold">Email address<Input name="email" type="email" required maxLength={255} autoComplete="email" className="mt-2" disabled={busy||sent}/></label>
+ <label className="block text-sm font-semibold">Applying as<select name="membershipType" className="mt-2 block w-full rounded-md border bg-background p-3" disabled={busy||sent}><option>Individual</option><option>Organisation</option></select></label>
+ <label className="block text-sm font-semibold">Organisation (optional)<Input name="organization" maxLength={160} className="mt-2" disabled={busy||sent}/></label>
+ <label className="block text-sm font-semibold">Main interest<select name="interest" className="mt-2 block w-full rounded-md border bg-background p-3" disabled={busy||sent}><option>Grants and opportunities</option><option>Community programmes</option><option>Research and learning</option><option>Volunteering</option><option>Partnership</option></select></label>
+ <label className="flex items-start gap-3 text-sm"><input type="checkbox" name="consent" value="yes" required disabled={busy||sent} className="mt-1"/><span>I agree that TIJCEF may use these details to review and respond to my application under the <Link to="/privacy" className="underline">privacy notice</Link>.</span></label>
+ <Button type="submit" disabled={busy||sent} className="w-full">{busy?'Submitting…':sent?'Application received':'Submit membership application'}</Button>
+ {status&&<p role="status" className="rounded-lg bg-muted p-4 text-sm">{status}</p>}
+ </form><p className="mt-5 text-sm">Need assistance? <a href="mailto:info@tijcef.org?subject=Membership%20enquiry" className="underline">Email the membership team</a>.</p></div></section>;
+}
+
 function About() { return <section className="container py-16"><PageMeta title="About the Grant Hub" description="How TIJCEF reviews and publishes funding opportunities."/><div className="max-w-3xl"><h1 className="text-5xl">Built for trust</h1><p className="mt-5 text-lg leading-relaxed text-muted-foreground">TIJCEF Grant Hub helps Nigerian nonprofits, researchers and community organisations discover opportunities and improve readiness. Listings should include a direct source, review date and transparent verification status. We are not a funder unless a listing explicitly states otherwise.</p></div></section>; }
 function GrantNotFound() { return <section className="container min-h-[60vh] py-16"><PageMeta title="Grant Hub Page Not Found" description="The requested Grant Hub page could not be found." noIndex/><h1 className="text-4xl">This Grant Hub page could not be found.</h1><p className="mt-3 text-muted-foreground">Browse the current opportunity directory or return to the Grant Hub overview.</p><Button asChild className="mt-6"><Link to="/grants/opportunities">Browse opportunities</Link></Button></section>; }
 

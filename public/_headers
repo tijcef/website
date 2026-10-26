@@ -21,14 +21,15 @@
   Cache-Control: public, max-age=3600
   Content-Type: text/plain; charset=utf-8
 
-/ads.txt
-  Cache-Control: public, max-age=86400
-  Content-Type: text/plain; charset=utf-8
 
 /thank-you*
   X-Robots-Tag: noindex, follow
   Cache-Control: no-store
 
 /404.html
+  X-Robots-Tag: noindex, follow
+  Cache-Control: no-store
+
+/verify*
   X-Robots-Tag: noindex, follow
   Cache-Control: no-store

@@ -150,10 +150,6 @@
       "destination": "/category/:slug/index.html"
     },
     {
-      "source": "/grants/opportunities/:slug",
-      "destination": "/grants/opportunities/:slug/index.html"
-    },
-    {
       "source": "/verify",
       "destination": "/verify/index.html"
     },
@@ -264,6 +260,10 @@
     {
       "source": "/post/:slug",
       "destination": "/post-shell.html"
+    },
+    {
+      "source": "/grants/opportunities/:slug",
+      "destination": "/opportunity-shell.html"
     }
   ],
   "headers": [
@@ -303,6 +303,19 @@
     },
     {
       "source": "/404.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/verify",
       "headers": [
         {
           "key": "X-Robots-Tag",

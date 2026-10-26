@@ -49,7 +49,7 @@ export default function Verify() {
           <div className="text-center">
             <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-primary/10"><ShieldCheck className="h-9 w-9 text-primary" /></div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">TIJCEF Official Verification</h1>
-            <p className="mx-auto mt-3 max-w-2xl text-slate-600">Check the authenticity and current status of a certificate, ID card, letter or other document issued by Tijwun Care Empowerment Foundation.</p>
+            <p className="mx-auto mt-3 max-w-2xl text-slate-600">Check the authenticity and current status of a certificate, ID card, letter or other document issued by Tijwun Care and Empowerment Foundation.</p>
           </div>
 
           <form onSubmit={submit} className="mt-9 rounded-2xl border bg-white p-5 shadow-sm md:p-7">
@@ -70,7 +70,7 @@ export default function Verify() {
               </dl>
             </div>
           ) : (
-            <div className="mt-6 flex gap-3 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-900"><XCircle className="mt-0.5 h-6 w-6 shrink-0" /><div><div className="font-bold">RECORD NOT VERIFIED</div><p className="mt-1 text-sm">No matching valid TIJCEF record was found. Check the ID carefully. If the document claims to be from TIJCEF, contact the Foundation for confirmation.</p></div></div>
+            <div className="mt-6 flex gap-3 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-900"><XCircle className="mt-0.5 h-6 w-6 shrink-0" /><div><div className="font-bold">RECORD NOT VERIFIED</div><p className="mt-1 text-sm">{result.status ? `This document is ${result.status.toLowerCase()} and is not currently valid. Contact TIJCEF for confirmation.` : "No matching valid TIJCEF record was found. Check the ID carefully or contact TIJCEF."}</p></div></div>
           ))}
         </section>
       </main>
